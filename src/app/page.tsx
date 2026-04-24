@@ -1,13 +1,15 @@
-import Navbar from '@/components/binti/Navbar';
-import Hero from '@/components/binti/Hero';
-import About from '@/components/binti/About';
-import Programs from '@/components/binti/Programs';
-import Leadership from '@/components/binti/Leadership';
-import Impact from '@/components/binti/Impact';
-import Stories from '@/components/binti/Stories';
-import GetInvolved from '@/components/binti/GetInvolved';
-import Footer from '@/components/binti/Footer';
-import ScrollToTop from '@/components/binti/ScrollToTop';
+import dynamic from 'next/dynamic';
+
+const Navbar = dynamic(() => import('@/components/binti/Navbar'), { ssr: true });
+const Hero = dynamic(() => import('@/components/binti/Hero'), { ssr: true });
+const About = dynamic(() => import('@/components/binti/About'), { ssr: true });
+const Programs = dynamic(() => import('@/components/binti/Programs'), { ssr: true });
+const Leadership = dynamic(() => import('@/components/binti/Leadership'), { ssr: true });
+const Impact = dynamic(() => import('@/components/binti/Impact'), { ssr: true });
+const Stories = dynamic(() => import('@/components/binti/Stories'), { ssr: true });
+const GetInvolved = dynamic(() => import('@/components/binti/GetInvolved'), { ssr: true });
+const Footer = dynamic(() => import('@/components/binti/Footer'), { ssr: true });
+const ScrollToTop = dynamic(() => import('@/components/binti/ScrollToTop'), { ssr: true });
 
 export default function Home() {
   return (
