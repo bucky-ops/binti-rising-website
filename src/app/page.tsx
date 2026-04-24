@@ -7,6 +7,8 @@ const Programs = dynamic(() => import('@/components/binti/Programs'), { ssr: tru
 const Leadership = dynamic(() => import('@/components/binti/Leadership'), { ssr: true });
 const Impact = dynamic(() => import('@/components/binti/Impact'), { ssr: true });
 const Stories = dynamic(() => import('@/components/binti/Stories'), { ssr: true });
+const Video = dynamic(() => import('@/components/binti/Video'), { ssr: true });
+const FAQ = dynamic(() => import('@/components/binti/FAQ'), { ssr: true });
 const GetInvolved = dynamic(() => import('@/components/binti/GetInvolved'), { ssr: true });
 const Footer = dynamic(() => import('@/components/binti/Footer'), { ssr: true });
 const ScrollToTop = dynamic(() => import('@/components/binti/ScrollToTop'), { ssr: true });
@@ -22,6 +24,8 @@ export default function Home() {
         <Leadership />
         <Impact />
         <Stories />
+        <Video />
+        <FAQ />
         <GetInvolved />
       </main>
       <Footer />
