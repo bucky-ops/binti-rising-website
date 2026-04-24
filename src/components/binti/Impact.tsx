@@ -127,7 +127,7 @@ export default function Impact() {
         <div className={`max-w-3xl mx-auto text-center mb-16 ${isVisible ? 'animate-fade-in-up delay-100' : 'opacity-0'}`}>
           <p className="text-white/70 text-base sm:text-lg leading-relaxed">
             Every young woman who joins BINTI Rising in Nairobi experiences measurable change. Our evidence-based
-            programs track 6 key performance indicators — from SRHR knowledge and health service utilization to
+            programs track 6 key performance indicators - from SRHR knowledge and health service utilization to
             mental wellbeing, savings habits, leadership skills, and GBV awareness. The results speak for
             themselves: young women who enter our programs with limited knowledge leave as informed, resilient,
             and economically empowered leaders.

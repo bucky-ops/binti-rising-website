@@ -80,16 +80,16 @@ export default function About() {
               holistic empowerment programs that address the real needs of young women in the city.
             </p>
             <p className="mt-4 text-binti-navy/70 text-base sm:text-lg leading-relaxed">
-              Our comprehensive approach addresses the interconnected challenges young women face — from
+              Our comprehensive approach addresses the interconnected challenges young women face from
               limited access to sexual and reproductive health education, to mental health struggles,
               financial barriers, and gender-based violence. We believe in meeting young women where
               they are and walking alongside them on their journey to empowerment.
             </p>
             <p className="mt-4 text-binti-navy/70 text-base sm:text-lg leading-relaxed">
-              Through our four program pillars — <strong className="text-binti-pink">SRHR</strong>,
+              Through our four program pillars: <strong className="text-binti-pink">SRHR</strong>,
               {' '}<strong className="text-binti-purple">Mental Health</strong>,
               {' '}<strong className="text-binti-teal">Financial Freedom</strong>, and
-              {' '}<strong className="text-binti-gold">Women Empowerment</strong> — we&apos;re building
+              {' '}<strong className="text-binti-gold">Women Empowerment</strong> - we&apos;re building
               a generation of informed, resilient, and economically independent young women leaders.
             </p>
 
@@ -103,7 +103,7 @@ export default function About() {
                 Every shilling donated to BINTI Rising goes directly toward transforming a young woman&apos;s life.
                 Our evidence-based programs are aligned with UN Sustainable Development Goals and measured
                 through rigorous monitoring and evaluation. With over 500 young women already reached across
-                Nairobi communities, your investment creates ripple effects — empowered women lift families
+                Nairobi communities, your investment creates ripple effects empowered women lift families
                 and communities out of poverty.
               </p>
             </div>

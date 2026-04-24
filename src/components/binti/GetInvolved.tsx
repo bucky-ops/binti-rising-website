@@ -271,7 +271,7 @@ export default function GetInvolved() {
                   size="lg"
                   className="bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full px-10 shadow-lg shadow-binti-pink/25 transition-all hover:shadow-binti-pink/40"
                 >
-                  Donate Now — Change a Life
+                  Donate Now - Change a Life
                 </Button>
               </div>
             </div>
