@@ -79,7 +79,7 @@ export default function FAQ() {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="bg-binti-warm-gray/50 border border-binti-warm-gray rounded-lg px-6 overflow-hidden hover:bg-binti-warm-gray/70 transition-colors"
+                className="bg-binti-warm-gray/50 border border-binti-warm-gray rounded-lg px-6 overflow-hidden hover:bg-binti-warm-gray/70 transition-colors shadow-sm"
               >
                 <AccordionTrigger className="py-5 hover:no-underline group">
                   <span className="text-left font-semibold text-binti-navy group-hover:text-binti-pink transition-colors">

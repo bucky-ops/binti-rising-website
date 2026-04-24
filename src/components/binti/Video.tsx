@@ -18,18 +18,18 @@ export default function Video() {
   }, []);
 
   return (
-    <section id="video" ref={sectionRef} className="py-20 md:py-28 bg-gradient-to-br from-binti-navy to-binti-navy/80">
+    <section id="video" ref={sectionRef} className="py-20 md:py-28 bg-binti-warm-gray/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className={`text-center max-w-2xl mx-auto mb-12 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
           <span className="inline-block text-sm font-bold uppercase tracking-widest text-binti-pink mb-3">
             Educational Content
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-binti-navy leading-tight">
             Learn About{' '}
-            <span className="text-gradient-light">SRHR</span>
+            <span className="text-gradient">SRHR</span>
           </h2>
-          <p className="mt-4 text-white/70 text-lg leading-relaxed">
+          <p className="mt-4 text-binti-navy/70 text-lg leading-relaxed">
             Watch our comprehensive guide on Sexual and Reproductive Health and Rights to understand key concepts and empowerment strategies.
           </p>
         </div>
@@ -41,8 +41,8 @@ export default function Video() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-binti-pink via-binti-purple to-binti-teal opacity-75 rounded-2xl blur group-hover:opacity-100 transition duration-500" />
             
             {/* Video Frame */}
-            <div className="relative bg-binti-navy rounded-2xl overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-binti-navy/50 to-binti-navy/80 flex items-center justify-center relative">
+            <div className="relative bg-white rounded-2xl overflow-hidden">
+              <div className="aspect-video bg-gradient-to-br from-binti-warm-gray/50 to-binti-warm-gray/80 flex items-center justify-center relative">
                 {/* Play Button */}
                 <a
                   href="https://www.youtube.com/embed/dQw4w9WgXcQ"
@@ -77,7 +77,7 @@ export default function Video() {
 
           {/* CTA Below Video */}
           <div className="mt-8 text-center">
-            <p className="text-white/70 mb-4 text-sm">
+            <p className="text-binti-navy/70 mb-4 text-sm">
               Want to join our programs? Learn more about our SRHR initiatives.
             </p>
             <a href="#get-involved" className="inline-block">
@@ -89,15 +89,15 @@ export default function Video() {
         </div>
 
         {/* Video Stats */}
-        <div className="mt-16 grid sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
           {[
             { label: 'Views', value: '2.5K+' },
             { label: 'Duration', value: '12 mins' },
             { label: 'Rating', value: '4.8/5' },
           ].map((stat) => (
-            <div key={stat.label} className={`text-center p-4 rounded-xl bg-white/5 border border-white/10 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+            <div key={stat.label} className={`text-center p-4 rounded-xl bg-white shadow-sm border border-binti-warm-gray ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
               <div className="text-2xl font-bold text-binti-pink">{stat.value}</div>
-              <div className="text-sm text-white/60 mt-1">{stat.label}</div>
+              <div className="text-sm text-binti-navy/60 mt-1">{stat.label}</div>
             </div>
           ))}
         </div>
