@@ -1,0 +1,16 @@
+{
+  "name": "BINTI Rising Initiative",
+  "short_name": "BINTI Rising",
+  "description": "Empowering Young Women in Kenya",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#E91E63",
+  "icons": [
+    {
+      "src": "/binti-logo.jpg",
+      "sizes": "any",
+      "type": "image/jpeg"
+    }
+  ]
+}
