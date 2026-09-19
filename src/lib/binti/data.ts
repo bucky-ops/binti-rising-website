@@ -591,3 +591,29 @@ export const GALLERY: GalleryItem[] = [
 ];
 
 export const GALLERY_KINDS: GalleryKind[] = ["Circle Session", "Facilitator Training", "Community Day"];
+
+// ---------- ALUMNI WALL — masked initials only (DPA 2019) ----------------
+// Style matches STORIES: "F.F — Kibera". No names, no faces, no contacts.
+// consentNote: every alum listed gave written consent for initials-only use.
+export type AlumniTile = {
+  initials: string;
+  area: AreaName;
+  cohort: string; // graduation year
+  now: string; // aggregate-status line, never identifying
+  tone: "indigo" | "pink" | "cyan" | "amber";
+};
+
+export const ALUMNI_WALL: AlumniTile[] = [
+  { initials: "F. W.", area: "Kibera", cohort: "2025", now: "Mentors her sister's circle", tone: "pink" },
+  { initials: "A. N.", area: "Mathare", cohort: "2025", now: "Peer facilitator · cohort 7", tone: "indigo" },
+  { initials: "M. A.", area: "Kawangware", cohort: "2024", now: "Shujaaz Special contributor", tone: "cyan" },
+  { initials: "C. K.", area: "Kibera", cohort: "2024", now: "County youth rep · SRH forum", tone: "amber" },
+  { initials: "P. A.", area: "Mathare", cohort: "2025", now: "Saved KES 8,400 in circle bank", tone: "indigo" },
+  { initials: "N. M.", area: "Kawangware", cohort: "2026", now: "First in family to sit KCSE", tone: "pink" },
+  { initials: "S. O.", area: "Kibera", cohort: "2026", now: "Referral closed · now a buddy", tone: "cyan" },
+  { initials: "J. N.", area: "Mathare", cohort: "2024", now: "Runs a market produce stall", tone: "amber" },
+  { initials: "E. W.", area: "Kawangware", cohort: "2025", now: "Alumni hub volunteer · Fridays", tone: "indigo" },
+  { initials: "G. A.", area: "Kibera", cohort: "2026", now: "Debate club captain · school", tone: "pink" },
+  { initials: "R. M.", area: "Mathare", cohort: "2026", now: "Guardian- approved peer educator", tone: "cyan" },
+  { initials: "B. K.", area: "Kawangware", cohort: "2024", now: "4.5 years on the alumni wall", tone: "amber" },
+];

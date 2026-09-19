@@ -27,9 +27,12 @@ import {
   Send,
   CheckCircle2,
   Quote as QuoteIcon,
+  Search,
+  X,
+  MessageCircleQuestion,
 } from "lucide-react";
 import type { SectionId } from "@/lib/binti/data";
-import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS, MILESTONES } from "@/lib/binti/data";
+import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS, MILESTONES, ALUMNI_WALL, type AlumniTile } from "@/lib/binti/data";
 import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote, SectionReveal } from "../ui";
 import { CircleGallery } from "../gallery";
 import { cn } from "@/lib/utils";
@@ -234,6 +237,11 @@ function StoriesOfRise() {
 /* DONOR FAQ — accordion, donor-grade answers                          */
 /* ------------------------------------------------------------------ */
 function DonorFaq() {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const results = q
+    ? FAQS.filter((f) => f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q))
+    : FAQS;
   return (
     <section aria-label="Donor FAQ" className="bg-binti-card py-14">
       <div className="mx-auto max-w-4xl px-4 md:px-6">
@@ -248,23 +256,63 @@ function DonorFaq() {
             }
           />
         </SectionReveal>
-        <SectionReveal delay={0.1} className="mt-8">
-          <Accordion type="single" collapsible className="space-y-3">
-            {FAQS.map((f, i) => (
-              <AccordionItem
-                key={f.q}
-                value={`faq-${i}`}
-                className="rounded-2xl border border-binti-sand bg-binti-cream/50 px-5 last:border-b"
+        {/* Live search — filters as you type (client-side, nothing stored) */}
+        <SectionReveal delay={0.05} className="mt-7">
+          <div className="relative mx-auto max-w-md">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4.5 -translate-y-1/2 text-binti-slate/70" aria-hidden="true" />
+            <Input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search the FAQ — try “referrals” or “tax”"
+              aria-label="Search frequently asked questions"
+              className="h-12 rounded-full border-binti/25 bg-binti-cream/60 pl-11 pr-4 text-[14px]"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-binti-slate transition hover:bg-binti-sand hover:text-binti-ink"
               >
-                <AccordionTrigger className="py-4 text-left font-display text-[15px] font-bold text-binti-ink hover:no-underline">
-                  {f.q}
-                </AccordionTrigger>
-                <AccordionContent className="pb-5 text-[13.5px] leading-relaxed text-binti-slate">
-                  {f.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+                <X className="size-4" aria-hidden="true" />
+              </button>
+            )}
+          </div>
+          {q && (
+            <p className="mt-2.5 text-center text-[12.5px] font-semibold text-binti-slate" role="status">
+              {results.length === 0
+                ? "No answers match — WhatsApp +254 758 919 709 and we'll reply within a day."
+                : `${results.length} of ${FAQS.length} questions match “${query.trim()}”`}
+            </p>
+          )}
+        </SectionReveal>
+        <SectionReveal delay={0.1} className="mt-6">
+          {results.length > 0 ? (
+            <Accordion type="single" collapsible className="space-y-3">
+              {results.map((f, i) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`faq-${FAQS.indexOf(f)}`}
+                  className="rounded-2xl border border-binti-sand bg-binti-cream/50 px-5 last:border-b"
+                >
+                  <AccordionTrigger className="py-4 text-left font-display text-[15px] font-bold text-binti-ink hover:no-underline">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 text-[13.5px] leading-relaxed text-binti-slate">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-binti-sand bg-binti-cream/40 p-8 text-center">
+              <MessageCircleQuestion className="mx-auto size-8 text-binti/50" aria-hidden="true" />
+              <p className="mt-2 font-display text-[14.5px] font-bold text-binti-ink">Ask Sema na Me instead</p>
+              <p className="mt-1 text-[13px] text-binti-slate">
+                Our WhatsApp buddy (shortcode 20308) answers joining, safety and donation questions — anonymously.
+              </p>
+            </div>
+          )}
         </SectionReveal>
       </div>
     </section>
@@ -718,6 +766,95 @@ function HeartHandshakePlaceholder() {
 }
 
 /* ------------------------------------------------------------------ */
+/* ALUMNI WALL — masked initials grid (DPA 2019) — "she rose, and stays" */
+/* ------------------------------------------------------------------ */
+const WALL_TONES: Record<AlumniTile["tone"], { ring: string; chip: string; grad: string }> = {
+  indigo: { ring: "hover:border-binti/60", chip: "bg-binti/10 text-binti dark:text-indigo-300", grad: "from-binti/25 to-binti-pink/20" },
+  pink: { ring: "hover:border-binti-pink/60", chip: "bg-binti-pink/10 text-binti-pinkdeep dark:text-pink-300", grad: "from-binti-pink/25 to-binti-amber/20" },
+  cyan: { ring: "hover:border-binti-cyan/60", chip: "bg-binti-cyan/10 text-binti-cyan", grad: "from-binti-cyan/25 to-binti/15" },
+  amber: { ring: "hover:border-binti-amber/60", chip: "bg-binti-amber/15 text-amber-600 dark:text-amber-300", grad: "from-binti-amber/25 to-binti-pink/15" },
+};
+
+function AlumniWall({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
+  return (
+    <section aria-label="Alumni wall" className="relative overflow-hidden bg-binti-cream py-14 md:py-20">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-24 size-72 rounded-full bg-binti/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-16 size-72 rounded-full bg-binti-pink/10 blur-3xl" />
+      <div className="relative mx-auto max-w-7xl px-4 md:px-6">
+        <SectionReveal>
+          <SectionHeading
+            align="center"
+            eyebrow="Alumni Wall · 4,500+ strong"
+            title={
+              <>
+                She rose. <span className="font-hand text-4xl font-bold text-binti-cyan">She's still rising.</span>
+              </>
+            }
+            sub="A wall of first names only — every alum chose to be shown here, initials and all. No faces, no contacts, ever (Kenya DPA 2019)."
+          />
+        </SectionReveal>
+
+        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+          {ALUMNI_WALL.map((a, i) => {
+            const tone = WALL_TONES[a.tone];
+            return (
+              <motion.div
+                key={a.initials + a.cohort}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.32, delay: Math.min(i * 0.045, 0.35), ease: [0.22, 1, 0.36, 1] }}
+                className={cn(
+                  "binti-lift group rounded-2xl border border-binti-sand bg-binti-card p-4 text-center shadow-sm",
+                  tone.ring
+                )}
+              >
+                {/* initials medallion */}
+                <div className="relative mx-auto flex size-14 items-center justify-center">
+                  <span
+                    aria-hidden="true"
+                    className={cn("absolute inset-0 rounded-full bg-gradient-to-br", tone.grad)}
+                  />
+                  <span className="relative font-hand text-2xl font-bold text-binti-ink">{a.initials}</span>
+                </div>
+                <p className="mt-2.5 font-display text-[13px] font-extrabold tracking-tight text-binti-ink">
+                  {a.initials.replace(".", "")} — {a.area}
+                </p>
+                <p className="mt-1 line-clamp-2 min-h-[2.4em] text-[12px] leading-snug text-binti-slate">{a.now}</p>
+                <span
+                  className={cn(
+                    "mt-2.5 inline-block rounded-full px-2.5 py-0.5 text-[10.5px] font-extrabold tracking-wide",
+                    tone.chip
+                  )}
+                >
+                  CLASS OF {a.cohort}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Footer row: note + CTA */}
+        <SectionReveal delay={0.1} className="mt-8">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-3xl border border-binti-sand bg-binti-card p-5 text-center sm:flex-row sm:justify-between sm:text-left">
+            <p className="text-[12.5px] leading-relaxed text-binti-slate">
+              <strong className="text-binti-ink">Showing 12 of 4,500+</strong> — the rest chose to stay off the wall.
+              Both choices are equally respected. Initials published only with written, revocable consent.
+            </p>
+            <Button
+              onClick={() => onNavigate("involved")}
+              className="h-11 shrink-0 rounded-full bg-binti px-6 font-bold text-white shadow-lg shadow-binti/25 hover:bg-binti-deep"
+            >
+              Join the next cohort <ArrowRight className="size-4.5" aria-hidden="true" />
+            </Button>
+          </div>
+        </SectionReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   return (
     <>
@@ -728,6 +865,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <OurStoryTimeline />
       <StoriesOfRise />
       <CircleGallery />
+      <AlumniWall onNavigate={onNavigate} />
       <PartnersMarquee />
       <Quote />
       <DonorFaq />

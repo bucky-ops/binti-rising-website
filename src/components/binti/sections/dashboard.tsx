@@ -21,6 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "@/hooks/use-toast";
 import {
   Download,
   RefreshCw,
@@ -32,6 +33,8 @@ import {
   Route,
   GraduationCap,
   Printer,
+  Copy,
+  FileJson,
 } from "lucide-react";
 import { CountUp, SectionHeading, DataNote, SparkLine } from "./../ui";
 import {
@@ -157,6 +160,65 @@ export function DashboardSection() {
           >
             <Download className="size-4" aria-hidden="true" /> Export DATIM CSV
           </a>
+          <button
+            onClick={async () => {
+              const citation = `Binti Rising Initiative — Live Impact Dashboard (aggregated, Kenya DPA 2019). Data quality ${DATA_QUALITY}% · last sync ${syncedAt} · Kibera/Mathare/Kawangware. https://bintirising.org/#dashboard`;
+              const copyText = async (text: string): Promise<boolean> => {
+                try {
+                  await navigator.clipboard.writeText(text);
+                  return true;
+                } catch {
+                  /* Legacy fallback — iOS Safari / permission-denied contexts */
+                  try {
+                    const ta = document.createElement("textarea");
+                    ta.value = text;
+                    ta.style.position = "fixed";
+                    ta.style.opacity = "0";
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    const ok = document.execCommand("copy");
+                    document.body.removeChild(ta);
+                    return ok;
+                  } catch {
+                    return false;
+                  }
+                }
+              };
+              const ok = await copyText(citation);
+              if (ok) {
+                toast({ title: "Citation copied", description: "Paste it into your proposal or report — aggregates only." });
+              } else {
+                toast({ title: "Copy failed", description: "Your browser blocked the clipboard. Long-press to copy instead.", variant: "destructive" });
+              }
+            }}
+            className="no-print inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti dark:text-indigo-300 transition hover:bg-binti hover:text-white"
+            aria-label="Copy dashboard citation to clipboard"
+          >
+            <Copy className="size-4" aria-hidden="true" /> Copy Citation
+          </button>
+          <button
+            onClick={async () => {
+              try {
+                const res = await fetch("/api/kpis");
+                const json = await res.json();
+                const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "binti-kpi-snapshot.json";
+                a.click();
+                URL.revokeObjectURL(url);
+                toast({ title: "JSON snapshot downloaded", description: "Aggregated KPI export — no personal data (DPA 2019)." });
+              } catch {
+                toast({ title: "Export failed", description: "Could not reach the KPI endpoint. Try again.", variant: "destructive" });
+              }
+            }}
+            className="no-print inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti dark:text-indigo-300 transition hover:bg-binti hover:text-white"
+            aria-label="Download aggregated KPI snapshot as JSON"
+          >
+            <FileJson className="size-4" aria-hidden="true" /> JSON Snapshot
+          </button>
           <button
             onClick={() => window.print()}
             className="no-print inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti dark:text-indigo-300 transition hover:bg-binti hover:text-white"

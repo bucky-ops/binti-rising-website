@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Image as ImageIcon, MapPin, ShieldCheck, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Image as ImageIcon, MapPin, ShieldCheck, X, MoveHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GALLERY, GALLERY_KINDS, type GalleryKind } from "@/lib/binti/data";
 
@@ -106,7 +106,15 @@ function Lightbox({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-binti-card shadow-2xl"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.16}
+        onDragEnd={(_, info) => {
+          // Touch swipe: flick past threshold moves prev/next (wraps)
+          if (info.offset.x <= -70) next();
+          else if (info.offset.x >= 70) prev();
+        }}
+        className="relative w-full max-w-4xl cursor-grab overflow-hidden rounded-2xl bg-binti-card shadow-2xl active:cursor-grabbing"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative aspect-[16/10] w-full">
@@ -121,7 +129,7 @@ function Lightbox({
           {/* gradient scrim for caption legibility */}
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0F172A]/85 to-transparent" />
         </div>
-        <figcaption className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-4 md:flex-row md:items-center md:justify-between md:p-5">
+        <figcaption className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-4 md:flex-row md:items-end md:justify-between md:p-5">
           <div>
             <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-white/80">
               <MapPin className="size-3.5" aria-hidden="true" /> {item.area}
@@ -133,6 +141,9 @@ function Lightbox({
               )}
             </p>
             <p className="mt-0.5 font-display text-[15px] font-bold text-white md:text-[16px]">{item.caption}</p>
+            <p className="mt-1 flex items-center gap-1 text-[10.5px] font-semibold text-white/70 md:hidden">
+              <ShieldCheck className="size-3" aria-hidden="true" /> Published with consent · no names (DPA 2019)
+            </p>
           </div>
           <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-[12px] font-bold tabular-nums text-white">
             {index + 1} / {items.length}
@@ -140,10 +151,17 @@ function Lightbox({
         </figcaption>
       </motion.figure>
 
-      {/* DPA note */}
-      <p className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:flex">
+      {/* Input hints + DPA note: desktop pills, mobile micro-line in caption */}
+      <p className="absolute bottom-14 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:flex">
         <ShieldCheck className="size-3.5" aria-hidden="true" />
         Photos published with consent · no names, no identifiers (Kenya DPA 2019)
+      </p>
+      <p className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:flex">
+        <MoveHorizontal className="size-3.5" aria-hidden="true" />
+        Swipe or use ← → keys to browse · Esc to close
+      </p>
+      <p className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:hidden">
+        <MoveHorizontal className="size-3.5" aria-hidden="true" /> Swipe to browse
       </p>
     </motion.div>
   );
