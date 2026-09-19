@@ -15,18 +15,19 @@ import {
   Compass,
   MessageCircle,
   Timer,
+  Users,
 } from "lucide-react";
 import type { SectionId } from "@/lib/binti/data";
-import { JTW, ORG } from "@/lib/binti/data";
+import { JTW, ORG, JTW_INCLUSION } from "@/lib/binti/data";
 import { NairobiPhoto, RiskBadge, SectionHeading, DataNote } from "./../ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
-/* OUR WORK / JTW — 8-Step Stepper (S1–S8) with session detail         */
+/* OUR WORK / JTW - 8-Step Stepper (S1–S8) with session detail         */
 /* Facilitator flow entry: Our Work → S4 → Dashboard → Report          */
 /* ------------------------------------------------------------------ */
 export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
-  const [current, setCurrent] = useState(3); // default S4 (index 3) — the pivotal session
+  const [current, setCurrent] = useState(3); // default S4 (index 3) - the pivotal session
   const s = JTW[current];
   const isVeryHeavy = s.risk === "Very Heavy";
   const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -39,7 +40,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
     stepRefs.current[current]?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
   }, [current]);
 
-  // Keyboard: ← → move sessions, Home/End jump — roving focus follows selection
+  // Keyboard: ← → move sessions, Home/End jump - roving focus follows selection
   const onRailKeyDown = (e: React.KeyboardEvent) => {
     const jump = (n: number) => {
       setCurrent(n);
@@ -61,7 +62,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
   };
 
   return (
-    <section aria-label="Our Work — Journey to Wholeness" className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
+    <section aria-label="Our Work - Journey to Wholeness" className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
       <SectionHeading
         eyebrow="Our Work / JTW · Journey to Wholeness"
         title={
@@ -70,10 +71,27 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
             <span className="font-hand text-4xl font-bold text-binti-pink">Haki Yetu!</span>
           </>
         }
-        sub="Peer-led 8-session mentorship for 15–25 AGYW in Kibera, Mathare & Kawangware. Field-tested Oct 2025–Mar 2026 by 36 Surround Sound facilitators. Every activity below is illustrated with our real Nairobi team."
+        sub="Peer-led 8-session mentorship for 15–25-year-olds of ALL genders in Kibera, Mathare & Kawangware. Field-tested Oct 2025–Mar 2026 by 24 Surround Sound facilitators co-leading in 12 pairs. Every activity below is illustrated with our real Nairobi team."
       />
 
-      {/* Journey progress — Session N of 8 + gradient track + kbd hint */}
+      {/* ALL GENDERS callout: JTW is a session for all genders */}
+      <div
+        className="binti-gradient-border mt-6 flex flex-col gap-3 rounded-2xl bg-binti-card p-4 sm:flex-row sm:items-center sm:gap-4"
+        role="note"
+        aria-label="JTW is for all genders"
+      >
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-binti to-binti-pink shadow-md" aria-hidden="true">
+          <Users className="size-5 text-white" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-display text-[14.5px] font-extrabold text-binti-ink">
+            {JTW_INCLUSION.title} <span className="ml-1.5 inline-block rounded-full bg-binti-pink/10 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-binti-pinkdeep dark:text-pink-300">{JTW_INCLUSION.chip}</span>
+          </p>
+          <p className="mt-0.5 text-[13px] leading-relaxed text-binti-slate">{JTW_INCLUSION.body}</p>
+        </div>
+      </div>
+
+      {/* Journey progress - Session N of 8 + gradient track + kbd hint */}
       <div className="mt-8 flex items-center gap-3">
         <span className="whitespace-nowrap font-display text-[11.5px] font-extrabold uppercase tracking-widest text-binti dark:text-indigo-300">
           Session {current + 1} / {JTW.length}
@@ -156,7 +174,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
               <div className="relative min-h-[260px] lg:min-h-[420px]">
                 <NairobiPhoto
                   src={s.photo}
-                  alt={`${s.id} ${s.title} — Nairobi team activity photo`}
+                  alt={`${s.id} ${s.title} - Nairobi team activity photo`}
                   sizes="(max-width: 1024px) 100vw, 420px"
                   priority={s.id === "S4"}
                 />
@@ -181,7 +199,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
                     <span className="mt-0.5 size-2.5 shrink-0 animate-pulse rounded-full bg-binti-danger" aria-hidden="true" />
                     <p className="text-[12.5px] leading-relaxed text-red-700">
                       <strong>VERY HEAVY · Safeguarding on standby.</strong> Safeguarding focal point present, referral
-                      lists memorised by every facilitator, mandatory team debrief after session. Danger red is used
+                      lists memorised by every facilitator pair, mandatory team debrief after session. Danger red is used
                       only for GBV / Very Heavy steps.
                     </p>
                   </div>
@@ -206,7 +224,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
                   <div className="mt-4 flex items-center gap-2 rounded-xl border-2 border-dashed border-binti-amber/60 bg-binti-sand/40 p-3">
                     <span aria-hidden="true" className="text-lg">💥</span>
                     <p className="text-[12.5px] font-semibold text-binti-ink">
-                      Comic panel · hand-drawn border · bold ink — {s.shujaaz}
+                      Comic panel · hand-drawn border · bold ink - {s.shujaaz}
                       <span className="ml-1 text-[10px] font-normal text-binti-slate">(watermark 10% opacity)</span>
                     </p>
                   </div>
@@ -253,7 +271,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
                       onClick={() => onNavigate("involved")}
                       className="rounded-full bg-mpesa font-bold text-white hover:bg-green-600"
                     >
-                      <MessageCircle className="size-4" aria-hidden="true" /> Join — Sema na Me
+                      <MessageCircle className="size-4" aria-hidden="true" /> Join - Sema na Me
                     </Button>
                   )}
                 </div>
@@ -278,7 +296,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
             </p>
             <h3 className="mt-2 font-display text-2xl font-extrabold text-binti-ink">The Web of Support</h3>
             <p className="mt-2 text-[14.5px] leading-relaxed text-binti-slate">
-              Every girl draws <strong>3 circles — Self, Trusted, Services</strong> — and memorises her own referral
+              Every girl draws <strong>3 circles - Self, Trusted, Services</strong> - and memorises her own referral
               list. When silence breaks, she already knows who to call: her trusted person, LVCT Health, Nairobi
               County facilities, or the GBV hotline <strong className="text-red-600 dark:text-red-400">1195</strong>.
             </p>

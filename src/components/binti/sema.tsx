@@ -9,10 +9,11 @@ import { cn } from "@/lib/utils";
 import { BintiMark } from "./ui";
 
 /* ------------------------------------------------------------------ */
-/* SEMA NA ME — floating WhatsApp-style check-in buddy (shortcode      */
-/* 20308). Purely client-side canned flows; SAFETY FIRST: the "I need  */
+/* SEMA NA ME - floating WhatsApp-style check-in buddy.                */
+/* Sema na Me is a chatbot BY SHUJAAZ, available ONLY on WhatsApp.     */
+/* Purely client-side canned flows; SAFETY FIRST: the "I need          */
 /* help now" path always surfaces the free GBV Hotline 1195 + WhatsApp. */
-/* Anonymous by design — nothing typed here is stored anywhere (DPA).  */
+/* Anonymous by design - nothing typed here is stored anywhere (DPA).  */
 /* ------------------------------------------------------------------ */
 
 interface Msg {
@@ -92,10 +93,10 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
 
   return (
     <>
-      {/* Launcher — above the mobile Donate FAB on small screens */}
+      {/* Launcher - above the mobile Donate FAB on small screens */}
       <button
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close Sema na Me chat" : "Open Sema na Me chat — anonymous check-in buddy"}
+        aria-label={open ? "Close Sema na Me chat" : "Open Sema na Me chat - anonymous check-in buddy"}
         aria-expanded={open}
         className={cn(
           "fixed right-4 z-40 flex size-14 items-center justify-center rounded-full shadow-2xl transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-binti-ink",
@@ -137,7 +138,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-display text-[14px] font-extrabold leading-tight text-white">Sema na Me</p>
-                <p className="text-[10.5px] text-white/85">WhatsApp {ORG.shortcode} · replies instantly</p>
+                <p className="text-[10.5px] text-white/85">Chatbot by Shujaaz · WhatsApp only · replies instantly</p>
               </div>
               <a
                 href="tel:1195"
@@ -188,7 +189,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
                   </div>
                 </div>
               )}
-              {/* Quick replies — always available above input */}
+              {/* Quick replies - always available above input */}
               {msgs.length > 0 && !typing && (
                 <div className="flex flex-wrap gap-1.5 pt-1.5" role="group" aria-label="Quick replies">
                   {SEMA_FLOWS.options.map((o) => (

@@ -1,7 +1,7 @@
 "use client";
 
 /* ------------------------------------------------------------------ */
-/* CIRCLE GALLERY — "Inside the Circles"                               */
+/* CIRCLE GALLERY - "Inside the Circles"                               */
 /* Area filter + masonry-style grid + accessible lightbox              */
 /* (arrow keys / Escape / backdrop click, counter, DPA-safe captions). */
 /* Photos ONLY from /public/nairobi-team/ (Drive manifest).            */
@@ -175,7 +175,7 @@ export function CircleGallery() {
   const items = useMemo(() => (filter === "All" ? GALLERY : GALLERY.filter((g) => g.kind === filter)), [filter]);
 
   return (
-    <section aria-label="Photo gallery — inside the circles" className="relative overflow-hidden bg-binti-cream py-14 md:py-20">
+    <section aria-label="Photo gallery - inside the circles" className="relative overflow-hidden bg-binti-cream py-14 md:py-20">
       {/* ambient glows */}
       <div aria-hidden="true" className="pointer-events-none absolute -right-28 top-16 size-80 rounded-full bg-binti/10 blur-3xl" />
       <div aria-hidden="true" className="pointer-events-none absolute -left-28 bottom-16 size-80 rounded-full bg-binti-amber/10 blur-3xl" />
@@ -190,7 +190,7 @@ export function CircleGallery() {
             Real moments, <span className="binti-gradient-text">dignified always</span>
           </h2>
           <p className="mt-3 text-[15px] leading-relaxed text-binti-slate">
-            Every photo comes from the Nairobi team&apos;s own camera roll — shared with consent, published without a
+            Every photo comes from the Nairobi team&apos;s own camera roll - shared with consent, published without a
             single name. Tap any photo to look closer.
           </p>
         </div>
@@ -222,7 +222,7 @@ export function CircleGallery() {
           })}
         </div>
 
-        {/* Grid — deliberate rhythm: some tiles span 2 rows / 2 cols */}
+        {/* Grid - deliberate rhythm: some tiles span 2 rows / 2 cols */}
         <div className="mt-8 grid auto-rows-[150px] grid-cols-2 gap-3 sm:auto-rows-[170px] md:grid-cols-4 md:gap-4">
           {items.map((g, i) => {
             const big = filter === "All" && (i === 0 || i === 5);
@@ -279,11 +279,11 @@ export function CircleGallery() {
         {/* DPA footer note */}
         <p className="mx-auto mt-6 flex max-w-xl items-center justify-center gap-2 text-center text-[12px] font-semibold text-binti-slate/80">
           <ShieldCheck className="size-4 shrink-0 text-binti-cyan" aria-hidden="true" />
-          Photos published with consent · aggregated captions only — never names, phones or IDs (Kenya DPA 2019)
+          Photos published with consent · aggregated captions only - never names, phones or IDs (Kenya DPA 2019)
         </p>
       </div>
 
-      {/* Lightbox — portal to body so it stacks above sticky navbar / FABs */}
+      {/* Lightbox - portal to body so it stacks above sticky navbar / FABs */}
       {typeof document !== "undefined" &&
         createPortal(
           <AnimatePresence>

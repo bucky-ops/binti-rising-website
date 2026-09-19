@@ -1,8 +1,8 @@
 import { INDICATORS, FINANCE_FY2425, AREAS, DATA_QUALITY } from "@/lib/binti/data";
 
 /**
- * GET /api/reports/datim — DATIM / Global Fund report export (CSV).
- * Aggregated indicators ONLY — no PII (Kenya DPA 2019).
+ * GET /api/reports/datim - DATIM / Global Fund report export (CSV).
+ * Aggregated indicators ONLY - no PII (Kenya DPA 2019).
  * In production this can be swapped for the PDF generator backed by
  * Supabase aggregation views; CSV shape is DATIM-friendly.
  */
@@ -14,7 +14,7 @@ export async function GET() {
 
   const rows: string[] = [];
   rows.push("# Binti Rising Initiative - DATIM / Global Fund Aggregated Report");
-  rows.push(`# Reg No: NC/SD/CBO/2026/0123 | KRA PIN: P051823456K | Data Quality: ${DATA_QUALITY}%`);
+  rows.push(`# Reg No: NC/SD/CBO/2026/0123 | Data Quality: ${DATA_QUALITY}%`);
   rows.push("# Privacy: aggregated data only, no personal identifiers (Kenya DPA 2019)");
   rows.push("");
   rows.push("section,indicator,baseline,target,actual,percent_of_target,status");

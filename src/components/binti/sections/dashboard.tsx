@@ -83,7 +83,7 @@ const KPI_SPARK_COLORS: Record<string, string> = {
 };
 
 /* ------------------------------------------------------------------ */
-/* LIVE IMPACT DASHBOARD — aggregated KPIs from Supabase (env), no PII */
+/* LIVE IMPACT DASHBOARD - aggregated KPIs from Supabase (env), no PII */
 /* ------------------------------------------------------------------ */
 export function DashboardSection() {
   const [state, setState] = useState<LoadState>("loading");
@@ -143,7 +143,7 @@ export function DashboardSection() {
         <SectionHeading
           eyebrow="Live Impact Dashboard · Donor View"
           title={<>Every number, <span className="font-hand text-4xl font-bold text-binti-pink">aggregated &amp; audited</span></>}
-          sub="Pulled from Supabase (env-configured) monthly aggregation of the SSK master data. Aggregates only — no names, no phones, no IDs. Kenya DPA 2019 compliant."
+          sub="Pulled from Supabase (env-configured) monthly aggregation of the SSK master data. Aggregates only - no names, no phones, no IDs. Kenya DPA 2019 compliant."
         />
         <div className="flex flex-wrap items-center gap-2.5">
           <Badge className="gap-1.5 rounded-full bg-green-100 border border-green-300 px-3 py-1.5 text-[12px] font-bold text-green-800 hover:bg-green-100">
@@ -162,13 +162,13 @@ export function DashboardSection() {
           </a>
           <button
             onClick={async () => {
-              const citation = `Binti Rising Initiative — Live Impact Dashboard (aggregated, Kenya DPA 2019). Data quality ${DATA_QUALITY}% · last sync ${syncedAt} · Kibera/Mathare/Kawangware. https://bintirising.org/#dashboard`;
+              const citation = `Binti Rising Initiative - Live Impact Dashboard (aggregated, Kenya DPA 2019). Data quality ${DATA_QUALITY}% · last sync ${syncedAt} · Kibera/Mathare/Kawangware. https://bintirising.org/#dashboard`;
               const copyText = async (text: string): Promise<boolean> => {
                 try {
                   await navigator.clipboard.writeText(text);
                   return true;
                 } catch {
-                  /* Legacy fallback — iOS Safari / permission-denied contexts */
+                  /* Legacy fallback - iOS Safari / permission-denied contexts */
                   try {
                     const ta = document.createElement("textarea");
                     ta.value = text;
@@ -187,7 +187,7 @@ export function DashboardSection() {
               };
               const ok = await copyText(citation);
               if (ok) {
-                toast({ title: "Citation copied", description: "Paste it into your proposal or report — aggregates only." });
+                toast({ title: "Citation copied", description: "Paste it into your proposal or report - aggregates only." });
               } else {
                 toast({ title: "Copy failed", description: "Your browser blocked the clipboard. Long-press to copy instead.", variant: "destructive" });
               }
@@ -209,7 +209,7 @@ export function DashboardSection() {
                 a.download = "binti-kpi-snapshot.json";
                 a.click();
                 URL.revokeObjectURL(url);
-                toast({ title: "JSON snapshot downloaded", description: "Aggregated KPI export — no personal data (DPA 2019)." });
+                toast({ title: "JSON snapshot downloaded", description: "Aggregated KPI export - no personal data (DPA 2019)." });
               } catch {
                 toast({ title: "Export failed", description: "Could not reach the KPI endpoint. Try again.", variant: "destructive" });
               }
@@ -236,7 +236,7 @@ export function DashboardSection() {
         </div>
       </div>
 
-      {/* AREA FILTER — drill into one circle area (aggregates only) */}
+      {/* AREA FILTER - drill into one circle area (aggregates only) */}
       <div className="mt-6 flex flex-wrap items-center gap-2" role="group" aria-label="Filter dashboard by area">
         <span className="mr-1 flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest text-binti-slate">
           <MapPin className="size-3.5 text-binti-pink" aria-hidden="true" /> Area view
@@ -270,7 +270,7 @@ export function DashboardSection() {
         ))}
       </div>
 
-      {/* KPI ROW — icon + sparkline per card (aggregate trends only) */}
+      {/* KPI ROW - icon + sparkline per card (aggregate trends only) */}
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpiRow.map((k) => {
           const Icon = KPI_ICONS[k.label] ?? Database;
@@ -288,7 +288,7 @@ export function DashboardSection() {
                 <Skeleton className="mt-2 h-10 w-24" />
               ) : (
                 <p className="mt-1 font-display text-4xl font-extrabold text-binti-ink">
-                  {/* key remounts CountUp when area/fiscal switch — started-guard would keep the old value */}
+                  {/* key remounts CountUp when area/fiscal switch - started-guard would keep the old value */}
                   <CountUp key={`${area}-${k.label}`} end={k.value} suffix={"suffix" in k ? k.suffix : ""} />
                 </p>
               )}
@@ -304,7 +304,7 @@ export function DashboardSection() {
 
       {/* CHARTS ROW */}
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
-        {/* Attendance Bar — gradient fills + YoY toggle */}
+        {/* Attendance Bar - gradient fills + YoY toggle */}
         <Card className="rounded-2xl border-binti-sand bg-binti-card p-5 lg:col-span-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-display text-[15px] font-bold text-binti-ink">
@@ -378,7 +378,7 @@ export function DashboardSection() {
           )}
           <DataNote className="mt-2">
             Aggregated from monthly circle registers. Toggle fiscal years to compare YoY
-            {area !== "All" && ` — showing ${area} only`}. Click an area on the heatmap to drill in.
+            {area !== "All" && ` - showing ${area} only`}. Click an area on the heatmap to drill in.
           </DataNote>
         </Card>
 
@@ -391,7 +391,7 @@ export function DashboardSection() {
           {state === "loading" ? (
             <Skeleton className="mx-auto mt-4 size-[200px] rounded-full" />
           ) : (
-            <div className="relative mt-2 h-[200px]" role="img" aria-label="Donut chart: risk levels — low 62 percent, medium 28 percent, high 10 percent referred">
+            <div className="relative mt-2 h-[200px]" role="img" aria-label="Donut chart: risk levels - low 62 percent, medium 28 percent, high 10 percent referred">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={riskDonut} dataKey="value" nameKey="name" innerRadius={52} outerRadius={80} paddingAngle={3} strokeWidth={0}>
@@ -419,7 +419,7 @@ export function DashboardSection() {
           </ul>
         </Card>
 
-        {/* Wellbeing Line — gradient area + YoY */}
+        {/* Wellbeing Line - gradient area + YoY */}
         <Card className="rounded-2xl border-binti-sand bg-binti-card p-5 lg:col-span-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-display text-[15px] font-bold text-binti-ink">
@@ -562,7 +562,7 @@ export function DashboardSection() {
           </div>
           <div className="border-t border-binti-sand p-4">
             <DataNote>
-              ℹ Data sync 94% — last {syncedAt}. Figures are aggregated from facilitator monthly registers; masked
+              ℹ Data sync 94% - last {syncedAt}. Figures are aggregated from facilitator monthly registers; masked
               source file never leaves the encrypted store. Empty state: “No referrals”. Charts show loading skeletons
               while syncing.
             </DataNote>
@@ -570,7 +570,7 @@ export function DashboardSection() {
         </Card>
       </div>
 
-      {/* LIVE ACTIVITY FEED — masked circle events (areas + counts only) */}
+      {/* LIVE ACTIVITY FEED - masked circle events (areas + counts only) */}
       <Card className="mt-6 rounded-2xl border-binti-sand bg-binti-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 font-display text-[15px] font-bold text-binti-ink">
@@ -581,7 +581,7 @@ export function DashboardSection() {
             Live from the Circles{area !== "All" && ` · ${area}`}
           </h3>
           <Badge variant="outline" className="rounded-full border-binti/40 text-[11px] font-bold text-binti dark:text-indigo-300">
-            Aggregated · areas + counts only — never names (DPA 2019)
+            Aggregated · areas + counts only - never names (DPA 2019)
           </Badge>
         </div>
         <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3" role="list">
@@ -604,7 +604,7 @@ export function DashboardSection() {
           ))}
         </ul>
         <DataNote className="mt-4">
-          Events refresh with each monthly sync. Referrals are counted, never named — every story behind a number
+          Events refresh with each monthly sync. Referrals are counted, never named - every story behind a number
           belongs to her alone.
           {area !== "All" && ACTIVITY_FEED.filter((e) => e.area === area).length === 0 && ` No recent ${area} events this cycle.`}
         </DataNote>

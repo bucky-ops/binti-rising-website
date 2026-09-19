@@ -22,7 +22,7 @@ function sectionFromHash(): SectionId {
 }
 
 /* ------------------------------------------------------------------ */
-/* BackToTop — appears after scrolling, smooth scroll to top           */
+/* BackToTop - appears after scrolling, smooth scroll to top           */
 /* ------------------------------------------------------------------ */
 function BackToTop() {
   const [show, setShow] = useState(false);
@@ -52,7 +52,7 @@ function BackToTop() {
 }
 
 /* ------------------------------------------------------------------ */
-/* ScrollProgress — thin gradient bar under the navbar                 */
+/* ScrollProgress - thin gradient bar under the navbar                 */
 /* ------------------------------------------------------------------ */
 function ScrollProgress() {
   const [pct, setPct] = useState(0);
@@ -78,7 +78,7 @@ function ScrollProgress() {
 }
 
 /* ------------------------------------------------------------------ */
-/* PrivacyNotice — DPA 2019 notice, bottom-center, dismiss (1 visit)   */
+/* PrivacyNotice - DPA 2019 notice, bottom-center, dismiss (1 visit)   */
 /* ------------------------------------------------------------------ */
 const NOTICE_KEY = "binti-dpa-notice-v1";
 function PrivacyNotice({ onLearnMore }: { onLearnMore: () => void }) {
@@ -89,7 +89,7 @@ function PrivacyNotice({ onLearnMore }: { onLearnMore: () => void }) {
     try {
       dismissed = window.localStorage.getItem(NOTICE_KEY) === "1";
     } catch {
-      /* private mode — just show */
+      /* private mode - just show */
     }
     if (!dismissed) {
       const t = setTimeout(() => setShow(true), 1400);
@@ -123,7 +123,7 @@ function PrivacyNotice({ onLearnMore }: { onLearnMore: () => void }) {
             <div className="min-w-0">
               <p className="font-display text-[13.5px] font-extrabold text-binti-ink">Our data promise</p>
               <p className="mt-0.5 text-[12.5px] leading-relaxed text-binti-slate">
-                Binti Rising publishes <strong className="text-binti-ink">aggregates only</strong> — never names,
+                Binti Rising publishes <strong className="text-binti-ink">aggregates only</strong> - never names,
                 phones or IDs. This site sets no tracking cookies. Aligned with Kenya DPA 2019.
               </p>
               <div className="mt-2 flex items-center gap-3">
@@ -159,7 +159,7 @@ function PrivacyNotice({ onLearnMore }: { onLearnMore: () => void }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* SectionDots — desktop quick-switcher for the 5 in-app sections      */
+/* SectionDots - desktop quick-switcher for the 5 in-app sections      */
 /* (xl screens only; tooltips on hover; aria-current on active)        */
 /* ------------------------------------------------------------------ */
 const DOT_LABELS: { id: SectionId; label: string }[] = [
@@ -209,7 +209,7 @@ function SectionDots({ active, onNavigate }: { active: SectionId; onNavigate: (s
 }
 
 /* ------------------------------------------------------------------ */
-/* BintiSite — single-route app: 5 sections as in-app "pages"          */
+/* BintiSite - single-route app: 5 sections as in-app "pages"          */
 /* Layout: min-h-screen flex flex-col, footer sticks with mt-auto      */
 /* ------------------------------------------------------------------ */
 export function BintiSite() {
@@ -253,7 +253,7 @@ export function BintiSite() {
 
       <main id="main-content" className="flex-1">
         {/* Keyed div + CSS animation (binti-page-enter) replays on section change.
-            NOTE: no framer AnimatePresence here — PresenceChild's useId() shifts
+            NOTE: no framer AnimatePresence here - PresenceChild's useId() shifts
             Radix ids and breaks SSR hydration (verified via dev overlay). */}
         <div key={section} className="binti-page-enter">
           {section === "home" && <HomeSection onNavigate={navigate} />}
@@ -270,14 +270,14 @@ export function BintiSite() {
 
       <BackToTop />
 
-      {/* Sema na Me — floating check-in buddy (WhatsApp 20308 flows) */}
+      {/* Sema na Me - floating check-in buddy (WhatsApp 20308 flows) */}
       <SemaChat onNavigate={navigate} />
 
       {/* Mobile sticky Donate (prototype flow: Mobile Hamburger → Work → Donate sticky) */}
       <button
         onClick={() => setDonateOpen(true)}
         className="fixed bottom-4 right-4 z-40 flex h-14 items-center gap-2 rounded-full bg-mpesa px-5 font-display text-[15px] font-extrabold text-white shadow-2xl shadow-green-900/30 transition hover:scale-105 hover:bg-green-600 sm:hidden"
-        aria-label="Donate via M-Pesa — sticky button"
+        aria-label="Donate via M-Pesa - sticky button"
       >
         <HeartHandshake className="size-5" aria-hidden="true" />
         Donate
@@ -285,7 +285,7 @@ export function BintiSite() {
 
       <DonateModal open={donateOpen} onOpenChange={setDonateOpen} />
 
-      {/* ⌘K quick-switcher — pure navigation, stores nothing */}
+      {/* ⌘K quick-switcher - pure navigation, stores nothing */}
       <BintiCommandPalette
         open={paletteOpen}
         onOpenChange={setPaletteOpen}

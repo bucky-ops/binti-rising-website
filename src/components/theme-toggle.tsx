@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const emptySubscribe = () => () => {};
 
 /**
- * ThemeToggle — light (brand cream) ⇄ dark ("Nairobi Midnight").
+ * ThemeToggle - light (brand cream) ⇄ dark ("Nairobi Midnight").
  * useSyncExternalStore-based mount guard (no setState-in-effect) to avoid
  * SSR hydration mismatch with next-themes.
  * `withLabel` renders a labelled pill (mobile sheet); default is icon-only.

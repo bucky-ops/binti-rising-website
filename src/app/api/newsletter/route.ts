@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 /**
- * POST /api/newsletter — donor & community newsletter opt-in.
+ * POST /api/newsletter - donor & community newsletter opt-in.
  * Privacy (Kenya DPA 2019):
  *  - email stored ONLY for sending the newsletter;
  *  - explicit consent checkbox is mandatory (consentDpa must be true);
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const consentDpa = Boolean(body.consentDpa);
     const source = String(body.source ?? "footer-form").slice(0, 40);
 
-    // RFC-ish light validation — enough to catch typos without storing bad data
+    // RFC-ish light validation - enough to catch typos without storing bad data
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
       return NextResponse.json({ error: "Please enter a valid email address" }, { status: 400 });
     }

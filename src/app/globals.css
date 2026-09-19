@@ -47,7 +47,7 @@
 }
 
 /* ---- BINTI RISING BRAND TOKENS (winner mood: Vibrant Youth + Donor Trust) ----
-   NOTE: kept in a NON-inline @theme so tokens are emitted as real CSS vars —
+   NOTE: kept in a NON-inline @theme so tokens are emitted as real CSS vars -
    .dark overrides below then cascade into every utility (bg-binti-cream, etc.) */
 @theme {
   --color-binti: #4f46e5; /* Primary Indigo - donor trust */
@@ -133,7 +133,7 @@
   --sidebar-border: rgb(255 255 255 / 10%);
   --sidebar-ring: #818cf8;
 
-  /* ---- Binti "Nairobi Midnight" flip — neutral surfaces only.
+  /* ---- Binti "Nairobi Midnight" flip - neutral surfaces only.
      Brand hues (binti/pink/cyan/amber/danger/mpesa) stay TRUE so buttons,
      charts and gradients keep their identity; text tokens get dark: patches. */
   --color-binti-cream: #0d1526; /* page background */
@@ -402,7 +402,7 @@
   mix-blend-mode: overlay;
 }
 
-/* Indicators / data tables — zebra rows + brand hover (dashboard polish) */
+/* Indicators / data tables - zebra rows + brand hover (dashboard polish) */
 .binti-table tbody tr {
   transition: background-color 0.18s ease;
 }
@@ -448,7 +448,7 @@
   animation: binti-page-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Print / donor-report stylesheet — prints dashboard as clean report */
+/* Print / donor-report stylesheet - prints dashboard as clean report */
 @media print {
   header.sticky,
   footer,
@@ -467,7 +467,7 @@
   }
 }
 
-/* Keyboard hint chips (kbd) — ⌘K palette, JTW stepper hints */
+/* Keyboard hint chips (kbd) - ⌘K palette, JTW stepper hints */
 .binti-kbd {
   display: inline-flex;
   align-items: center;
@@ -491,7 +491,7 @@
   box-shadow: 0 1.5px 0 rgb(0 0 0 / 0.35);
 }
 
-/* Constant gradient border — "always on" variant of binti-card-glow
+/* Constant gradient border - "always on" variant of binti-card-glow
    (used on partner form / success cards). Safe in dark: opacity tuned. */
 .binti-gradient-border {
   position: relative;
@@ -524,7 +524,7 @@
   );
 }
 
-/* Command palette (⌘K) brand styling — group headings become brand chips */
+/* Command palette (⌘K) brand styling - group headings become brand chips */
 .binti-palette [cmdk-group-heading] {
   font-family: var(--font-sora), ui-sans-serif, sans-serif;
   font-size: 10.5px;

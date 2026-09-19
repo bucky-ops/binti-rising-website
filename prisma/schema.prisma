@@ -46,13 +46,13 @@ model Complaint {
 model Newsletter {
   id         String   @id @default(cuid())
   email      String   @unique
-  consentDpa Boolean // must be true — enforced server-side
+  consentDpa Boolean // must be true - enforced server-side
   source     String   @default("footer-form")
   createdAt  DateTime @default(now())
 }
 
 // Partner inquiries (Get Involved → For Partners). Institutional contacts
-// (funders, NGOs, government, corporates) — NOT beneficiary data. Partner
+// (funders, NGOs, government, corporates) - NOT beneficiary data. Partner
 // contact details are stored only for partnership correspondence, with an
 // explicit DPA 2019 notice + consent checkbox on the form. Beneficiary
 // privacy rules (initials-only) do not apply here because the submitter is
@@ -68,7 +68,7 @@ model PartnerInquiry {
   orgType      String // funder | ngo | government | corporate | community
   interests    String // comma-separated: funding | referral | content | technical | volunteering
   message      String?
-  consentDpa   Boolean // must be true — enforced server-side
+  consentDpa   Boolean // must be true - enforced server-side
   status       String   @default("new") // new | contacted | mou-sent | active | closed
   createdAt    DateTime @default(now())
 }

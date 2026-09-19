@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 const SEG_ICONS = { Landmark, UserRound, Calculator, ShieldCheck } as const;
 
 /* ------------------------------------------------------------------ */
-/* VOICE NOTE — MediaRecorder → base64 → complaint API (DPA 2019)      */
+/* VOICE NOTE - MediaRecorder → base64 → complaint API (DPA 2019)      */
 /* Audio is stored ONLY for the Safeguarding Lead; never rendered on   */
 /* any public surface. 60 s cap. Graceful fallback to the sealed box.  */
 /* ------------------------------------------------------------------ */
@@ -74,7 +74,7 @@ function useVoiceRecorder(): [
   }, []);
 
   const start = async () => {
-    // Support is checked at click time (client only) — avoids SSR state mismatch
+    // Support is checked at click time (client only) - avoids SSR state mismatch
     if (typeof navigator === "undefined" || !navigator.mediaDevices || typeof MediaRecorder === "undefined") {
       setState((s) => ({ ...s, denied: true }));
       return;
@@ -124,7 +124,7 @@ function useVoiceRecorder(): [
 }
 
 /* ------------------------------------------------------------------ */
-/* ACCOUNTABILITY — donor audit on first glance                        */
+/* ACCOUNTABILITY - donor audit on first glance                        */
 /* ------------------------------------------------------------------ */
 export function AccountabilitySection() {
   const [category, setCategory] = useState<string>("safeguarding");
@@ -138,7 +138,7 @@ export function AccountabilitySection() {
     if (message.trim().length < 10) {
       toast({
         title: "Add a bit more detail",
-        description: "Please describe the concern in at least 10 characters. Do NOT include your own name — the box is anonymous.",
+        description: "Please describe the concern in at least 10 characters. Do NOT include your own name - the box is anonymous.",
         variant: "destructive",
       });
       return;
@@ -162,7 +162,7 @@ export function AccountabilitySection() {
       setHasVoice(false);
       voiceCtl.clear();
       toast({
-        title: "✕ Safety concern flagged — FO notified",
+        title: "✕ Safety concern flagged - FO notified",
         description: `Anonymous reference: ${data.reference}. No retaliation. Safeguarding Lead independent.`,
       });
     } catch {
@@ -185,10 +185,10 @@ export function AccountabilitySection() {
             Pass a donor audit on <span className="font-hand text-4xl font-bold text-binti-pink">first glance</span>
           </>
         }
-        sub="No cash badge, segregation chart, policy PDFs — everything a USAID / Global Fund / Mastercard Foundation reviewer needs, in aggregate."
+        sub="No cash badge, segregation chart, policy PDFs - everything a USAID / Global Fund / Mastercard Foundation reviewer needs, in aggregate."
       />
 
-      {/* One-pager download — the 30-second donor brief */}
+      {/* One-pager download - the 30-second donor brief */}
       <div className="mt-5">
         <a
           href="/policies/binti-donor-onepager.pdf"
@@ -258,7 +258,7 @@ export function AccountabilitySection() {
 
         {/* Segregation of duties org chart */}
         <Card className="rounded-2xl border-binti-sand bg-binti-card p-5">
-          <h3 className="font-display text-[15px] font-bold text-binti-ink">Org Chart · Segregation of Duties — Audit Proof</h3>
+          <h3 className="font-display text-[15px] font-bold text-binti-ink">Org Chart · Segregation of Duties - Audit Proof</h3>
           <div className="mt-4 space-y-3">
             {SEGREGATION.map((s, i) => {
               const Icon = SEG_ICONS[s.icon as keyof typeof SEG_ICONS];
@@ -284,7 +284,7 @@ export function AccountabilitySection() {
             })}
           </div>
           <DataNote className="mt-4">
-            ED cannot sign alone. FO not related to ED verified. Board unpaid. Safeguarding Lead independent — no
+            ED cannot sign alone. FO not related to ED verified. Board unpaid. Safeguarding Lead independent - no
             financial authority.
           </DataNote>
         </Card>
@@ -294,7 +294,7 @@ export function AccountabilitySection() {
       <Card className="mt-6 rounded-2xl border-binti-sand bg-binti-card p-5">
         <h3 className="font-display text-[15px] font-bold text-binti-ink">Policy Downloads · Audit Ready</h3>
         <p className="mt-1 text-[13px] text-binti-slate">
-          Constitution non-profit clause, Safeguarding, DPA 2019 (encrypted storage), Finance Manual segregation — downloadable.
+          Constitution non-profit clause, Safeguarding, DPA 2019 (encrypted storage), Finance Manual segregation - downloadable.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {POLICIES.map((p) => (
@@ -330,7 +330,7 @@ export function AccountabilitySection() {
             <strong>{ORG.shortcode}</strong>, or the sealed box at the Laini Saba centre.
             <br />
             <span className="mt-1 inline-block text-[12px] text-binti-slate/80">
-              Please do NOT include your own name or anyone's full name — keep it anonymous, DPA 2019.
+              Please do NOT include your own name or anyone's full name - keep it anonymous, DPA 2019.
             </span>
           </p>
 
@@ -365,7 +365,7 @@ export function AccountabilitySection() {
                   id="complaint-message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe what happened. Avoid names — write roles and areas instead, e.g. 'a facilitator in S4…'"
+                  placeholder="Describe what happened. Avoid names - write roles and areas instead, e.g. 'a facilitator in S4…'"
                   className="min-h-[110px] rounded-xl border-binti/30 bg-binti-card"
                   maxLength={2000}
                 />
@@ -382,10 +382,10 @@ export function AccountabilitySection() {
                   <Mic className={cn("size-4", voice.recording ? "text-red-600 dark:text-red-400" : "text-binti dark:text-indigo-300")} aria-hidden="true" />
                   <p className="flex-1 text-[13px] font-semibold text-binti-ink">
                     {voice.recording
-                      ? `Recording… ${voice.seconds}s / 60s — speak freely, stay anonymous`
+                      ? `Recording… ${voice.seconds}s / 60s - speak freely, stay anonymous`
                       : voice.audioData
                         ? "Voice note attached ✓ (Safeguarding Lead only)"
-                        : "Voice note — or record it right here (60s max)"}
+                        : "Voice note - or record it right here (60s max)"}
                   </p>
                   {voice.recording ? (
                     <Button
@@ -423,7 +423,7 @@ export function AccountabilitySection() {
                 )}
                 {voice.denied && (
                   <p className="mt-2 text-[12px] leading-snug text-binti-slate">
-                    Microphone unavailable — tick the box below instead and drop your voice note in the sealed box at
+                    Microphone unavailable - tick the box below instead and drop your voice note in the sealed box at
                     the Laini Saba centre.
                   </p>
                 )}
@@ -447,7 +447,7 @@ export function AccountabilitySection() {
               </label>
               {hasVoice && (
                 <p className="-mt-1.5 rounded-lg bg-binti-cream px-3 py-2 text-[12px] text-binti-slate">
-                  ✓ Noted — drop your sealed voice note at Laini Saba and quote your reference.
+                  ✓ Noted - drop your sealed voice note at Laini Saba and quote your reference.
                 </p>
               )}
               <Button
@@ -461,19 +461,19 @@ export function AccountabilitySection() {
           )}
         </Card>
 
-        {/* Donor audit checklist — first glance */}
+        {/* Donor audit checklist - first glance */}
         <Card className="rounded-2xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white">
           <h3 className="flex items-center gap-2 font-display text-lg font-extrabold">
-            <Megaphone className="size-5 text-binti-amber" aria-hidden="true" /> Donor Audit Checklist — First Glance
+            <Megaphone className="size-5 text-binti-amber" aria-hidden="true" /> Donor Audit Checklist - First Glance
           </h3>
           <ul className="mt-4 space-y-3" role="list">
             {[
               "Top bar CBO/KRA reg visible ✓",
-              "No cash badge — M-Pesa Till 522522 only ✓",
+              "No cash badge - M-Pesa Till 522522 only ✓",
               "Segregation chart: Board unpaid, ED cannot sign alone, FO not related ✓",
               "Policy PDFs downloadable (Constitution, Safeguarding, DPA 2019, Finance) ✓",
               "Complaints box anonymous + voice note ✓",
-              "Live dashboard aggregates only — no PII ✓",
+              "Live dashboard aggregates only - no PII ✓",
               "94% data quality · audit trail kept · last sync 2 min ✓",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-[13.5px] leading-relaxed text-white/90">
@@ -483,7 +483,7 @@ export function AccountabilitySection() {
             ))}
           </ul>
           <p className={cn("mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] leading-relaxed text-white/80")}>
-            USAID · Global Fund · Mastercard Foundation — audit pack ready. Report exported · 94% data quality ·
+            USAID · Global Fund · Mastercard Foundation - audit pack ready. Report exported · 94% data quality ·
             audit trail kept · FO not related to ED verified.
           </p>
         </Card>

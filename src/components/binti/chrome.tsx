@@ -35,16 +35,14 @@ const NAV: { id: SectionId; label: string; icon: typeof Home }[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* TopBar — trust strip: registrations + GBV hotline (donor audit item) */
+/* TopBar - trust strip: registrations + GBV hotline (donor audit item) */
 /* ------------------------------------------------------------------ */
 function TopBar() {
   return (
     <div className="w-full bg-[#0F172A] text-white/80 text-[11px] leading-[16px] tracking-wide px-4 md:px-6 py-2 flex flex-wrap gap-x-4 gap-y-1 items-center justify-between">
       <div className="flex flex-wrap gap-x-4 gap-y-1">
-        <span className="font-medium text-white">CBO Reg: {ORG.cboReg}</span>
-        <span>KRA PIN: {ORG.kraPin}</span>
-        <span className="px-2 py-0.5 rounded-full bg-white/10 border border-white/10">{ORG.pboStatus}</span>
-        <span className="hidden md:inline">{ORG.email}</span>
+        <span className="font-medium text-white">Reg No: {ORG.regNo}</span>
+        <span className="hidden md:inline">Trusted by Shuga · PATH · Shujaaz</span>
       </div>
       <div className="flex gap-3 items-center">
         <a href="tel:1195" className="text-red-400 font-semibold hover:text-red-300 focus-visible:outline-2 focus-visible:outline-binti-amber">
@@ -53,7 +51,6 @@ function TopBar() {
         <a href={ORG.whatsappLink} target="_blank" rel="noreferrer" className="hover:text-white focus-visible:outline-2 focus-visible:outline-binti-amber">
           WhatsApp {ORG.whatsapp}
         </a>
-        <span className="hidden md:inline">Shortcode {ORG.shortcode}</span>
       </div>
     </div>
   );
@@ -91,7 +88,7 @@ export function Navbar({
           <button
             onClick={() => go("home")}
             className="flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-binti"
-            aria-label="Binti Rising Initiative — go to home"
+            aria-label="Binti Rising Initiative - go to home"
           >
             <BintiLogoImage size={40} />
             <BintiWordmark className="hidden sm:inline-flex" />
@@ -203,7 +200,7 @@ export function Navbar({
 }
 
 /* ------------------------------------------------------------------ */
-/* Footer — Reg No NC/SD/CBO/2026/0123 + Hotline 1195 + WhatsApp       */
+/* Footer - Reg No NC/SD/CBO/2026/0123 + Hotline 1195 + WhatsApp       */
 /* Sticky to bottom via mt-auto in parent (min-h-screen flex flex-col) */
 /* ------------------------------------------------------------------ */
 export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
@@ -215,7 +212,7 @@ export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
           <BintiWordmark variant="white" />
           <p className="font-hand text-2xl text-binti-amber">{ORG.tagline}</p>
           <p className="text-[13px] leading-relaxed text-white/60">
-            Peer-led 8-session Journey to Wholeness for 15–25 AGYW in Kibera, Mathare & Kawangware. Co-created by 50 youth.
+            Peer-led 8-session Journey to Wholeness for 15–25-year-olds of all genders in Kibera, Mathare & Kawangware. Co-created by 50 youth.
           </p>
           <div className="flex items-center gap-2 text-[12px] text-white/70">
             <ShieldCheck className="size-4 text-green-400" aria-hidden="true" />
@@ -274,8 +271,7 @@ export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
                 WhatsApp {ORG.whatsapp}
               </a>
             </li>
-            <li>Shortcode {ORG.shortcode} · Sema na Me</li>
-            <li>{ORG.email}</li>
+            <li>{ORG.semaBy}</li>
             <li>{ORG.address}</li>
             <li className="pt-1 text-white/50">Socials: {ORG.socials}</li>
             <li>
@@ -306,10 +302,10 @@ export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
       {/* Registration strip (donor audit: first glance) */}
       <div className="border-t border-white/10 bg-black/30">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 md:px-6 py-3 text-[11px] text-white/60">
-          <p>© 2026 Binti Rising Initiative · KRA PIN Reg No: {ORG.regNo} · KRA PIN: {ORG.kraPin} · {ORG.pboStatus}</p>
+          <p>© 2026 Binti Rising Initiative · Reg No: {ORG.regNo} · Trusted by Shuga · PATH · Shujaaz</p>
           <p className="flex items-center gap-2">
             <BintiMark light size={14} />
-            Peer-led · Data-driven · Audited · No cash — M-Pesa Till {ORG.paybill} only
+            Peer-led · Data-driven · Audited · No cash, M-Pesa Till {ORG.paybill} only
           </p>
         </div>
       </div>

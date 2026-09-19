@@ -2,16 +2,16 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 /**
- * POST /api/partners — Partner Inquiry form (Get Involved → For Partners)
+ * POST /api/partners - Partner Inquiry form (Get Involved → For Partners)
  * DATA PRIVACY (Kenya DPA 2019):
  *  - Partner inquiries are INSTITUTIONAL contacts (funders/NGO/government/
  *    corporate representatives), not beneficiary data. Data minimisation
  *    applies: only fields needed to start a partnership are stored.
  *  - consentDpa must be true (explicit notice on the form).
- *  - Honeypot field ("website") must stay empty — bots fill it, humans never
+ *  - Honeypot field ("website") must stay empty - bots fill it, humans never
  *    see it (visually hidden, aria-hidden, tabIndex -1).
  *  - Reference code returned to the submitter is the only identifier we
- *    expose publicly (e.g. PTN-2026-740841) — mirrors complaint refs.
+ *    expose publicly (e.g. PTN-2026-740841) - mirrors complaint refs.
  */
 
 const ORG_TYPES = ["funder", "ngo", "government", "corporate", "community"] as const;
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     // Honeypot: real users never fill this (visually-hidden field)
     if (String(body.website ?? "").trim().length > 0) {
-      // Pretend success so bots don't probe — nothing is stored
+      // Pretend success so bots don't probe - nothing is stored
       return NextResponse.json({ ok: true, reference: "PTN-2026-000000" });
     }
 
@@ -87,12 +87,12 @@ export async function POST(req: Request) {
       ok: true,
       reference: saved.reference,
       message:
-        "Asante! Our partnerships lead replies within 3 working days. MOU template attached on this page — sign and bring it to Kibera.",
+        "Asante! Our partnerships lead replies within 3 working days. MOU template attached on this page - sign and bring it to Kibera.",
     });
   } catch (e) {
     console.error("[partners] error:", e instanceof Error ? e.message : e);
     return NextResponse.json(
-      { error: "Could not send your inquiry. Please try again or email hello@bintirising.or.ke." },
+      { error: "Could not send your inquiry. Please try again, or reach us on WhatsApp +254 758 919 709." },
       { status: 500 }
     );
   }

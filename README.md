@@ -1,4 +1,4 @@
-# Binti Rising Initiative — Website (Overhaul)
+# Binti Rising Initiative - Website (Overhaul)
 
 > **From Silence, She Rises.** Peer-led Journey to Wholeness (JTW) mentorship for
 > 15–25 AGYW in Kibera, Mathare & Kawangware, Nairobi. Data-driven, audited, DPA 2019 compliant.
@@ -24,12 +24,12 @@
 ALL imagery comes from the Google Drive **"Nairobi"** folder only
 (`public/nairobi-team/nairobi-01..14.webp` + `manifest.json` for traceability).
 No stock photos. No invented photos. If a photo file is missing, the UI shows
-**"Awaiting Nairobi Team photo upload"** — never a fake substitute.
+**"Awaiting Nairobi Team photo upload"** - never a fake substitute.
 
 ## Data privacy (Kenya DPA 2019)
 
-- Aggregates only on public surfaces; masked names ("F.W. — Kibera").
-- `*.xlsx`, `*.csv`, `*.lnk` and `.env*` are git-ignored — raw data never lands in git.
+- Aggregates only on public surfaces; masked names ("F.W. - Kibera").
+- `*.xlsx`, `*.csv`, `*.lnk` and `.env*` are git-ignored - raw data never lands in git.
 - Join form accepts **initials only** (server rejects full names); guardian consent
   auto-required for ages 15–17; phone optional + consent-gated, never displayed.
 - Complaints are anonymous (random reference `BRI-2026-XXXX`, no IP/name/email stored).

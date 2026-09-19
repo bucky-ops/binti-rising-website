@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://binti-rising-initiative.vercel.app"),
   title: {
-    default: "Binti Rising Initiative — From Silence, She Rises.",
+    default: "Binti Rising Initiative · From Silence, She Rises.",
     template: "%s | Binti Rising Initiative",
   },
   description:
@@ -51,18 +51,18 @@ export const metadata: Metadata = {
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "Binti Rising Initiative — From Silence, She Rises.",
+    title: "Binti Rising Initiative · From Silence, She Rises.",
     description:
       "Peer-led 8-session JTW mentorship for 15-25 AGYW in Nairobi informal settlements. Co-created by 50 youth. Live impact dashboard, audited finances.",
     url: "https://binti-rising-initiative.vercel.app",
     siteName: "Binti Rising Initiative",
     type: "website",
     locale: "en_KE",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Binti Rising Initiative — From Silence, She Rises." }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Binti Rising Initiative · From Silence, She Rises." }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Binti Rising Initiative — From Silence, She Rises.",
+    title: "Binti Rising Initiative · From Silence, She Rises.",
     description:
       "Peer-led JTW mentorship for 15-25 AGYW in Nairobi. 4,500+ alumni. Live data. DPA 2019 compliant.",
     images: ["/og.png"],

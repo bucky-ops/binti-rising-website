@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Risk } from "@/lib/binti/data";
 
 /* ------------------------------------------------------------------ */
-/* BintiMark — geometric rising-sun logo (wireframe Logo Pack)         */
+/* BintiMark - geometric rising-sun logo (wireframe Logo Pack)         */
 /* ------------------------------------------------------------------ */
 export function BintiMark({ light = false, size = 28 }: { light?: boolean; size?: number }) {
   return (
@@ -71,7 +71,7 @@ export function BintiLogoImage({ size = 40, className }: { size?: number; classN
   return (
     <Image
       src="/binti-logo.jpg"
-      alt="Binti Rising Initiative logo — young woman's profile with rising sun"
+      alt="Binti Rising Initiative logo - young woman's profile with rising sun"
       width={size}
       height={size}
       className={cn("rounded-full object-cover ring-2 ring-binti-pink/40", className)}
@@ -81,7 +81,7 @@ export function BintiLogoImage({ size = 40, className }: { size?: number; classN
 }
 
 /* ------------------------------------------------------------------ */
-/* NairobiPhoto — renders real Nairobi Drive photo with graceful       */
+/* NairobiPhoto - renders real Nairobi Drive photo with graceful       */
 /* fallback placeholder "Awaiting Nairobi Team photo upload" (DPA rule) */
 /* ------------------------------------------------------------------ */
 export function NairobiPhoto({
@@ -140,7 +140,7 @@ export function NairobiPhoto({
 }
 
 /* ------------------------------------------------------------------ */
-/* CountUp — animated number for Impact Strip (count up micro-spec)    */
+/* CountUp - animated number for Impact Strip (count up micro-spec)    */
 /* ------------------------------------------------------------------ */
 export function CountUp({
   end,
@@ -189,7 +189,7 @@ export function CountUp({
 }
 
 /* ------------------------------------------------------------------ */
-/* RiskBadge — danger red ONLY for GBV / Very Heavy (WCAG AA spec)     */
+/* RiskBadge - danger red ONLY for GBV / Very Heavy (WCAG AA spec)     */
 /* ------------------------------------------------------------------ */
 export function RiskBadge({ risk, className }: { risk: Risk; className?: string }) {
   const map: Record<Risk, string> = {
@@ -207,7 +207,7 @@ export function RiskBadge({ risk, className }: { risk: Risk; className?: string 
 }
 
 /* ------------------------------------------------------------------ */
-/* SectionHeading — consistent section intro                           */
+/* SectionHeading - consistent section intro                           */
 /* ------------------------------------------------------------------ */
 export function SectionHeading({
   eyebrow,
@@ -250,7 +250,7 @@ export function SectionHeading({
 }
 
 /* ------------------------------------------------------------------ */
-/* DataNote — small privacy provenance note (DPA 2019)                 */
+/* DataNote - small privacy provenance note (DPA 2019)                 */
 /* ------------------------------------------------------------------ */
 export function DataNote({ children, className }: { children: ReactNode; className?: string }) {
   return (
@@ -265,7 +265,7 @@ export function DataNote({ children, className }: { children: ReactNode; classNa
 }
 
 /* ------------------------------------------------------------------ */
-/* SparkLine — mini area chart for KPI cards (aggregate trend only)    */
+/* SparkLine - mini area chart for KPI cards (aggregate trend only)    */
 /* ------------------------------------------------------------------ */
 export function SparkLine({ data, color = "#4f46e5" }: { data: number[]; color?: string }) {
   const points = data.map((v, i) => ({ i, v }));
@@ -296,7 +296,7 @@ export function SparkLine({ data, color = "#4f46e5" }: { data: number[]; color?:
 }
 
 /* ------------------------------------------------------------------ */
-/* SectionReveal — subtle whileInView reveal for section blocks        */
+/* SectionReveal - subtle whileInView reveal for section blocks        */
 /* ------------------------------------------------------------------ */
 export function SectionReveal({
   children,

@@ -34,17 +34,17 @@ import { ORG, POLICIES, FAQS, type SectionId } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
 
 /**
- * BintiCommandPalette — donor-grade ⌘K quick-switcher.
+ * BintiCommandPalette - donor-grade ⌘K quick-switcher.
  * Search/jump: sections, actions (donate/join/report/partner), policy PDFs,
  * donor FAQ answers and contact channels. Fully keyboard-driven.
  *
  * RANKING: cmdk's default fuzzy filter ranks scattered subsequence matches
  * above perfect prefixes (verified: "donate" selected "Get Involved"), so we
- * supply a deterministic scorer — prefix > word-start > substring > fuzzy —
+ * supply a deterministic scorer - prefix > word-start > substring > fuzzy -
  * and encode each item's label + keywords into its `value`. Verified:
  * "donate" → M-Pesa donate action, "safeguard" → report/policy, etc.
  *
- * DPA note: palette stores nothing — it is pure navigation.
+ * DPA note: palette stores nothing - it is pure navigation.
  */
 
 type PaletteProps = {
@@ -62,7 +62,7 @@ function paletteFilter(value: string, search: string): number {
   if (v.startsWith(s)) return 1;
   if (new RegExp(`(^|\\s)${s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(v)) return 0.85;
   if (v.includes(s)) return 0.7;
-  // fuzzy subsequence — all chars in order
+  // fuzzy subsequence - all chars in order
   let i = 0;
   for (let c = 0; c < v.length && i < s.length; c++) if (v[c] === s[i]) i++;
   return i === s.length ? 0.3 : 0;
@@ -107,31 +107,31 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
               <div className="py-6 text-center">
                 <p className="text-[13.5px] font-semibold text-binti-ink">No matches on this site.</p>
                 <p className="mt-1 text-[12.5px] text-binti-slate">
-                  Ask Sema na Me instead — WhatsApp {ORG.whatsapp} · shortcode {ORG.shortcode}
+                  Ask Sema na Me instead, the WhatsApp chatbot by Shujaaz: {ORG.whatsapp}
                 </p>
               </div>
             </CommandEmpty>
 
-            {/* ACTIONS FIRST — palette convention + deterministic first-hit for
+            {/* ACTIONS FIRST - palette convention + deterministic first-hit for
                 queries like "donate" (cmdk DOM-sort vs React19 re-render can
                 revert group order; source order is the stable fallback). */}
             <CommandGroup heading="Take action">
               <CommandItem onSelect={run(onDonate)} value="donate via m-pesa paybill give money fund gift">
                 <HeartHandshake className="text-mpesa" aria-hidden="true" />
-                <span className="text-binti-ink">Donate via M-Pesa — Paybill {ORG.paybill}</span>
+                <span className="text-binti-ink">Donate via M-Pesa - Paybill {ORG.paybill}</span>
                 <span className="ml-auto hidden text-[11px] font-semibold text-binti-slate sm:inline">Till {ORG.paybill}</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("involved"))} value="join a circle enroll signup youth ages 15 25">
                 <HandHeart className="text-binti-pink" aria-hidden="true" />
-                <span className="text-binti-ink">Join a Circle — ages 15–25</span>
+                <span className="text-binti-ink">Join a Circle - ages 15–25</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("accountability"))} value="report a concern complaint safeguarding anonymous voice note">
                 <ShieldAlert className="text-binti-danger" aria-hidden="true" />
-                <span className="text-binti-ink">Report a concern — anonymous, 60s voice note</span>
+                <span className="text-binti-ink">Report a concern - anonymous, 60s voice note</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("involved"))} value="partner with us mou inquiry collaboration funder">
                 <Handshake className="text-binti-cyan" aria-hidden="true" />
-                <span className="text-binti-ink">Partner with us — MOU & inquiry form</span>
+                <span className="text-binti-ink">Partner with us - MOU & inquiry form</span>
               </CommandItem>
             </CommandGroup>
 
@@ -140,23 +140,23 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
             <CommandGroup heading="Jump to">
               <CommandItem onSelect={run(() => go("home"))} value="home hero stories gallery alumni wall timeline">
                 <Home className="text-binti dark:text-indigo-300" aria-hidden="true" />
-                <span className="text-binti-ink">Home — stories, gallery & FAQ</span>
+                <span className="text-binti-ink">Home - stories, gallery & FAQ</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("work"))} value="our work jtw journey sessions curriculum eight steps">
                 <Route className="text-binti dark:text-indigo-300" aria-hidden="true" />
-                <span className="text-binti-ink">Our Work — JTW 8-session journey</span>
+                <span className="text-binti-ink">Our Work - JTW 8-session journey</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("dashboard"))} value="live impact dashboard kpis data indicators exports">
                 <BarChart3 className="text-binti dark:text-indigo-300" aria-hidden="true" />
-                <span className="text-binti-ink">Live Impact Dashboard — KPIs & exports</span>
+                <span className="text-binti-ink">Live Impact Dashboard - KPIs & exports</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("accountability"))} value="accountability finance reports complaints safeguarding audit">
                 <Scale className="text-binti dark:text-indigo-300" aria-hidden="true" />
-                <span className="text-binti-ink">Accountability — finance & complaints</span>
+                <span className="text-binti-ink">Accountability - finance & complaints</span>
               </CommandItem>
               <CommandItem onSelect={run(() => go("involved"))} value="get involved youth donors partners tabs">
                 <HandHeart className="text-binti dark:text-indigo-300" aria-hidden="true" />
-                <span className="text-binti-ink">Get Involved — youth, donors, partners</span>
+                <span className="text-binti-ink">Get Involved - youth, donors, partners</span>
               </CommandItem>
             </CommandGroup>
 
@@ -179,13 +179,13 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
                 onSelect={run(() => window.open("/policies/binti-mou-template.pdf", "_blank", "noreferrer"))}
               >
                 <FileDown className="text-binti-amber" aria-hidden="true" />
-                <span className="text-binti-ink">MOU Template — partnership agreement</span>
+                <span className="text-binti-ink">MOU Template - partnership agreement</span>
               </CommandItem>
             </CommandGroup>
 
             <CommandSeparator />
 
-            <CommandGroup heading="Donor FAQ — quick answers">
+            <CommandGroup heading="Donor FAQ - quick answers">
               {faqItems.map((f, i) => (
                 <CommandItem key={f.q} value={`faq answer ${f.q.toLowerCase()}`} onSelect={run(() => go("home"))}>
                   <HelpCircle className="text-binti dark:text-indigo-300" aria-hidden="true" />
@@ -208,11 +208,11 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
               </CommandItem>
               <CommandItem value="gbv hotline 1195 call emergency toll free" onSelect={run(() => window.location.assign("tel:1195"))}>
                 <Phone className="text-red-500" aria-hidden="true" />
-                <span className="text-binti-ink">GBV Hotline 1195 — toll free</span>
+                <span className="text-binti-ink">GBV Hotline 1195 - toll free</span>
               </CommandItem>
-              <CommandItem value="sms shortcode sema na me 20308 text" onSelect={run(() => go("accountability"))}>
-                <Hash className="text-binti-cyan" aria-hidden="true" />
-                <span className="text-binti-ink">SMS “Sema na Me” — shortcode {ORG.shortcode}</span>
+              <CommandItem value="sema na me chatbot shujaaz whatsapp join help" onSelect={run(() => go("involved"))}>
+                <MessageCircle className="text-mpesa" aria-hidden="true" />
+                <span className="text-binti-ink">Sema na Me · WhatsApp chatbot by Shujaaz</span>
               </CommandItem>
             </CommandGroup>
           </CommandList>
@@ -234,7 +234,7 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
   );
 }
 
-/* Navbar / mobile trigger — pill button with kbd chip */
+/* Navbar / mobile trigger - pill button with kbd chip */
 export function SearchTrigger({
   onClick,
   variant = "desktop",

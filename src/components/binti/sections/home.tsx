@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Accordion,
   AccordionContent,
@@ -19,10 +18,11 @@ import {
   Users,
   ShieldCheck,
   BarChart3,
-  ChevronDown,
   ArrowRight,
   Eye,
   Sparkles,
+  Zap,
+  Globe,
   Mail,
   Send,
   CheckCircle2,
@@ -32,15 +32,15 @@ import {
   MessageCircleQuestion,
 } from "lucide-react";
 import type { SectionId } from "@/lib/binti/data";
-import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS, MILESTONES, ALUMNI_WALL, type AlumniTile } from "@/lib/binti/data";
-import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote, SectionReveal } from "../ui";
+import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, TRUSTED_BY, HERO_QUOTE, STORIES, FAQS, MILESTONES, ALUMNI_WALL, type AlumniTile } from "@/lib/binti/data";
+import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, DataNote, SectionReveal } from "../ui";
 import { CircleGallery } from "../gallery";
 import { cn } from "@/lib/utils";
 
 const ICONS = { Heart, Users, ShieldCheck, BarChart3 } as const;
 
 /* ------------------------------------------------------------------ */
-/* HERO — "From Silence, She Rises." 56px + circle photo + S4 overlay  */
+/* HERO - "From Silence, She Rises." 56px + circle photo + S4 overlay  */
 /* ------------------------------------------------------------------ */
 function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   return (
@@ -54,16 +54,17 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
         <div>
           <Badge className="mb-4 gap-1.5 rounded-full bg-binti-pink/10 px-3 py-1.5 text-[12px] font-bold text-binti-pinkdeep dark:text-pink-300 border border-binti-pink/30">
             <Sparkles className="size-3.5" aria-hidden="true" />
-            Peer-led · Journey to Wholeness · AGYW 15–25
+            Peer-led · Journey to Wholeness · All genders 15–25
           </Badge>
           <h1 className="font-display text-[40px] font-extrabold leading-[1.05] tracking-tight text-binti-ink sm:text-5xl md:text-[56px]">
             From Silence,{" "}
             <span className="binti-gradient-text">She Rises.</span>
           </h1>
           <p className="mt-5 max-w-xl text-[18px] leading-[28px] text-binti-slate">
-            Peer-led 8-session mentorship for 15–25 AGYW on SRH, mental health and healthy
-            relationships — in Kibera, Mathare & Kawangware. Co-created by 50 youth, backed by
-            live data, audited finances.
+            Peer-led 8-session mentorship for young people aged 15–25 (all genders) on SRH, mental
+            health and healthy relationships in Kibera, Mathare & Kawangware. Binti does not just
+            support the She, but also the He. Co-created by 50 youth, backed by live data, audited
+            finances.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Button
@@ -118,7 +119,7 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             <div aria-hidden="true" className="absolute -inset-3 rounded-full bg-gradient-to-tr from-binti-pink/35 via-binti-amber/25 to-binti-cyan/30 blur-md" />
             <NairobiPhoto
               src="/nairobi-team/nairobi-01.webp"
-              alt="Nairobi team — Binti Rising sisterhood circle member, portrait"
+              alt="Nairobi team - Binti Rising sisterhood circle member, portrait"
               circle
               priority
               sizes="(max-width: 768px) 90vw, 440px"
@@ -151,7 +152,48 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* IMPACT STRIP — count-up animated aggregated totals                  */
+/* TRUSTED BY - Shuga · PATH · Shujaaz (client-requested trust strip)  */
+/* Text wordmarks: no fabricated logo files, DPA/brand-safe.          */
+/* ------------------------------------------------------------------ */
+const TRUSTED_STYLES: Record<string, { icon: typeof Sparkles; chip: string; word: string }> = {
+  Shuga: { icon: Sparkles, chip: "hover:border-binti-pink/50 hover:shadow-binti-pink/20", word: "text-binti-pink" },
+  PATH: { icon: Globe, chip: "hover:border-binti/50 hover:shadow-binti/20", word: "text-binti dark:text-indigo-300" },
+  Shujaaz: { icon: Zap, chip: "hover:border-binti-amber/60 hover:shadow-binti-amber/20", word: "text-amber-500" },
+};
+
+function TrustedBy() {
+  return (
+    <section aria-label="Trusted by partners" className="border-b border-binti-sand bg-binti-card/70">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-3 px-4 py-5 md:px-6">
+        <p className="font-display text-[11.5px] font-bold uppercase tracking-[0.22em] text-binti-slate">
+          Trusted by
+        </p>
+        {TRUSTED_BY.map((name) => {
+          const s = TRUSTED_STYLES[name] ?? TRUSTED_STYLES.PATH;
+          const Icon = s.icon;
+          return (
+            <span
+              key={name}
+              className={cn(
+                "binti-lift inline-flex items-center gap-2 rounded-full border border-binti-sand bg-binti-cream px-4 py-1.5 shadow-sm transition-all",
+                s.chip
+              )}
+            >
+              <Icon className="size-3.5" aria-hidden="true" />
+              <span className={cn("font-display text-[14px] font-extrabold tracking-wide", s.word)}>{name}</span>
+            </span>
+          );
+        })}
+        <span className="hidden text-[11px] text-binti-slate/70 sm:inline">
+          alongside LVCT Health, Nairobi County & Global Fund partners
+        </span>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* IMPACT STRIP - count-up animated aggregated totals                  */
 /* ------------------------------------------------------------------ */
 function ImpactStrip() {
   return (
@@ -174,7 +216,7 @@ function ImpactStrip() {
 }
 
 /* ------------------------------------------------------------------ */
-/* STORIES OF RISE — masked testimonials w/ Nairobi photos (DPA 2019)  */
+/* STORIES OF RISE - masked testimonials w/ Nairobi photos (DPA 2019)  */
 /* ------------------------------------------------------------------ */
 function StoriesOfRise() {
   return (
@@ -189,7 +231,7 @@ function StoriesOfRise() {
                 She carried the stone. <span className="font-hand text-4xl font-bold text-binti-pink">Then she set it down.</span>
               </>
             }
-            sub="Real journeys from the circles — names masked per Kenya DPA 2019, shared with each storyteller's consent."
+            sub="Real journeys from the circles - names masked per Kenya DPA 2019, shared with each storyteller's consent."
           />
         </SectionReveal>
         <div className="mt-9 grid gap-5 md:grid-cols-3">
@@ -197,7 +239,7 @@ function StoriesOfRise() {
             <SectionReveal key={s.initials} delay={i * 0.08}>
               <Card className="binti-card-glow h-full overflow-hidden rounded-2xl border-binti-sand bg-binti-card pt-0">
                 <div className="binti-img-zoom relative h-44">
-                  <NairobiPhoto src={s.photo} alt={`Binti Rising circle session photo — ${s.area}`} sizes="(max-width: 768px) 100vw, 380px" />
+                  <NairobiPhoto src={s.photo} alt={`Binti Rising circle session photo - ${s.area}`} sizes="(max-width: 768px) 100vw, 380px" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" aria-hidden="true" />
                   <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-2.5 py-1 text-[11px] font-bold text-binti dark:text-indigo-300 shadow-sm">
                     {s.tag}
@@ -225,7 +267,7 @@ function StoriesOfRise() {
         <SectionReveal delay={0.15}>
           <p className="mx-auto mt-6 max-w-xl text-center text-[12px] leading-relaxed text-binti-slate/80">
             Consent is renewed every cohort; any storyteller can withdraw her story at any time via the
-            Safeguarding Lead — no questions asked (DPA 2019, right to erasure).
+            Safeguarding Lead - no questions asked (DPA 2019, right to erasure).
           </p>
         </SectionReveal>
       </div>
@@ -234,7 +276,7 @@ function StoriesOfRise() {
 }
 
 /* ------------------------------------------------------------------ */
-/* DONOR FAQ — accordion, donor-grade answers                          */
+/* DONOR FAQ - accordion, donor-grade answers                          */
 /* ------------------------------------------------------------------ */
 function DonorFaq() {
   const [query, setQuery] = useState("");
@@ -256,7 +298,7 @@ function DonorFaq() {
             }
           />
         </SectionReveal>
-        {/* Live search — filters as you type (client-side, nothing stored) */}
+        {/* Live search - filters as you type (client-side, nothing stored) */}
         <SectionReveal delay={0.05} className="mt-7">
           <div className="relative mx-auto max-w-md">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4.5 -translate-y-1/2 text-binti-slate/70" aria-hidden="true" />
@@ -264,7 +306,7 @@ function DonorFaq() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search the FAQ — try “referrals” or “tax”"
+              placeholder="Search the FAQ - try “referrals” or “tax”"
               aria-label="Search frequently asked questions"
               className="h-12 rounded-full border-binti/25 bg-binti-cream/60 pl-11 pr-4 text-[14px]"
             />
@@ -281,7 +323,7 @@ function DonorFaq() {
           {q && (
             <p className="mt-2.5 text-center text-[12.5px] font-semibold text-binti-slate" role="status">
               {results.length === 0
-                ? "No answers match — WhatsApp +254 758 919 709 and we'll reply within a day."
+                ? "No answers match - WhatsApp +254 758 919 709 and we'll reply within a day."
                 : `${results.length} of ${FAQS.length} questions match “${query.trim()}”`}
             </p>
           )}
@@ -309,7 +351,7 @@ function DonorFaq() {
               <MessageCircleQuestion className="mx-auto size-8 text-binti/50" aria-hidden="true" />
               <p className="mt-2 font-display text-[14.5px] font-bold text-binti-ink">Ask Sema na Me instead</p>
               <p className="mt-1 text-[13px] text-binti-slate">
-                Our WhatsApp buddy (shortcode 20308) answers joining, safety and donation questions — anonymously.
+                Sema na Me, the WhatsApp chatbot by Shujaaz, answers joining, safety and donation questions, anonymously. WhatsApp only.
               </p>
             </div>
           )}
@@ -320,7 +362,7 @@ function DonorFaq() {
 }
 
 /* ------------------------------------------------------------------ */
-/* NEWSLETTER — monthly impact digest (DPA 2019 consent mandatory)     */
+/* NEWSLETTER - monthly impact digest (DPA 2019 consent mandatory)     */
 /* ------------------------------------------------------------------ */
 function NewsletterSignup() {
   const [email, setEmail] = useState("");
@@ -334,7 +376,7 @@ function NewsletterSignup() {
       return;
     }
     if (!dpa) {
-      toast({ title: "Consent needed", description: "Please tick the DPA 2019 consent — the law requires it.", variant: "destructive" });
+      toast({ title: "Consent needed", description: "Please tick the DPA 2019 consent - the law requires it.", variant: "destructive" });
       return;
     }
     setSending(true);
@@ -347,7 +389,7 @@ function NewsletterSignup() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
       setDone(true);
-      toast({ title: "Karibu aboard! 💌", description: "Monthly impact digest — one email a month, no spam, ever." });
+      toast({ title: "Karibu aboard! 💌", description: "Monthly impact digest - one email a month, no spam, ever." });
     } catch (e) {
       toast({
         title: "Could not subscribe",
@@ -371,7 +413,7 @@ function NewsletterSignup() {
               One email a month. <span className="font-hand text-3xl font-bold text-binti-amber">Real numbers only.</span>
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-white/80">
-              The Binti Digest: cohort outcomes, referral closures and finance lines — aggregated, audited, honest.
+              The Binti Digest: cohort outcomes, referral closures and finance lines - aggregated, audited, honest.
             </p>
             {done ? (
               <div className="mx-auto mt-6 flex max-w-md items-center justify-center gap-2.5 rounded-2xl border border-green-300 bg-green-50 px-5 py-4" role="status">
@@ -414,7 +456,7 @@ function NewsletterSignup() {
 }
 
 /* ------------------------------------------------------------------ */
-/* WHAT WE DO — 4 cards using Nairobi photos only                      */
+/* WHAT WE DO - 4 cards using Nairobi photos only                      */
 /* ------------------------------------------------------------------ */
 function WhatWeDo() {
   return (
@@ -422,7 +464,7 @@ function WhatWeDo() {
       <SectionHeading
         eyebrow="What We Do"
         title={<>Four pillars, <span className="font-hand text-4xl font-bold text-binti-pink">one sisterhood</span></>}
-        sub="Every pillar is peer-led, data-tracked and safeguarded. Photos are our real Nairobi team — never stock."
+        sub="Every pillar is peer-led, data-tracked and safeguarded. Photos are our real Nairobi team - never stock."
       />
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {WHAT_WE_DO.map((p, i) => {
@@ -437,7 +479,7 @@ function WhatWeDo() {
             >
               <Card className="binti-lift h-full overflow-hidden rounded-2xl border-binti-sand bg-binti-card pt-0">
                 <div className="binti-img-zoom relative h-36 w-full">
-                  <NairobiPhoto src={p.photo} alt={`${p.title} — Nairobi team photo`} sizes="(max-width: 640px) 100vw, 320px" />
+                  <NairobiPhoto src={p.photo} alt={`${p.title} - Nairobi team photo`} sizes="(max-width: 640px) 100vw, 320px" />
                   <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-2.5 py-1 text-[11px] font-bold text-binti dark:text-indigo-300 shadow-sm">
                     {p.tag}
                   </span>
@@ -461,7 +503,7 @@ function WhatWeDo() {
 }
 
 /* ------------------------------------------------------------------ */
-/* JTW TIMELINE TEASER — 8-step mini stepper                           */
+/* JTW TIMELINE TEASER - 8-step mini stepper                           */
 /* ------------------------------------------------------------------ */
 function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   return (
@@ -470,8 +512,8 @@ function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
             eyebrow="Our Work"
-            title="The JTW Journey — 8 steps from silence to strength"
-            sub="Journey to Wholeness: field-tested Oct 2025–Mar 2026 by 36 facilitators in Kibera, Mathare & Kawangware."
+            title="The JTW Journey - 8 steps from silence to strength"
+            sub="Journey to Wholeness: field-tested Oct 2025–Mar 2026 by 24 facilitators working in 12 pairs, in Kibera, Mathare & Kawangware. All genders welcome."
           />
           <Button
             onClick={() => onNavigate("work")}
@@ -512,7 +554,7 @@ function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
           ))}
         </ol>
         <DataNote className="mt-4">
-          Facilitator-to-youth ratio 1:35 · referral lists memorised before S4 · sessions follow the JTW Guide.
+          Facilitator pairs co-lead every session · referral lists memorised before S4 · sessions follow the JTW Guide.
         </DataNote>
       </div>
     </section>
@@ -549,7 +591,7 @@ function PartnersMarquee() {
 }
 
 /* ------------------------------------------------------------------ */
-/* QUOTE — Caveat handwritten (Remember the stone…)                    */
+/* QUOTE - Caveat handwritten (Remember the stone…)                    */
 /* ------------------------------------------------------------------ */
 function Quote() {
   return (
@@ -558,7 +600,7 @@ function Quote() {
         “{HERO_QUOTE.text}”
       </p>
       <p className="mt-4 font-display text-sm font-bold text-binti dark:text-indigo-300">
-        — {HERO_QUOTE.author} · {HERO_QUOTE.detail}
+        {HERO_QUOTE.author} · {HERO_QUOTE.detail}
       </p>
       <p className="mt-1 text-[12px] text-binti-slate/70">Name masked per Kenya DPA 2019</p>
     </section>
@@ -566,207 +608,7 @@ function Quote() {
 }
 
 /* ------------------------------------------------------------------ */
-/* BRAND BOOK — Phase 1 & 2 deliverable: 3 mood boards (A+B winner),   */
-/* tokens, typography, logo pack — Nairobi photos only                 */
-/* ------------------------------------------------------------------ */
-function BrandBook() {
-  const [open, setOpen] = useState(false);
-  const moods = [
-    {
-      id: "MOOD A",
-      name: "Terracotta Sisterhood",
-      desc: "Feminine, powerful, sisterhood circles. Warm terracotta + cream + deep purple.",
-      swatches: ["#C2571B", "#FFFBEB", "#6D28D9", "#FEF3C7"],
-      photo: "/nairobi-team/nairobi-03.webp",
-      winner: false,
-    },
-    {
-      id: "MOOD B",
-      name: "Shujaaz Youth Vibrant",
-      desc: "Inspo: Shujaaz Kenya, MTV Shuga. Youth first, unapologetic.",
-      swatches: ["#EC4899", "#F59E0B", "#06B6D4", "#0F172A"],
-      photo: "/nairobi-team/nairobi-11.webp",
-      winner: false,
-    },
-    {
-      id: "WINNER · A+B",
-      name: "Vibrant Youth + Donor Trust",
-      desc: "Merge A + B = Youth vibrant + institutional trust. Inspo: PATH.org, LVCT Health. Data-driven, fundable at first glance.",
-      swatches: ["#4F46E5", "#EC4899", "#06B6D4", "#FFFBEB"],
-      photo: "/nairobi-team/nairobi-06.webp",
-      winner: true,
-    },
-  ];
-
-  return (
-    <section aria-label="Brand book" className="bg-binti-card py-12">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <Collapsible open={open} onOpenChange={setOpen}>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <SectionHeading
-              eyebrow="Design System · Phase 1–2"
-              title="Brand Book — Nairobi Edition"
-              sub="Three directions tested with 36 facilitators in Kibera. Winner: vibrant youth + donor trust. All imagery: Nairobi team only."
-            />
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" className="rounded-full border-binti/40 font-bold text-binti dark:text-indigo-300">
-                {open ? "Hide" : "Show"} mood boards & UI kit
-                <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} aria-hidden="true" />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-
-          <CollapsibleContent className="mt-8 space-y-8">
-            {/* Mood boards */}
-            <div className="grid gap-5 md:grid-cols-3">
-              {moods.map((m) => (
-                <Card
-                  key={m.id}
-                  className={cn(
-                    "binti-lift overflow-hidden rounded-2xl pt-0",
-                    m.winner ? "border-2 border-binti shadow-lg shadow-binti/15" : "border-binti-sand"
-                  )}
-                >
-                  <div className="relative h-40">
-                    <NairobiPhoto src={m.photo} alt={`${m.name} mood board — Nairobi team photo`} sizes="(max-width: 768px) 100vw, 380px" />
-                    {m.winner && (
-                      <span className="absolute left-3 top-3 rounded-full bg-binti px-3 py-1 text-[11px] font-extrabold text-white shadow">
-                        WINNER · FINAL STYLE
-                      </span>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <p className="font-display text-[11px] font-extrabold tracking-widest text-binti-pink">{m.id}</p>
-                    <h3 className="mt-1 font-display text-[15px] font-bold text-binti-ink">{m.name}</h3>
-                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-binti-slate">{m.desc}</p>
-                    <div className="mt-3 flex gap-2">
-                      {m.swatches.map((c) => (
-                        <span
-                          key={c}
-                          className="size-7 rounded-full border border-black/10 shadow-sm"
-                          style={{ backgroundColor: c }}
-                          title={c}
-                        />
-                      ))}
-                    </div>
-                    {/* circle crop + duotone demo */}
-                    <div className="mt-4 flex items-center gap-3">
-                      <div className="relative size-14 overflow-hidden rounded-full">
-                        <NairobiPhoto src={m.photo} alt="" sizes="56px" />
-                      </div>
-                      <p className="text-[11px] leading-tight text-binti-slate/80">
-                        Nairobi photo · circle crop + duotone treatment
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Tokens + typography + logo pack */}
-            <div className="grid gap-5 lg:grid-cols-3">
-              <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Colour Tokens</h3>
-                <ul className="mt-3 space-y-2 text-[12.5px]" role="list">
-                  {[
-                    ["--color-binti", "#4F46E5", "Primary Indigo"],
-                    ["--color-binti-pink", "#EC4899", "Pink Binti"],
-                    ["--color-binti-cyan", "#06B6D4", "Accent"],
-                    ["--color-binti-cream", "#FFFBEB", "BG Warm"],
-                    ["--color-binti-ink", "#0F172A", "Text"],
-                  ].map(([token, hex, label]) => (
-                    <li key={token} className="flex items-center gap-2.5">
-                      <span className="size-6 rounded-md border border-black/10" style={{ backgroundColor: hex }} />
-                      <code className="text-[11px] text-binti-slate">{token}</code>
-                      <span className="ml-auto font-mono text-[11px] text-binti-slate/70">{hex}</span>
-                      <span className="hidden text-[11px] text-binti-slate sm:inline">{label}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-[11px] leading-relaxed text-binti-slate/70">
-                  WCAG AA contrast checked. Danger red used only for GBV / Very Heavy sessions.
-                </p>
-              </Card>
-
-              <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Typography</h3>
-                <p className="mt-3 font-display text-3xl font-extrabold text-binti-ink">Sora Bold — 56px Hero</p>
-                <p className="mt-2 text-[15px] leading-relaxed text-binti-slate">
-                  Inter 18px/28px body — UI text at 16px+, 44px touch targets.
-                </p>
-                <p className="mt-2 font-hand text-4xl text-binti-pink">Caveat 40px — “Remember the stone…”</p>
-                <p className="mt-1 text-[11px] text-binti-slate/70">Caveat for soul · Sora for strength · Inter for clarity</p>
-              </Card>
-
-              <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Logo Pack</h3>
-                <div className="mt-3 space-y-3">
-                  <div className="flex items-center gap-3 rounded-xl bg-binti-cream p-3">
-                    <BintiMark size={26} />
-                    <span className="font-hand text-2xl font-bold text-binti-pink">Binti</span>
-                    <span className="font-display text-lg font-extrabold tracking-widest text-binti dark:text-indigo-300">RISING</span>
-                    <span className="ml-auto text-[10px] text-binti-slate">Full color</span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-xl bg-[#0F172A] p-3">
-                    <BintiMark light size={26} />
-                    <span className="font-hand text-2xl font-bold text-white">Binti</span>
-                    <span className="font-display text-lg font-extrabold tracking-widest text-white">RISING</span>
-                    <span className="ml-auto text-[10px] text-white/60">White</span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
-                    <BintiMark size={26} />
-                    <span className="font-hand text-2xl font-bold text-black">Binti</span>
-                    <span className="font-display text-lg font-extrabold tracking-widest text-black">RISING</span>
-                    <span className="ml-auto text-[10px] text-binti-slate">Black</span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
-                    <img src="/favicon.png" alt="Binti Rising favicon" className="size-8 rounded-full" />
-                    <span className="text-[11px] text-binti-slate">Favicon 32 · App icon 1024</span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
-                    <img src="/og.png" alt="Binti Rising OG image 1200 by 630" className="h-10 w-[76px] rounded object-cover" />
-                    <span className="text-[11px] text-binti-slate">OG image 1200×630</span>
-                  </div>
-                </div>
-              </Card>
-            </div>
-
-            {/* UI kit states strip (Phase 2) */}
-            <Card className="rounded-2xl border-binti-sand p-5">
-              <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">UI Kit — Components with ALL states</h3>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <Button className="rounded-full bg-binti">Primary · Default</Button>
-                <Button className="rounded-full bg-binti hover:scale-[1.02] hover:shadow-lg">Hover 1.02 + lift</Button>
-                <Button disabled className="rounded-full bg-binti opacity-50">Disabled 50%</Button>
-                <Button className="rounded-full bg-mpesa hover:bg-green-600">
-                  <HeartHandshakePlaceholder /> Donate · M-Pesa green
-                </Button>
-                <Button variant="outline" className="rounded-full border-binti/50 text-binti dark:text-indigo-300">Secondary</Button>
-              </div>
-              <div className="mt-4 grid gap-3 text-[12px] text-binti-slate sm:grid-cols-3">
-                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Inputs:</strong> Default · Focus (ring indigo) · Error “Age must be 15–25” · Success · Disabled · DPA consent checkbox</p>
-                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Cards:</strong> Program · KPI · Facilitator (Nairobi photos only) · Skeleton · Empty “No youth yet”</p>
-                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Feedback:</strong> Toasts · Modals Join/Donate/Safety · Charts loading / empty / error · JTW stepper S1–S8</p>
-              </div>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-    </section>
-  );
-}
-
-function HeartHandshakePlaceholder() {
-  return (
-    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      <path d="m12 13-1-1 2-2-3-3 2-2" />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* ALUMNI WALL — masked initials grid (DPA 2019) — "she rose, and stays" */
+/* ALUMNI WALL - masked initials grid (DPA 2019) - "she rose, and stays" */
 /* ------------------------------------------------------------------ */
 const WALL_TONES: Record<AlumniTile["tone"], { ring: string; chip: string; grad: string }> = {
   indigo: { ring: "hover:border-binti/60", chip: "bg-binti/10 text-binti dark:text-indigo-300", grad: "from-binti/25 to-binti-pink/20" },
@@ -790,7 +632,7 @@ function AlumniWall({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
                 She rose. <span className="font-hand text-4xl font-bold text-binti-cyan">She's still rising.</span>
               </>
             }
-            sub="A wall of first names only — every alum chose to be shown here, initials and all. No faces, no contacts, ever (Kenya DPA 2019)."
+            sub="A wall of first names only - every alum chose to be shown here, initials and all. No faces, no contacts, ever (Kenya DPA 2019)."
           />
         </SectionReveal>
 
@@ -818,7 +660,7 @@ function AlumniWall({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
                   <span className="relative font-hand text-2xl font-bold text-binti-ink">{a.initials}</span>
                 </div>
                 <p className="mt-2.5 font-display text-[13px] font-extrabold tracking-tight text-binti-ink">
-                  {a.initials.replace(".", "")} — {a.area}
+                  {a.initials.replace(".", "")} - {a.area}
                 </p>
                 <p className="mt-1 line-clamp-2 min-h-[2.4em] text-[12px] leading-snug text-binti-slate">{a.now}</p>
                 <span
@@ -838,7 +680,7 @@ function AlumniWall({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
         <SectionReveal delay={0.1} className="mt-8">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-3xl border border-binti-sand bg-binti-card p-5 text-center sm:flex-row sm:justify-between sm:text-left">
             <p className="text-[12.5px] leading-relaxed text-binti-slate">
-              <strong className="text-binti-ink">Showing 12 of 4,500+</strong> — the rest chose to stay off the wall.
+              <strong className="text-binti-ink">Showing 12 of 4,500+</strong> - the rest chose to stay off the wall.
               Both choices are equally respected. Initials published only with written, revocable consent.
             </p>
             <Button
@@ -859,6 +701,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
   return (
     <>
       <Hero onNavigate={onNavigate} />
+      <TrustedBy />
       <ImpactStrip />
       <WhatWeDo />
       <JtwTeaser onNavigate={onNavigate} />
@@ -870,13 +713,12 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <Quote />
       <DonorFaq />
       <NewsletterSignup />
-      <BrandBook />
     </>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* OUR STORY — milestone timeline 2023 → 2026 (aggregate facts only)   */
+/* OUR STORY - milestone timeline 2023 → 2026 (aggregate facts only)   */
 /* Gradient spine + scroll-reveal nodes; alternating cards on desktop. */
 /* ------------------------------------------------------------------ */
 const MILESTONE_TONES: Record<string, { dot: string; chip: string }> = {
@@ -903,7 +745,7 @@ function OurStoryTimeline() {
                 <span className="font-hand text-4xl font-bold text-binti-pink">They never stopped rising.</span>
               </>
             }
-            sub="From one room in Laini Saba to a live, audited movement — told in four milestones."
+            sub="From one room in Laini Saba to a live, audited movement - told in four milestones."
           />
         </SectionReveal>
 
@@ -942,7 +784,7 @@ function OurStoryTimeline() {
         </ol>
 
         <SectionReveal className="mt-10 text-center">
-          <p className="font-hand text-2xl text-binti dark:text-indigo-300">Karibu — the next milestone is written with our donors.</p>
+          <p className="font-hand text-2xl text-binti dark:text-indigo-300">Karibu - the next milestone is written with our donors.</p>
         </SectionReveal>
       </div>
     </section>

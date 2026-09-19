@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 /**
- * POST /api/complaints — Anonymous Complaints Box (Accountability)
+ * POST /api/complaints - Anonymous Complaints Box (Accountability)
  * Privacy: fully anonymous. We store only the message + category.
  * We do NOT store IPs, emails or names. A random reference is returned
  * so the reporter can follow up without revealing identity.
@@ -26,9 +26,9 @@ export async function POST(req: Request) {
     }
 
     // Voice note: hard size cap (~400 KB base64 ≈ 300 KB audio ≈ ~60-90 s opus/webm).
-    // Stored for the Safeguarding Lead ONLY — never returned by any API or UI.
+    // Stored for the Safeguarding Lead ONLY - never returned by any API or UI.
     if (voiceNote && voiceNote.length > 400_000) {
-      voiceNote = null; // too large — drop silently, complaint still accepted
+      voiceNote = null; // too large - drop silently, complaint still accepted
     }
     const hasVoiceNote = Boolean(body.hasVoiceNote) || !!voiceNote;
 

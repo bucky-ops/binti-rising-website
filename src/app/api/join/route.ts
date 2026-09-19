@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 /**
- * POST /api/join — Join Circle form (For Youth)
+ * POST /api/join - Join Circle form (For Youth)
  * DATA PRIVACY (Kenya DPA 2019):
- *  - Accepts initials only (≤ 4 chars) — full names are REJECTED server-side.
+ *  - Accepts initials only (≤ 4 chars) - full names are REJECTED server-side.
  *  - Age validated to 15–25; guardian consent REQUIRED for 15–17.
  *  - Phone optional, only stored when consentDpa is true; never rendered.
  *  - Production target: Supabase table `join_requests` with RLS
- *    (service-role write only) — env-configured, no hardcoded keys.
+ *    (service-role write only) - env-configured, no hardcoded keys.
  */
 export async function POST(req: Request) {
   try {
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     // Reject full names: allow letters, dots, spaces up to 4 chars total
     if (displayName.length === 0 || displayName.length > 4) {
       return NextResponse.json(
-        { error: "Initials only (max 4 characters). Privacy first — never your full name." },
+        { error: "Initials only (max 4 characters). Privacy first - never your full name." },
         { status: 400 }
       );
     }

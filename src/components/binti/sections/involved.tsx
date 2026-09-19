@@ -30,11 +30,11 @@ import {
   Users,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
-import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, CURRENCIES, toKes, fromKes, ORG, FACILITATORS } from "@/lib/binti/data";
+import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, CURRENCIES, toKes, fromKes, ORG, FACILITATORS, FACILITATOR_NOTE } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
-/* FUND THERMOMETER — FY26 Circles Fund (aggregate, updated monthly)   */
+/* FUND THERMOMETER - FY26 Circles Fund (aggregate, updated monthly)   */
 /* Animated gradient bar + milestone ticks + trust chips. Figures are  */
 /* wireframe-anchored aggregates, labelled as such (no real PII).      */
 /* ------------------------------------------------------------------ */
@@ -139,7 +139,7 @@ function FundThermometer({ onDonate }: { onDonate: () => void }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* IMPACT CALCULATOR — "what does my gift do?" (donor conversion tool) */
+/* IMPACT CALCULATOR - "what does my gift do?" (donor conversion tool) */
 /* Unit costs from the FY24/25 aggregate: KES 500 materials · 2,500    */
 /* session for 12 · 10,000 full journey. Aggregates only, no PII.      */
 /* ------------------------------------------------------------------ */
@@ -165,10 +165,10 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
         <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti dark:text-indigo-300">FY24/25 aggregate unit costs</Badge>
       </div>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
-        Drag to see exactly what your gift delivers — same maths the auditors use.
+        Drag to see exactly what your gift delivers - same maths the auditors use.
       </p>
 
-      {/* Currency selector — international donors give in their own money */}
+      {/* Currency selector - international donors give in their own money */}
       <div className="mt-5 flex flex-wrap items-center gap-2" role="group" aria-label="Donation currency">
         {CURRENCIES.map((c) => (
           <button
@@ -204,7 +204,7 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
         </p>
         {curCode !== "KES" && (
           <p className="mt-1 text-[12px] font-semibold text-binti-slate/80">
-            ≈ KES {kesAmount.toLocaleString()} — charged in KES via M-Pesa
+            ≈ KES {kesAmount.toLocaleString()} - charged in KES via M-Pesa
           </p>
         )}
       </div>
@@ -260,7 +260,7 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
       </div>
 
       <Button onClick={onDonate} className="mt-6 h-12 w-full rounded-full bg-mpesa font-display text-[15px] font-extrabold text-white hover:bg-green-600">
-        <HeartHandshake className="size-5" aria-hidden="true" /> Fund {journeys > 0 ? `${journeys} ${journeys === 1 ? "girl" : "girls"}` : "this impact"} — Give via M-Pesa
+        <HeartHandshake className="size-5" aria-hidden="true" /> Fund {journeys > 0 ? `${journeys} ${journeys === 1 ? "girl" : "girls"}` : "this impact"} - Give via M-Pesa
       </Button>
       <DataNote className="mt-3">
         Unit costs from the audited FY24/25 aggregate: KES 500 materials · KES 2,500 session · KES 10,000 journey.
@@ -271,7 +271,7 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* JOIN CIRCLE — name initial only + age 15-25 + area + DPA consent    */
+/* JOIN CIRCLE - name initial only + age 15-25 + area + DPA consent    */
 /* Success: Karibu Binti! → WhatsApp Sema na Me                        */
 /* ------------------------------------------------------------------ */
 function JoinCircle() {
@@ -291,7 +291,7 @@ function JoinCircle() {
   const submit = async () => {
     const errs: Record<string, string> = {};
     if (initials.trim().length < 1 || initials.trim().length > 4)
-      errs.initials = "Initials only, max 4 characters — privacy first (e.g. F.W.)";
+      errs.initials = "Initials only, max 4 characters - privacy first (e.g. F.W.)";
     if (isNaN(ageNum) || ageNum < 15 || ageNum > 25) errs.age = "Age must be 15-25";
     if (!area) errs.area = "Choose your area";
     if (phone && !/^(\+?\d{9,15})$/.test(phone.replace(/\s/g, ""))) errs.phone = "Phone looks incorrect (optional field)";
@@ -334,8 +334,8 @@ function JoinCircle() {
         <CheckCircle2 className="mx-auto size-14 text-green-600 dark:text-green-700" aria-hidden="true" />
         <h3 className="mt-4 font-display text-2xl font-extrabold text-green-950">Success! Karibu Binti!</h3>
         <p className="mt-2 text-[14.5px] leading-relaxed text-green-800">
-          Circle starts <strong>Monday 2pm · Laini Saba</strong>. The <strong>Sema na Me</strong> chatbot will confirm
-          on WhatsApp <strong>{ORG.whatsapp}</strong> (shortcode {ORG.shortcode}).
+          Circle starts <strong>Monday 2pm · Laini Saba</strong>. The <strong>Sema na Me</strong> chatbot (by Shujaaz, on
+          WhatsApp only) will confirm on <strong>{ORG.whatsapp}</strong>.
         </p>
         <a
           href={ORG.whatsappLink}
@@ -347,7 +347,7 @@ function JoinCircle() {
         </a>
         <DataNote className="mt-5 justify-center text-left">
           We stored ONLY your initials, age and area (plus optional phone under DPA 2019 consent). You can request
-          deletion anytime at {ORG.email}.
+          deletion anytime via our WhatsApp helpline {ORG.whatsapp}.
         </DataNote>
       </Card>
     );
@@ -359,7 +359,7 @@ function JoinCircle() {
         <UserRound className="size-5 text-binti dark:text-indigo-300" aria-hidden="true" /> Join Circle
       </h3>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
-        For youth 15–25. Privacy first: <strong>initials only</strong> — never your full name (Kenya DPA 2019).
+        For youth 15–25. Privacy first: <strong>initials only</strong> - never your full name (Kenya DPA 2019).
       </p>
 
       <div className="mt-6 space-y-4.5">
@@ -485,7 +485,7 @@ function JoinCircle() {
 }
 
 /* ------------------------------------------------------------------ */
-/* DONATE MODAL v2 — M-Pesa Paybill 522522 + KCB, no cash              */
+/* DONATE MODAL v2 - M-Pesa Paybill 522522 + KCB, no cash              */
 /* NEW: one-time/monthly toggle · custom amount · impact preview ·     */
 /*      simulated receipt flow (Daraja STK push in production)         */
 /* ------------------------------------------------------------------ */
@@ -502,14 +502,14 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
   const [stepIdx, setStepIdx] = useState(0);
   const [receiptNo, setReceiptNo] = useState("");
 
-  // effAmount is ALWAYS in KES — M-Pesa charges KES regardless of display currency.
+  // effAmount is ALWAYS in KES - M-Pesa charges KES regardless of display currency.
   const effAmount =
     customAmount !== "" ? Math.max(0, toKes(Math.max(0, parseInt(customAmount, 10) || 0), cur.rate)) : amount;
 
   // Impact preview: monthly giving multiplies the yearly story
   const impactText =
     frequency === "monthly"
-      ? `${DONATE_IMPACT[amount] ?? "Your chosen amount, put to work"} — every month of the year`
+      ? `${DONATE_IMPACT[amount] ?? "Your chosen amount, put to work"} - every month of the year`
       : DONATE_IMPACT[amount] ?? "Your chosen amount, put to work";
 
   const reset = () => {
@@ -531,7 +531,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
 
   const startDonation = () => {
     if (effAmount < 100) {
-      toast({ title: "Minimum is KES 100", description: "Every shilling counts — but M-Pesa needs at least 100.", variant: "destructive" });
+      toast({ title: "Minimum is KES 100", description: "Every shilling counts - but M-Pesa needs at least 100.", variant: "destructive" });
       return;
     }
     setStep("processing");
@@ -564,7 +564,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
             {step === "receipt" ? "Asante sana! 🎉" : "Donate · M-Pesa / Bank"}
           </DialogTitle>
           <DialogDescription className="text-[13px] text-white/85">
-            Every shilling is receipted and audit-logged. <strong>No cash</strong> — card never touches our hands.
+            Every shilling is receipted and audit-logged. <strong>No cash</strong> - card never touches our hands.
           </DialogDescription>
         </DialogHeader>
 
@@ -578,7 +578,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
               transition={{ duration: 0.22 }}
               className="space-y-5 px-6 py-6"
             >
-              {/* Frequency toggle — monthly is flagship for donor LTV */}
+              {/* Frequency toggle - monthly is flagship for donor LTV */}
               <div className="grid grid-cols-2 gap-2 rounded-full bg-binti-sand/70 p-1.5" role="group" aria-label="Donation frequency">
                 {(
                   [
@@ -601,12 +601,12 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
               </div>
               {frequency === "monthly" && (
                 <p className="rounded-xl border border-binti-pink/30 bg-binti-pink/5 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-binti-pinkdeep dark:text-pink-300">
-                  <strong>Monthly sisters</strong> are our backbone — predictable funding means a girl never waits for
+                  <strong>Monthly sisters</strong> are our backbone - predictable funding means a girl never waits for
                   materials. Cancel anytime.
                 </p>
               )}
 
-              {/* Currency — international donors give in their own money */}
+              {/* Currency - international donors give in their own money */}
               <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Donation currency">
                 {CURRENCIES.map((c) => (
                   <button
@@ -756,7 +756,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                 {frequency === "monthly" ? " / month via M-Pesa" : " via M-Pesa"}
               </Button>
               <DataNote>
-                Giving from abroad? Pick USD / EUR / GBP above — M-Pesa charges the KES equivalent at indicative
+                Giving from abroad? Pick USD / EUR / GBP above - M-Pesa charges the KES equivalent at indicative
                 rates. Partnership gifts: {ORG.email}. Receipt auto · audit logged · no cash.
               </DataNote>
             </motion.div>
@@ -855,7 +855,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
 }
 
 /* ------------------------------------------------------------------ */
-/* PARTNER INQUIRY FORM — For Partners tab (full-stack, /api/partners) */
+/* PARTNER INQUIRY FORM - For Partners tab (full-stack, /api/partners) */
 /* Institutional contacts only (not beneficiary data). Data-minimised, */
 /* DPA 2019 consent mandatory, honeypot anti-spam, ref code returned.  */
 /* ------------------------------------------------------------------ */
@@ -883,7 +883,7 @@ function PartnerInquiryForm() {
   const [orgType, setOrgType] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [message, setMessage] = useState("");
-  const [website, setWebsite] = useState(""); // honeypot — humans never see/fill this
+  const [website, setWebsite] = useState(""); // honeypot - humans never see/fill this
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -920,15 +920,15 @@ function PartnerInquiryForm() {
         return;
       }
       setRef(data.reference ?? "PTN-2026-000000");
-      toast({ title: "Partnership inquiry sent", description: `Reference ${data.reference} — we reply within 3 working days.` });
+      toast({ title: "Partnership inquiry sent", description: `Reference ${data.reference} - we reply within 3 working days.` });
     } catch {
-      setError("Network error — check your connection and try again, or email hello@bintirising.or.ke.");
+      setError("Network error. Check your connection and try again, or reach us on WhatsApp +254 758 919 709.");
     } finally {
       setSending(false);
     }
   };
 
-  /* Success state — reference code + next steps */
+  /* Success state - reference code + next steps */
   if (ref) {
     return (
       <motion.div
@@ -940,7 +940,7 @@ function PartnerInquiryForm() {
           <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-binti to-binti-pink text-white shadow-lg shadow-binti/25" aria-hidden="true">
             <CheckCircle2 className="size-7" />
           </span>
-          <h4 className="mt-4 font-display text-xl font-extrabold text-binti-ink">Inquiry received — asante!</h4>
+          <h4 className="mt-4 font-display text-xl font-extrabold text-binti-ink">Inquiry received - asante!</h4>
           <p className="mx-auto mt-2 max-w-sm text-[13.5px] leading-relaxed text-binti-slate">
             Our partnerships lead replies within <strong className="text-binti-ink">3 working days</strong>. Meanwhile,
             download and review the MOU template so we can move fast when we meet.
@@ -990,11 +990,11 @@ function PartnerInquiryForm() {
         Start a partnership
       </h4>
       <p className="mt-1 text-[13px] leading-relaxed text-binti-slate">
-        Tell us who you are and how you'd like to work together — 3 minutes, answered in 3 working days.
+        Tell us who you are and how you'd like to work together - 3 minutes, answered in 3 working days.
       </p>
 
       <form onSubmit={submit} className="mt-5 space-y-4" noValidate>
-        {/* Honeypot — visually hidden, ignored by humans, filled by bots */}
+        {/* Honeypot - visually hidden, ignored by humans, filled by bots */}
         <div aria-hidden="true" className="absolute -left-[9999px] top-auto size-px overflow-hidden">
           <label htmlFor="ptn-website">Leave this field empty</label>
           <input id="ptn-website" type="text" value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" />
@@ -1054,7 +1054,7 @@ function PartnerInquiryForm() {
           </div>
         </div>
 
-        {/* Org type — selectable chips */}
+        {/* Org type - selectable chips */}
         <div className="space-y-2">
           <Label className="text-[12.5px] font-bold text-binti-ink">Organisation type *</Label>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Organisation type">
@@ -1079,7 +1079,7 @@ function PartnerInquiryForm() {
           </div>
         </div>
 
-        {/* Interests — multi-select chips */}
+        {/* Interests - multi-select chips */}
         <div className="space-y-2">
           <Label className="text-[12.5px] font-bold text-binti-ink">How would you like to partner? *</Label>
           <div className="flex flex-wrap gap-2" aria-label="Partnership interests">
@@ -1125,7 +1125,7 @@ function PartnerInquiryForm() {
         <div className="rounded-xl border border-binti-cyan/40 bg-binti-cyan/5 p-3.5">
           <p className="text-[12px] leading-relaxed text-binti-slate">
             <strong className="text-binti-ink">Privacy note (Kenya DPA 2019):</strong> partner contacts are institutional
-            records — kept only to run this partnership, never published, never shared, deleted on request. Beneficiary
+            records - kept only to run this partnership, never published, never shared, deleted on request. Beneficiary
             data everywhere else on this site stays aggregated and name-free.
           </p>
           <label className="mt-2.5 flex cursor-pointer items-start gap-2.5">
@@ -1174,7 +1174,7 @@ function PartnerInquiryForm() {
 }
 
 /* ------------------------------------------------------------------ */
-/* GET INVOLVED — tabs: Youth / Donors / Partners                      */
+/* GET INVOLVED - tabs: Youth / Donors / Partners                      */
 /* ------------------------------------------------------------------ */
 export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
   return (
@@ -1187,7 +1187,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
             <span className="font-hand text-4xl font-bold text-binti-pink">partner with us</span>
           </>
         }
-        sub="For Youth · For Donors · For Partners — one page, three ways to rise."
+        sub="For Youth · For Donors · For Partners - one page, three ways to rise."
       />
 
       <Tabs defaultValue="youth" className="mt-8">
@@ -1210,34 +1210,45 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
             <div className="space-y-4">
               <Card className="overflow-hidden rounded-3xl border-binti-sand pt-0">
                 <div className="relative h-44">
-                  <NairobiPhoto src="/nairobi-team/nairobi-13.webp" alt="Nairobi team — circle facilitators" sizes="(max-width: 1024px) 100vw, 380px" />
+                  <NairobiPhoto src="/nairobi-team/nairobi-13.webp" alt="Nairobi team - circle facilitators" sizes="(max-width: 1024px) 100vw, 380px" />
                   <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-3 py-1 text-[11px] font-bold text-binti dark:text-indigo-300">Your facilitators</span>
                 </div>
                 <CardContent className="p-4">
-                  <ul className="space-y-3" role="list">
-                    {FACILITATORS.map((f) => (
-                      <li key={`${f.name}-${f.area}`} className="flex items-center gap-3">
-                        <div className="relative size-11 overflow-hidden rounded-full border-2 border-binti-pink/40">
-                          <NairobiPhoto src={f.photo} alt="" circle sizes="44px" />
-                        </div>
-                        <div>
-                          <p className="font-display text-[13.5px] font-bold text-binti-ink">
-                            {f.name} — {f.area}
-                          </p>
-                          <p className="text-[11.5px] text-binti-slate">
-                            {f.role} · {f.sessions}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <DataNote className="mt-3">Names masked per Kenya DPA 2019 — facilitator photos: real Nairobi team.</DataNote>
+                  {/* Facilitators co-lead every session in PAIRS of 2 */}
+                  {Array.from(new Set(FACILITATORS.map((f) => f.pair))).map((pairName) => {
+                    const pairMembers = FACILITATORS.filter((f) => f.pair === pairName);
+                    return (
+                      <div key={pairName} className="mb-3 last:mb-0">
+                        <p className="mb-1.5 font-display text-[10.5px] font-extrabold uppercase tracking-widest text-binti dark:text-indigo-300">
+                          {pairName}
+                        </p>
+                        <ul className="space-y-2.5 rounded-xl border border-dashed border-binti-pink/30 bg-binti-sand/30 p-2.5" role="list">
+                          {pairMembers.map((f) => (
+                            <li key={`${f.name}-${f.area}`} className="flex items-center gap-3">
+                              <div className="relative size-11 shrink-0 overflow-hidden rounded-full border-2 border-binti-pink/40">
+                                <NairobiPhoto src={f.photo} alt="" circle sizes="44px" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-display text-[13.5px] font-bold text-binti-ink">
+                                  {f.name} · {f.area}
+                                </p>
+                                <p className="text-[11.5px] text-binti-slate">
+                                  {f.role} · {f.sessions}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                  <DataNote className="mt-3">{FACILITATOR_NOTE} Names masked per Kenya DPA 2019. Photos: real Nairobi team.</DataNote>
                 </CardContent>
               </Card>
               <Card className="rounded-3xl border-binti-amber/50 bg-binti-sand/40 p-4">
                 <p className="flex items-start gap-2 text-[13px] leading-relaxed text-binti-ink">
                   <Info className="mt-0.5 size-4 shrink-0 text-binti dark:text-indigo-300" aria-hidden="true" />
-                  Under 18? We ask a guardian to consent before you join — it's the law (DPA 2019) and it keeps you safe.
+                  Under 18? We ask a guardian to consent before you join - it's the law (DPA 2019) and it keeps you safe.
                 </p>
               </Card>
             </div>
@@ -1254,7 +1265,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                 <Card className="rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
                   <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
                   <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
-                    KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
+                    KES 10,000 takes one girl through all 8 sessions - materials, facilitator, referrals and the alumni wall.
                   </p>
                   <ul className="mt-5 space-y-3" role="list">
                     {DONATE_TIERS.map((t) => (
@@ -1270,24 +1281,24 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                     ))}
                   </ul>
                   <Button onClick={onDonate} className="mt-5 h-12 w-full rounded-full bg-binti font-bold hover:bg-binti-deep">
-                    Open Donate — M-Pesa Paybill {ORG.paybill}
+                    Open Donate - M-Pesa Paybill {ORG.paybill}
                   </Button>
                 </Card>
                 <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white md:p-8">
                   <h3 className="font-display text-xl font-extrabold">Why donors trust Binti</h3>
                   <ul className="mt-4 space-y-3" role="list">
                     {[
-                      "✓ No cash — M-Pesa Till 522522 only, receipts auto-generated",
+                      "✓ No cash - M-Pesa Till 522522 only, receipts auto-generated",
                       "✓ Board unpaid · ED cannot sign alone · FO not related to ED",
                       "✓ 94% data quality, live aggregated dashboard, DATIM-ready",
                       "✓ Financials published in aggregate on the Accountability page",
-                      "✓ Kenya DPA 2019 compliant — no PII in any report",
+                      "✓ Kenya DPA 2019 compliant - no PII in any report",
                     ].map((t) => (
                       <li key={t} className="text-[13.5px] leading-relaxed text-white/90">{t}</li>
                     ))}
                   </ul>
                   <p className="mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] text-white/80">
-                    Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation — audit pack ready.
+                    Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation - audit pack ready.
                   </p>
                 </Card>
               </div>
@@ -1304,7 +1315,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                 <Handshake className="mx-auto size-12 text-binti dark:text-indigo-300" aria-hidden="true" />
                 <h3 className="mt-3 font-display text-xl font-extrabold text-binti-ink">Partner with Binti Rising</h3>
                 <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-binti-slate">
-                  Referral partners (LVCT Health, Nairobi County health), content partners (Shujaaz Inc) and funders —
+                  Referral partners (LVCT Health, Nairobi County health), content partners (Shujaaz Inc) and funders -
                   start with our MOU template, then meet the team in Kibera.
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
@@ -1331,7 +1342,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                   ))}
                 </div>
                 <DataNote className="mt-5">
-                  Partnerships are institutional — this form never collects beneficiary data. Existing partner? Reach the
+                  Partnerships are institutional - this form never collects beneficiary data. Existing partner? Reach the
                   partnerships lead directly: {ORG.email} · WhatsApp {ORG.whatsapp}.
                 </DataNote>
               </Card>
@@ -1341,7 +1352,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                   {[
                     "Send the inquiry form → reference code PTN-2026-XXXXXX",
                     "30-min intro call within 3 working days (Zoom or Kibera site visit)",
-                    "Sign the MOU template — scope, safeguarding annex, data clause",
+                    "Sign the MOU template - scope, safeguarding annex, data clause",
                     "Quarterly aggregate report + invite to a circle graduation",
                   ].map((step, i) => (
                     <li key={step} className="flex items-start gap-3 text-[13px] leading-relaxed text-binti-slate">
