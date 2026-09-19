@@ -389,3 +389,47 @@ export const WELLBEING_FY2425 = [
   { month: "Feb", score: 58 },
   { month: "Mar", score: 61 },
 ];
+
+// ---------- IMPACT CALCULATOR (donor conversion tool) ----------
+// Unit costs from FY24/25 aggregate: KES 500 = 1 girl's materials for a
+// session · KES 2,500 = one JTW session for a circle of 12 · KES 10,000 =
+// one girl's full 8-session journey.
+export const CALC_UNIT_COSTS = {
+  materials: 500,
+  session: 2500,
+  journey: 10000,
+} as const;
+
+// ---------- LIVE ACTIVITY FEED (aggregate, privacy-safe) ----------
+// Masked circle events — areas + counts only, NEVER names or identifiers.
+export const ACTIVITY_FEED = [
+  { id: "a1", area: "Mathare", event: "Circle completed S4 · Breaking Silence", meta: "12 present · 2 referrals opened", ago: "2 h ago" },
+  { id: "a2", area: "Kibera", event: "Referral closed at LVCT Health", meta: "48 h turnaround", ago: "5 h ago" },
+  { id: "a3", area: "Kawangware", event: "S6 Media Reflection Box session", meta: "Shujaaz Special comics read", ago: "yesterday" },
+  { id: "a4", area: "Kibera", event: "New facilitator certified (S1–S8)", meta: "36 → 37 trained", ago: "yesterday" },
+  { id: "a5", area: "Mathare", event: "Guardian consent drive", meta: "9 consents for next cohort", ago: "2 d ago" },
+  { id: "a6", area: "Kawangware", event: "S8 Closing · certificates + pins", meta: "11 graduates joined alumni wall", ago: "3 d ago" },
+] as const;
+
+// ---------- SEMA NA ME — canned safe flows (WhatsApp 20308 assistant) ----------
+export const SEMA_FLOWS = {
+  greet: "Karibu! I'm Sema na Me 💬 — the Binti Rising check-in buddy. What would you like to do today?",
+  options: [
+    { id: "join", label: "Join a circle" },
+    { id: "safe", label: "I need help now" },
+    { id: "jtw", label: "What is JTW?" },
+    { id: "donate", label: "Donate / support" },
+  ],
+  replies: {
+    join:
+      "Wonderful! 💛 Joining takes 2 minutes: initials only (never your full name), age 15–25, your area — and a guardian's OK if you're 15–17. Tap \"Join a circle\" on the Get Involved page, or WhatsApp us on +254758919709.",
+    safe:
+      "You are not alone. ❤️ For immediate help call the FREE GBV Hotline 1195 (24/7, all networks). You can also WhatsApp +254758919709 — a trained safeguarding listener replies. If you're in danger right now, try to reach a trusted adult or the nearest health centre. Your message stays anonymous.",
+    jtw:
+      "JTW = Journey to Wholeness — our peer-led 8-session programme (S1–S8) for 15–25-year-olds on SRH, emotions, consent and healthy relationships. Session 4, Breaking Silence, is where the healing gets real — with safeguarding on standby throughout.",
+    donate:
+      "Asante sana! 🙏 Every shilling is M-Pesa-receipted and audit-logged: Paybill 522522, account \"Binti Rising\". KES 10,000 takes one girl through the full journey. Tap \"Donate M-Pesa\" any time.",
+  } as Record<string, string>,
+  fallback:
+    "I can help with: joining a circle, immediate support, what JTW is, or donating. For anything else, WhatsApp +254758919709 or dial 1195 if you need help now.",
+} as const;

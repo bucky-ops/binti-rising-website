@@ -78,3 +78,23 @@ Stage Summary:
 - lint clean (0/0); no console errors; no hydration warnings; no horizontal overflow; privacy rules respected (aggregates only, masked names, voice note never rendered, *.xlsx/*.csv/.env.local gitignored).
 - Known risks: DonateModal receipt flow is client-side simulation (production needs Daraja env keys); BackToTop visually overlaps Next dev-tools button in dev only (no conflict in prod); sandbox kills background dev server between shell sessions.
 - Recommended next: git push branch overhaul/nairobi-team-redesign + Vercel preview via env tokens; consider real M-Pesa Daraja integration + Supabase KPI sync when client provides project keys.
+
+---
+Task ID: 4
+Agent: Orchestrator (Z.ai Code)
+Task: Round 2 — QA baseline, Sema na Me chat widget, Impact Calculator, activity feed, styling details
+
+Work Log:
+- Read worklog.md (Tasks 1-a…3). Baseline agent-browser QA: server 200, no console errors, no hydration issues, no overflow → stable, so pivoted to new features per mandate.
+- NEW DATA (data.ts): CALC_UNIT_COSTS (500/2,500/10,000 from FY24/25 aggregate), ACTIVITY_FEED (6 masked circle events — areas + counts only), SEMA_FLOWS (greeting, 4 quick replies incl. crisis path, keyword-matched replies, fallback).
+- NEW COMPONENT src/components/binti/sema.tsx — "Sema na Me" floating WhatsApp-style check-in buddy (WhatsApp 20308): launcher above mobile Donate FAB (bottom-20 mobile / bottom-5 desktop), M-Pesa-green pulse button + notification dot + label bubble; panel with green gradient header (BintiMark, hotline tel:1195 button), bot/user bubbles, typing indicator (bounce dots), keyword router (help/crisis → Hotline 1195 safety reply ALWAYS first; join/JTW/donate with deep-link action chips that navigate sections), free-text input w/ fallback reply, "Anonymous · nothing stored (DPA 2019)" footer, aria-expanded/role=dialog/live region.
+- FEATURE Impact Calculator (involved.tsx, For Donors tab): slider 500–100,000 KES step 500 + gradient fill, gradient amount readout, "≈ N girls rising" headline, preset chips (2,500/10,000/25,000/50,000), 3 impact stat chips (material packs / circle sessions of 12 / full journeys — math verified 11,500→23/4/1), M-Pesa CTA that names the girls funded, aggregate unit-cost DataNote. Wired via onDonate prop (fixed missing-prop bug before it shipped).
+- FEATURE Dashboard "Live from the Circles" feed: pulsing live dot, DPA badge, 6 event cards with gradient area avatars (MA/KI/KA), event+meta+ago; privacy note (referrals counted, never named).
+- STYLING: ScrollProgress gradient bar (fixed top, width=scroll%, no-print); hero slow-spinning 12-ray SVG sunburst behind circle photo (alternating amber/pink/indigo, opacity 45%); floating stat chips on hero photo (94% attendance / 87% referrals closed, binti-float + delayed variant); .binti-img-zoom hover zoom on What-We-Do + Stories photos; footer social icons (Instagram/Facebook/X/LinkedIn circular buttons, hover pink); reduced-motion block extended to cover all new animations.
+- QA findings & fixes: (1) hero "94%" chip clipped at 390px → left-0 on mobile, sm:-left-8 on desktop; verified no overflow after. (2) Automation note: Radix Tabs respond to Playwright clicks by id (#radix-…-trigger-donors) but NOT to JS .click() (no pointer events) — app works for real users; "text=" matcher is ambiguous (hits heading paragraph). (3) "1 Issue" dev badge after edits = Fast Refresh artifact only; clean reload shows zero issues.
+
+Stage Summary:
+- All verified via agent-browser: chat open → crisis path shows Hotline 1195 reply; calculator slider keyboard-driven 10,000→11,500 with live math; donors tab active state; activity feed renders; footer socials; progress bar; mobile 390 no overflow, launcher stacked above Donate FAB.
+- lint clean; server 200; no console errors on clean reload; privacy rules maintained (chat stores nothing, feed areas+counts only).
+- Risks: dev-server may die between shell sessions (restart: setsid bash -c 'exec bun run dev' >/dev/null 2>&1 < /dev/null &); Sema chat is client-side canned (no backend) by design — nothing persisted; hot-reload can transiently show false "Issue" badges.
+- Recommended next: push branch overhaul/nairobi-team-redesign to GitHub (repo bucky-ops/binti-rising-website) + Vercel preview; optional: wire newsletter/voice-note to Supabase when keys arrive; add "Our Story 2023→2026" milestone timeline if another content round is desired.

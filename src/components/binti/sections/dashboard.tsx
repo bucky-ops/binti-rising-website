@@ -45,6 +45,7 @@ import {
   INDICATORS,
   DATA_QUALITY,
   KPI_SPARKS,
+  ACTIVITY_FEED,
   ORG,
 } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
@@ -405,6 +406,45 @@ export function DashboardSection() {
           </div>
         </Card>
       </div>
+
+      {/* LIVE ACTIVITY FEED — masked circle events (areas + counts only) */}
+      <Card className="mt-6 rounded-2xl border-binti-sand bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="flex items-center gap-2 font-display text-[15px] font-bold text-binti-ink">
+            <span className="relative flex size-2.5" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-green-500" />
+            </span>
+            Live from the Circles
+          </h3>
+          <Badge variant="outline" className="rounded-full border-binti/40 text-[11px] font-bold text-binti">
+            Aggregated · areas + counts only — never names (DPA 2019)
+          </Badge>
+        </div>
+        <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3" role="list">
+          {ACTIVITY_FEED.map((e) => (
+            <li
+              key={e.id}
+              className="binti-lift flex items-start gap-3 rounded-xl border border-binti-sand bg-binti-cream/40 p-3.5"
+            >
+              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-binti to-binti-pink font-display text-[10px] font-extrabold text-white">
+                {e.area.slice(0, 2).toUpperCase()}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold leading-snug text-binti-ink">{e.event}</p>
+                <p className="mt-0.5 text-[11.5px] text-binti-slate">
+                  {e.area} · {e.meta}
+                </p>
+                <p className="mt-0.5 text-[10.5px] font-bold uppercase tracking-wide text-binti-slate/60">{e.ago}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <DataNote className="mt-4">
+          Events refresh with each monthly sync. Referrals are counted, never named — every story behind a number
+          belongs to her alone.
+        </DataNote>
+      </Card>
     </section>
   );
 }

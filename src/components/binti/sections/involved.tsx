@@ -28,8 +28,101 @@ import {
   Loader2,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
-import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, ORG, FACILITATORS } from "@/lib/binti/data";
+import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, ORG, FACILITATORS } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
+
+/* ------------------------------------------------------------------ */
+/* IMPACT CALCULATOR — "what does my gift do?" (donor conversion tool) */
+/* Unit costs from the FY24/25 aggregate: KES 500 materials · 2,500    */
+/* session for 12 · 10,000 full journey. Aggregates only, no PII.      */
+/* ------------------------------------------------------------------ */
+function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
+  const [amount, setAmount] = useState(10000);
+  const journeys = Math.floor(amount / CALC_UNIT_COSTS.journey);
+  const sessions = Math.floor(amount / CALC_UNIT_COSTS.session);
+  const materials = Math.floor(amount / CALC_UNIT_COSTS.materials);
+  const presets = [2500, 10000, 25000, 50000];
+
+  return (
+    <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-white to-binti-cream p-6 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-display text-xl font-extrabold text-binti-ink">Impact Calculator</h3>
+        <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti">FY24/25 aggregate unit costs</Badge>
+      </div>
+      <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
+        Drag to see exactly what your gift delivers — same maths the auditors use.
+      </p>
+
+      {/* Amount readout */}
+      <div className="mt-6 text-center">
+        <p className="font-display text-5xl font-extrabold binti-gradient-text tabular-nums">
+          {amount.toLocaleString()}
+          <span className="ml-1.5 align-middle text-lg text-binti-slate">KES</span>
+        </p>
+        <p className="mt-1 text-[12px] font-semibold uppercase tracking-widest text-binti-slate">
+          ≈ {journeys} {journeys === 1 ? "girl" : "girls"} rising through the full JTW journey
+        </p>
+      </div>
+
+      {/* Slider */}
+      <div className="mt-5">
+        <input
+          type="range"
+          min={500}
+          max={100000}
+          step={500}
+          value={amount}
+          onChange={(e) => setAmount(parseInt(e.target.value, 10))}
+          aria-label="Donation amount in Kenyan shillings"
+          className="h-2.5 w-full cursor-pointer appearance-none rounded-full bg-gradient-to-r from-binti via-binti-pink to-binti-amber accent-binti"
+          style={{
+            background: `linear-gradient(90deg, #4f46e5 0%, #ec4899 ${Math.min((amount / 100000) * 160, 100)}%, #fef3c7 ${Math.min((amount / 100000) * 100, 100)}%)`,
+          }}
+        />
+        <div className="mt-1.5 flex justify-between text-[11px] font-semibold text-binti-slate/70">
+          <span>KES 500</span>
+          <span>KES 100,000</span>
+        </div>
+        <div className="mt-3 flex flex-wrap justify-center gap-2">
+          {presets.map((p) => (
+            <button
+              key={p}
+              onClick={() => setAmount(p)}
+              aria-pressed={amount === p}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-[12px] font-bold transition",
+                amount === p ? "border-binti bg-binti text-white" : "border-binti/30 bg-white text-binti hover:border-binti"
+              )}
+            >
+              {p.toLocaleString()}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Impact chips */}
+      <div className="mt-6 grid grid-cols-3 gap-2.5">
+        {[
+          { value: materials, label: "girls' material packs", color: "bg-binti/10 text-binti" },
+          { value: sessions, label: "circle sessions of 12", color: "bg-binti-pink/10 text-binti-pinkdeep" },
+          { value: journeys, label: "full 8-session journeys", color: "bg-mpesa/10 text-green-700" },
+        ].map((c) => (
+          <div key={c.label} className={cn("rounded-2xl p-3.5 text-center", c.color)}>
+            <p className="font-display text-2xl font-extrabold tabular-nums">{c.value}</p>
+            <p className="mt-0.5 text-[11px] font-semibold leading-tight">{c.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <Button onClick={onDonate} className="mt-6 h-12 w-full rounded-full bg-mpesa font-display text-[15px] font-extrabold text-white hover:bg-green-600">
+        <HeartHandshake className="size-5" aria-hidden="true" /> Fund {journeys > 0 ? `${journeys} ${journeys === 1 ? "girl" : "girls"}` : "this impact"} — Give via M-Pesa
+      </Button>
+      <DataNote className="mt-3">
+        Unit costs from the audited FY24/25 aggregate: KES 500 materials · KES 2,500 session · KES 10,000 journey. Receipt auto · no cash.
+      </DataNote>
+    </Card>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* JOIN CIRCLE — name initial only + age 15-25 + area + DPA consent    */
@@ -635,45 +728,48 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
         {/* DONORS */}
         <TabsContent value="donors" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="rounded-3xl border-binti-sand bg-white p-6 md:p-8">
-              <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
-              <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
-                KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
-              </p>
-              <ul className="mt-5 space-y-3" role="list">
-                {DONATE_TIERS.map((t) => (
-                  <li key={t.amount} className="flex items-center justify-between rounded-xl border border-binti-sand bg-binti-cream/50 px-4 py-3">
-                    <div>
-                      <p className="font-display text-[14.5px] font-extrabold text-binti-ink">{t.label}</p>
-                      <p className="text-[12px] text-binti-slate">{t.impact}</p>
-                    </div>
-                    <Button onClick={onDonate} size="sm" className="rounded-full bg-mpesa font-bold text-white hover:bg-green-600">
-                      Donate
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-              <Button onClick={onDonate} className="mt-5 h-12 w-full rounded-full bg-binti font-bold hover:bg-binti-deep">
-                Open Donate — M-Pesa Paybill {ORG.paybill}
-              </Button>
-            </Card>
-            <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white md:p-8">
-              <h3 className="font-display text-xl font-extrabold">Why donors trust Binti</h3>
-              <ul className="mt-4 space-y-3" role="list">
-                {[
-                  "✓ No cash — M-Pesa Till 522522 only, receipts auto-generated",
-                  "✓ Board unpaid · ED cannot sign alone · FO not related to ED",
-                  "✓ 94% data quality, live aggregated dashboard, DATIM-ready",
-                  "✓ Financials published in aggregate on the Accountability page",
-                  "✓ Kenya DPA 2019 compliant — no PII in any report",
-                ].map((t) => (
-                  <li key={t} className="text-[13.5px] leading-relaxed text-white/90">{t}</li>
-                ))}
-              </ul>
-              <p className="mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] text-white/80">
-                Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation — audit pack ready.
-              </p>
-            </Card>
+            <ImpactCalculator onDonate={onDonate} />
+            <div className="space-y-6">
+              <Card className="rounded-3xl border-binti-sand bg-white p-6 md:p-8">
+                <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
+                  KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
+                </p>
+                <ul className="mt-5 space-y-3" role="list">
+                  {DONATE_TIERS.map((t) => (
+                    <li key={t.amount} className="flex items-center justify-between rounded-xl border border-binti-sand bg-binti-cream/50 px-4 py-3">
+                      <div>
+                        <p className="font-display text-[14.5px] font-extrabold text-binti-ink">{t.label}</p>
+                        <p className="text-[12px] text-binti-slate">{t.impact}</p>
+                      </div>
+                      <Button onClick={onDonate} size="sm" className="rounded-full bg-mpesa font-bold text-white hover:bg-green-600">
+                        Donate
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+                <Button onClick={onDonate} className="mt-5 h-12 w-full rounded-full bg-binti font-bold hover:bg-binti-deep">
+                  Open Donate — M-Pesa Paybill {ORG.paybill}
+                </Button>
+              </Card>
+              <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white md:p-8">
+                <h3 className="font-display text-xl font-extrabold">Why donors trust Binti</h3>
+                <ul className="mt-4 space-y-3" role="list">
+                  {[
+                    "✓ No cash — M-Pesa Till 522522 only, receipts auto-generated",
+                    "✓ Board unpaid · ED cannot sign alone · FO not related to ED",
+                    "✓ 94% data quality, live aggregated dashboard, DATIM-ready",
+                    "✓ Financials published in aggregate on the Accountability page",
+                    "✓ Kenya DPA 2019 compliant — no PII in any report",
+                  ].map((t) => (
+                    <li key={t} className="text-[13.5px] leading-relaxed text-white/90">{t}</li>
+                  ))}
+                </ul>
+                <p className="mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] text-white/80">
+                  Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation — audit pack ready.
+                </p>
+              </Card>
+            </div>
           </div>
         </TabsContent>
 

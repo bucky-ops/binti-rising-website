@@ -82,7 +82,7 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
           </p>
         </div>
 
-        {/* Right: circle photo with overlay S4 Very Heavy */}
+        {/* Right: circle photo with overlay S4 Very Heavy + floating chips */}
         <div className="relative mx-auto w-full max-w-[440px]">
           <motion.div
             initial={{ scale: 0.94, opacity: 0 }}
@@ -90,6 +90,27 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="relative aspect-square"
           >
+            {/* slow-spinning sun rays behind the circle */}
+            <svg
+              viewBox="0 0 200 200"
+              aria-hidden="true"
+              className="binti-spin-slow absolute -inset-8 z-0 h-[calc(100%+4rem)] w-[calc(100%+4rem)] opacity-45"
+            >
+              {Array.from({ length: 12 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1="100"
+                  y1="100"
+                  x2="100"
+                  y2={i % 2 === 0 ? "2" : "10"}
+                  stroke={i % 3 === 0 ? "#f59e0b" : i % 3 === 1 ? "#ec4899" : "#4f46e5"}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  transform={`rotate(${i * 30} 100 100)`}
+                  opacity={0.55}
+                />
+              ))}
+            </svg>
             <div aria-hidden="true" className="absolute -inset-3 rounded-full bg-gradient-to-tr from-binti-pink/35 via-binti-amber/25 to-binti-cyan/30 blur-md" />
             <NairobiPhoto
               src="/nairobi-team/nairobi-01.webp"
@@ -99,6 +120,15 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
               sizes="(max-width: 768px) 90vw, 440px"
               className="relative h-full w-full border-[6px] border-white shadow-2xl shadow-binti/20"
             />
+            {/* floating stat chips */}
+            <div className="binti-float absolute left-0 top-10 rounded-2xl border border-binti-sand bg-white/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-left-8">
+              <p className="font-display text-[17px] font-extrabold leading-none text-binti">94%</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-binti-slate">attendance</p>
+            </div>
+            <div className="binti-float-delay absolute -right-2 bottom-14 rounded-2xl border border-binti-sand bg-white/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-right-6">
+              <p className="font-display text-[17px] font-extrabold leading-none text-binti-pink">87%</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-binti-slate">referrals closed</p>
+            </div>
             {/* overlay badge */}
             <div className="absolute -bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-red-300 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
               <span className="size-2 animate-pulse rounded-full bg-binti-danger" aria-hidden="true" />
@@ -162,7 +192,7 @@ function StoriesOfRise() {
           {STORIES.map((s, i) => (
             <SectionReveal key={s.initials} delay={i * 0.08}>
               <Card className="binti-card-glow h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
-                <div className="relative h-44">
+                <div className="binti-img-zoom relative h-44">
                   <NairobiPhoto src={s.photo} alt={`Binti Rising circle session photo — ${s.area}`} sizes="(max-width: 768px) 100vw, 380px" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" aria-hidden="true" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
@@ -357,7 +387,7 @@ function WhatWeDo() {
               transition={{ delay: i * 0.08, duration: 0.45 }}
             >
               <Card className="binti-lift h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
-                <div className="relative h-36 w-full">
+                <div className="binti-img-zoom relative h-36 w-full">
                   <NairobiPhoto src={p.photo} alt={`${p.title} — Nairobi team photo`} sizes="(max-width: 640px) 100vw, 320px" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
                     {p.tag}

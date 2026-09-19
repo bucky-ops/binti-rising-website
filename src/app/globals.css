@@ -285,6 +285,52 @@
   }
 }
 
+/* Card image zoom on hover (photo cards) */
+.binti-img-zoom {
+  overflow: hidden;
+}
+.binti-img-zoom img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.binti-img-zoom:hover img {
+  transform: scale(1.06);
+}
+
+/* Gentle float for hero chips */
+@keyframes binti-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.binti-float {
+  animation: binti-float 3.4s ease-in-out infinite;
+}
+.binti-float-delay {
+  animation: binti-float 3.4s ease-in-out 1.2s infinite;
+}
+
+/* Slow spin for hero sun rays */
+@keyframes binti-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.binti-spin-slow {
+  animation: binti-spin-slow 24s linear infinite;
+}
+
+/* Scroll progress bar (donor-site polish) */
+.binti-progress {
+  background: linear-gradient(90deg, #4f46e5, #ec4899 55%, #f59e0b);
+}
+
 /* Page section enter transition (keyed div replays on section switch) */
 @keyframes binti-page-enter {
   from {
@@ -323,11 +369,18 @@
 @media (prefers-reduced-motion: reduce) {
   .binti-marquee-track,
   .binti-pulse,
-  .binti-recording {
+  .binti-recording,
+  .binti-float,
+  .binti-float-delay,
+  .binti-spin-slow,
+  .binti-page-enter {
     animation: none;
   }
   .binti-lift:hover,
   .binti-card-glow:hover {
+    transform: none;
+  }
+  .binti-img-zoom:hover img {
     transform: none;
   }
 }

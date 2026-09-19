@@ -8,6 +8,7 @@ import { WorkSection } from "./sections/work";
 import { DashboardSection } from "./sections/dashboard";
 import { AccountabilitySection } from "./sections/accountability";
 import { InvolvedSection, DonateModal } from "./sections/involved";
+import { SemaChat } from "./sema";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeartHandshake, ArrowUp } from "lucide-react";
 
@@ -49,6 +50,32 @@ function BackToTop() {
 }
 
 /* ------------------------------------------------------------------ */
+/* ScrollProgress — thin gradient bar under the navbar                 */
+/* ------------------------------------------------------------------ */
+function ScrollProgress() {
+  const [pct, setPct] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      setPct(max > 0 ? Math.min((h.scrollTop / max) * 100, 100) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+  return (
+    <div className="no-print pointer-events-none fixed inset-x-0 top-0 z-50 h-[3px]" aria-hidden="true">
+      <div className="binti-progress h-full transition-[width] duration-150 ease-out" style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* BintiSite — single-route app: 5 sections as in-app "pages"          */
 /* Layout: min-h-screen flex flex-col, footer sticks with mt-auto      */
 /* ------------------------------------------------------------------ */
@@ -81,6 +108,7 @@ export function BintiSite() {
         Skip to main content
       </a>
 
+      <ScrollProgress />
       <Navbar active={section} onNavigate={navigate} onDonate={() => setDonateOpen(true)} />
 
       <main id="main-content" className="flex-1">
@@ -99,6 +127,9 @@ export function BintiSite() {
       <Footer onNavigate={navigate} />
 
       <BackToTop />
+
+      {/* Sema na Me — floating check-in buddy (WhatsApp 20308 flows) */}
+      <SemaChat onNavigate={navigate} />
 
       {/* Mobile sticky Donate (prototype flow: Mobile Hamburger → Work → Donate sticky) */}
       <button

@@ -16,6 +16,10 @@ import {
   HandHeart,
   ExternalLink,
   ShieldCheck,
+  Instagram,
+  Facebook,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import { ORG, type SectionId, POLICIES } from "@/lib/binti/data";
 import { BintiWordmark, BintiLogoImage, BintiMark } from "./ui";
@@ -257,6 +261,27 @@ export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             <li>{ORG.email}</li>
             <li>{ORG.address}</li>
             <li className="pt-1 text-white/50">Socials: {ORG.socials}</li>
+            <li>
+              <div className="flex gap-2 pt-1">
+                {[
+                  { Icon: Instagram, href: "https://instagram.com/bintirising", label: "Binti Rising on Instagram" },
+                  { Icon: Facebook, href: "https://facebook.com/bintirising", label: "Binti Rising on Facebook" },
+                  { Icon: Twitter, href: "https://x.com/bintirising", label: "Binti Rising on X (Twitter)" },
+                  { Icon: Linkedin, href: "https://linkedin.com/company/bintirising", label: "Binti Rising on LinkedIn" },
+                ].map(({ Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-binti-pink hover:text-white"
+                  >
+                    <Icon className="size-4" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            </li>
           </ul>
         </div>
       </div>
