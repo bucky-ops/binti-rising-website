@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, dbReady } from "@/lib/db";
 import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
@@ -68,6 +68,7 @@ export async function POST(req: Request) {
     }
 
     // 2) Fallback: local Prisma store
+    await dbReady();
     const saved = await db.joinRequest.create({ data: record });
 
     return NextResponse.json({

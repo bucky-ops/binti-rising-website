@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
+import { db, dbReady } from "@/lib/db";
+import { sbInsert, sbSelect, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
  * POST /api/partners - Partner Inquiry form (Get Involved → For Partners)
@@ -97,6 +97,7 @@ export async function POST(req: Request) {
     }
 
     // 2) Fallback: local Prisma store
+    await dbReady();
     const saved = await db.partnerInquiry.create({ data: record });
 
     return NextResponse.json({
@@ -157,6 +158,7 @@ export async function GET(req: Request) {
     }
 
     // 2) Fallback: local Prisma store
+    await dbReady();
     const row = await db.partnerInquiry.findUnique({ where: { reference: ref } });
     if (!row) {
       return NextResponse.json({ ok: true, found: false, reference: ref }, { status: 404 });

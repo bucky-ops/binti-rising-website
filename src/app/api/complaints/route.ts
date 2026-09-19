@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, dbReady } from "@/lib/db";
 import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
@@ -34,6 +34,7 @@ export async function POST(req: Request) {
     const hasVoiceNote = Boolean(body.hasVoiceNote) || !!voiceNote;
 
     // Anonymous reference, e.g. BRI-2026-0042
+    await dbReady();
     const count = await db.complaint.count();
     const reference = `BRI-2026-${String(count + 1).padStart(4, "0")}`;
 
