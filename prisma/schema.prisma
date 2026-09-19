@@ -1,0 +1,58 @@
+// Binti Rising Initiative - Prisma schema
+// DATA PRIVACY (Kenya DPA 2019): This schema stores ONLY
+//  - aggregated KPI snapshots (no personal identifiers), and
+//  - minimal consented data from the Join Circle form (initials, age, area).
+// Full names, national IDs, exact home locations are NEVER stored.
+// Phone number is optional, stored only with explicit DPA consent,
+// and is never rendered by any API or UI surface.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Join Circle form submissions (For Youth)
+model JoinRequest {
+  id              String   @id @default(cuid())
+  displayName     String // initials only, e.g. "F.W." - full names rejected server-side
+  age             Int // validated 15-25
+  area            String // Kibera | Mathare | Kawangware | Other
+  phone           String? // optional, DPA consent required, never displayed
+  consentDpa      Boolean // Kenya DPA 2019 consent checkbox
+  guardianConsent Boolean  @default(false) // required when age < 18
+  status          String   @default("pending") // pending | placed | contacted
+  createdAt       DateTime @default(now())
+}
+
+// Anonymous complaints / safety reports (Accountability)
+model Complaint {
+  id           String   @id @default(cuid())
+  reference    String   @unique // anonymous ref, e.g. "BRI-2026-0042"
+  category     String // safeguarding | fraud | data | other
+  message      String // free text, user is told NOT to include their own name
+  hasVoiceNote Boolean  @default(false)
+  status       String   @default("received") // received | reviewing | actioned | closed
+  createdAt    DateTime @default(now())
+}
+
+// Aggregated monthly KPI snapshots feeding the Live Impact Dashboard.
+// One row per (month, area). No PII anywhere - counts and percentages only.
+model KpiMonthly {
+  id              String   @id @default(cuid())
+  month           String // "2026-04"
+  area            String // Kibera | Mathare | Kawangware | ALL
+  youthEnrolled   Int
+  sessionsHeld    Int
+  attendancePct   Float
+  referralsOpen   Int
+  referralsClosed Int
+  wellbeingAvg    Float // 0-100 average wellbeing score
+  source          String   @default("SSK aggregation (masked)")
+  updatedAt       DateTime @updatedAt
+
+  @@unique([month, area])
+}

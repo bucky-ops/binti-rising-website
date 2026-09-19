@@ -1,0 +1,495 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Heart,
+  Users,
+  ShieldCheck,
+  BarChart3,
+  ChevronDown,
+  ArrowRight,
+  Eye,
+  Sparkles,
+} from "lucide-react";
+import type { SectionId } from "@/lib/binti/data";
+import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE } from "@/lib/binti/data";
+import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote } from "../ui";
+import { cn } from "@/lib/utils";
+
+const ICONS = { Heart, Users, ShieldCheck, BarChart3 } as const;
+
+/* ------------------------------------------------------------------ */
+/* HERO — "From Silence, She Rises." 56px + circle photo + S4 overlay  */
+/* ------------------------------------------------------------------ */
+function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
+  return (
+    <section aria-label="Hero" className="relative overflow-hidden bg-binti-cream">
+      {/* decorative sun rays */}
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-gradient-to-br from-binti-amber/30 via-binti-pink/20 to-transparent blur-2xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -left-32 bottom-0 size-80 rounded-full bg-binti-cyan/10 blur-3xl" />
+
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-14">
+        {/* Left: headline + CTAs */}
+        <div>
+          <Badge className="mb-4 gap-1.5 rounded-full bg-binti-pink/10 px-3 py-1.5 text-[12px] font-bold text-binti-pinkdeep border border-binti-pink/30">
+            <Sparkles className="size-3.5" aria-hidden="true" />
+            Peer-led · Journey to Wholeness · AGYW 15–25
+          </Badge>
+          <h1 className="font-display text-[40px] font-extrabold leading-[1.05] tracking-tight text-binti-ink sm:text-5xl md:text-[56px]">
+            From Silence,{" "}
+            <span className="binti-gradient-text">She Rises.</span>
+          </h1>
+          <p className="mt-5 max-w-xl text-[18px] leading-[28px] text-binti-slate">
+            Peer-led 8-session mentorship for 15–25 AGYW on SRH, mental health and healthy
+            relationships — in Kibera, Mathare & Kawangware. Co-created by 50 youth, backed by
+            live data, audited finances.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Button
+              onClick={() => onNavigate("work")}
+              className="h-12 rounded-full bg-binti px-6 text-[15px] font-bold shadow-lg shadow-binti/25 hover:bg-binti-deep hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-binti-pink"
+            >
+              Meet Binti <ArrowRight className="size-4" aria-hidden="true" />
+            </Button>
+            <Button
+              onClick={() => onNavigate("dashboard")}
+              variant="outline"
+              className="h-12 rounded-full border-2 border-binti/40 bg-white/70 px-6 text-[15px] font-bold text-binti hover:bg-binti hover:text-white hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-binti-pink"
+            >
+              <Eye className="size-4" aria-hidden="true" /> View Live Data
+            </Button>
+          </div>
+          <p className="mt-5 flex items-center gap-2 text-[13px] text-binti-slate/80">
+            <span className="inline-block size-2 rounded-full bg-green-500" aria-hidden="true" />
+            Live dashboard synced {HERO_QUOTE.detail === "S4 Graduate" ? "2 min ago" : ""} · Data Quality 94% · DPA 2019
+          </p>
+        </div>
+
+        {/* Right: circle photo with overlay S4 Very Heavy */}
+        <div className="relative mx-auto w-full max-w-[440px]">
+          <motion.div
+            initial={{ scale: 0.94, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative aspect-square"
+          >
+            <div aria-hidden="true" className="absolute -inset-3 rounded-full bg-gradient-to-tr from-binti-pink/35 via-binti-amber/25 to-binti-cyan/30 blur-md" />
+            <NairobiPhoto
+              src="/nairobi-team/nairobi-01.webp"
+              alt="Nairobi team — Binti Rising sisterhood circle member, portrait"
+              circle
+              priority
+              sizes="(max-width: 768px) 90vw, 440px"
+              className="relative h-full w-full border-[6px] border-white shadow-2xl shadow-binti/20"
+            />
+            {/* overlay badge */}
+            <div className="absolute -bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-red-300 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
+              <span className="size-2 animate-pulse rounded-full bg-binti-danger" aria-hidden="true" />
+              <span className="font-display text-[12px] font-extrabold text-binti-ink">
+                S4 Breaking Silence · <span className="text-binti-danger">VERY HEAVY</span>
+              </span>
+            </div>
+            <div className="absolute -right-1 top-6 rounded-full border border-binti-amber/40 bg-white/95 px-3 py-1.5 shadow-md">
+              <span className="text-[11px] font-bold text-binti-slate">Safeguarding on standby</span>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* IMPACT STRIP — count-up animated aggregated totals                  */
+/* ------------------------------------------------------------------ */
+function ImpactStrip() {
+  return (
+    <section aria-label="Impact at a glance" className="w-full bg-binti">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 md:grid-cols-4 md:px-6 md:py-10">
+        {IMPACT_STRIP.map((s) => (
+          <div key={s.label} className="text-center">
+            <p className="font-display text-4xl font-extrabold text-white md:text-5xl">
+              <CountUp end={s.value} suffix={s.suffix} />
+            </p>
+            <p className="mt-1 font-display text-[13px] font-bold uppercase tracking-[0.18em] text-binti-amber">
+              {s.label}
+            </p>
+            <p className="text-[12px] text-white/60">{s.note}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* WHAT WE DO — 4 cards using Nairobi photos only                      */
+/* ------------------------------------------------------------------ */
+function WhatWeDo() {
+  return (
+    <section aria-label="What we do" className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+      <SectionHeading
+        eyebrow="What We Do"
+        title={<>Four pillars, <span className="font-hand text-4xl font-bold text-binti-pink">one sisterhood</span></>}
+        sub="Every pillar is peer-led, data-tracked and safeguarded. Photos are our real Nairobi team — never stock."
+      />
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {WHAT_WE_DO.map((p, i) => {
+          const Icon = ICONS[p.icon as keyof typeof ICONS];
+          return (
+            <motion.div
+              key={p.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ delay: i * 0.08, duration: 0.45 }}
+            >
+              <Card className="binti-lift h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
+                <div className="relative h-36 w-full">
+                  <NairobiPhoto src={p.photo} alt={`${p.title} — Nairobi team photo`} sizes="(max-width: 640px) 100vw, 320px" />
+                  <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
+                    {p.tag}
+                  </span>
+                </div>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-binti/10">
+                      <Icon className="size-4 text-binti" aria-hidden="true" />
+                    </span>
+                    <h3 className="font-display text-[15px] font-bold text-binti-ink">{p.title}</h3>
+                  </div>
+                  <p className="mt-2 text-[13px] leading-relaxed text-binti-slate">{p.body}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* JTW TIMELINE TEASER — 8-step mini stepper                           */
+/* ------------------------------------------------------------------ */
+function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
+  return (
+    <section aria-label="JTW journey teaser" className="bg-white py-14">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <SectionHeading
+            eyebrow="Our Work"
+            title="The JTW Journey — 8 steps from silence to strength"
+            sub="Journey to Wholeness: field-tested Oct 2025–Mar 2026 by 36 facilitators in Kibera, Mathare & Kawangware."
+          />
+          <Button
+            onClick={() => onNavigate("work")}
+            variant="ghost"
+            className="font-bold text-binti hover:bg-binti-sand"
+          >
+            Explore all sessions <ArrowRight className="size-4" aria-hidden="true" />
+          </Button>
+        </div>
+
+        <ol className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8" role="list" aria-label="JTW 8 sessions">
+          {JTW.map((s, i) => (
+            <li key={s.id}>
+              <button
+                onClick={() => onNavigate("work")}
+                className={cn(
+                  "binti-lift group h-full w-full rounded-2xl border p-3 text-left",
+                  s.risk === "Very Heavy"
+                    ? "border-red-300 bg-red-50"
+                    : "border-binti-sand bg-binti-cream"
+                )}
+                aria-label={`Session ${s.id}: ${s.title}, risk ${s.risk}`}
+              >
+                <span
+                  className={cn(
+                    "font-display text-[11px] font-extrabold",
+                    s.risk === "Very Heavy" ? "text-binti-danger" : "text-binti-pink"
+                  )}
+                >
+                  {s.id}
+                </span>
+                <p className="mt-0.5 font-display text-[13.5px] font-bold leading-tight text-binti-ink">{s.title}</p>
+                <div className="mt-2">
+                  <RiskBadge risk={s.risk} className="!text-[9px] px-1.5 py-0" />
+                </div>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <DataNote className="mt-4">
+          Facilitator-to-youth ratio 1:35 · referral lists memorised before S4 · sessions follow the JTW Guide.
+        </DataNote>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* PARTNERS MARQUEE                                                    */
+/* ------------------------------------------------------------------ */
+function PartnersMarquee() {
+  const items = [...PARTNERS, ...PARTNERS];
+  return (
+    <section aria-label="Partners" className="border-y border-binti-sand bg-binti-cream py-8">
+      <p className="text-center font-display text-[12px] font-bold uppercase tracking-[0.22em] text-binti-slate">
+        Trusted by · Donor & Community Partners
+      </p>
+      <div className="relative mt-5 overflow-hidden" aria-hidden="false">
+        <div className="binti-marquee-track flex w-max items-center gap-10 px-4">
+          {items.map((p, i) => (
+            <span
+              key={`${p}-${i}`}
+              aria-hidden={i >= PARTNERS.length}
+              className="whitespace-nowrap font-display text-lg font-bold text-binti-slate/50"
+            >
+              {p}
+            </span>
+          ))}
+        </div>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-binti-cream to-transparent" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-binti-cream to-transparent" />
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* QUOTE — Caveat handwritten (Remember the stone…)                    */
+/* ------------------------------------------------------------------ */
+function Quote() {
+  return (
+    <section aria-label="Quote from a graduate" className="mx-auto max-w-4xl px-4 py-16 text-center md:px-6">
+      <p className="font-hand text-4xl leading-tight text-binti-ink md:text-[44px]">
+        “{HERO_QUOTE.text}”
+      </p>
+      <p className="mt-4 font-display text-sm font-bold text-binti">
+        — {HERO_QUOTE.author} · {HERO_QUOTE.detail}
+      </p>
+      <p className="mt-1 text-[12px] text-binti-slate/70">Name masked per Kenya DPA 2019</p>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* BRAND BOOK — Phase 1 & 2 deliverable: 3 mood boards (A+B winner),   */
+/* tokens, typography, logo pack — Nairobi photos only                 */
+/* ------------------------------------------------------------------ */
+function BrandBook() {
+  const [open, setOpen] = useState(false);
+  const moods = [
+    {
+      id: "MOOD A",
+      name: "Terracotta Sisterhood",
+      desc: "Feminine, powerful, sisterhood circles. Warm terracotta + cream + deep purple.",
+      swatches: ["#C2571B", "#FFFBEB", "#6D28D9", "#FEF3C7"],
+      photo: "/nairobi-team/nairobi-03.webp",
+      winner: false,
+    },
+    {
+      id: "MOOD B",
+      name: "Shujaaz Youth Vibrant",
+      desc: "Inspo: Shujaaz Kenya, MTV Shuga. Youth first, unapologetic.",
+      swatches: ["#EC4899", "#F59E0B", "#06B6D4", "#0F172A"],
+      photo: "/nairobi-team/nairobi-11.webp",
+      winner: false,
+    },
+    {
+      id: "WINNER · A+B",
+      name: "Vibrant Youth + Donor Trust",
+      desc: "Merge A + B = Youth vibrant + institutional trust. Inspo: PATH.org, LVCT Health. Data-driven, fundable at first glance.",
+      swatches: ["#4F46E5", "#EC4899", "#06B6D4", "#FFFBEB"],
+      photo: "/nairobi-team/nairobi-06.webp",
+      winner: true,
+    },
+  ];
+
+  return (
+    <section aria-label="Brand book" className="bg-white py-12">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <Collapsible open={open} onOpenChange={setOpen}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <SectionHeading
+              eyebrow="Design System · Phase 1–2"
+              title="Brand Book — Nairobi Edition"
+              sub="Three directions tested with 36 facilitators in Kibera. Winner: vibrant youth + donor trust. All imagery: Nairobi team only."
+            />
+            <CollapsibleTrigger asChild>
+              <Button variant="outline" className="rounded-full border-binti/40 font-bold text-binti">
+                {open ? "Hide" : "Show"} mood boards & UI kit
+                <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} aria-hidden="true" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent className="mt-8 space-y-8">
+            {/* Mood boards */}
+            <div className="grid gap-5 md:grid-cols-3">
+              {moods.map((m) => (
+                <Card
+                  key={m.id}
+                  className={cn(
+                    "binti-lift overflow-hidden rounded-2xl pt-0",
+                    m.winner ? "border-2 border-binti shadow-lg shadow-binti/15" : "border-binti-sand"
+                  )}
+                >
+                  <div className="relative h-40">
+                    <NairobiPhoto src={m.photo} alt={`${m.name} mood board — Nairobi team photo`} sizes="(max-width: 768px) 100vw, 380px" />
+                    {m.winner && (
+                      <span className="absolute left-3 top-3 rounded-full bg-binti px-3 py-1 text-[11px] font-extrabold text-white shadow">
+                        WINNER · FINAL STYLE
+                      </span>
+                    )}
+                  </div>
+                  <CardContent className="p-4">
+                    <p className="font-display text-[11px] font-extrabold tracking-widest text-binti-pink">{m.id}</p>
+                    <h3 className="mt-1 font-display text-[15px] font-bold text-binti-ink">{m.name}</h3>
+                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-binti-slate">{m.desc}</p>
+                    <div className="mt-3 flex gap-2">
+                      {m.swatches.map((c) => (
+                        <span
+                          key={c}
+                          className="size-7 rounded-full border border-black/10 shadow-sm"
+                          style={{ backgroundColor: c }}
+                          title={c}
+                        />
+                      ))}
+                    </div>
+                    {/* circle crop + duotone demo */}
+                    <div className="mt-4 flex items-center gap-3">
+                      <div className="relative size-14 overflow-hidden rounded-full">
+                        <NairobiPhoto src={m.photo} alt="" sizes="56px" />
+                      </div>
+                      <p className="text-[11px] leading-tight text-binti-slate/80">
+                        Nairobi photo · circle crop + duotone treatment
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Tokens + typography + logo pack */}
+            <div className="grid gap-5 lg:grid-cols-3">
+              <Card className="rounded-2xl border-binti-sand p-5">
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Colour Tokens</h3>
+                <ul className="mt-3 space-y-2 text-[12.5px]" role="list">
+                  {[
+                    ["--color-binti", "#4F46E5", "Primary Indigo"],
+                    ["--color-binti-pink", "#EC4899", "Pink Binti"],
+                    ["--color-binti-cyan", "#06B6D4", "Accent"],
+                    ["--color-binti-cream", "#FFFBEB", "BG Warm"],
+                    ["--color-binti-ink", "#0F172A", "Text"],
+                  ].map(([token, hex, label]) => (
+                    <li key={token} className="flex items-center gap-2.5">
+                      <span className="size-6 rounded-md border border-black/10" style={{ backgroundColor: hex }} />
+                      <code className="text-[11px] text-binti-slate">{token}</code>
+                      <span className="ml-auto font-mono text-[11px] text-binti-slate/70">{hex}</span>
+                      <span className="hidden text-[11px] text-binti-slate sm:inline">{label}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-[11px] leading-relaxed text-binti-slate/70">
+                  WCAG AA contrast checked. Danger red used only for GBV / Very Heavy sessions.
+                </p>
+              </Card>
+
+              <Card className="rounded-2xl border-binti-sand p-5">
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Typography</h3>
+                <p className="mt-3 font-display text-3xl font-extrabold text-binti-ink">Sora Bold — 56px Hero</p>
+                <p className="mt-2 text-[15px] leading-relaxed text-binti-slate">
+                  Inter 18px/28px body — UI text at 16px+, 44px touch targets.
+                </p>
+                <p className="mt-2 font-hand text-4xl text-binti-pink">Caveat 40px — “Remember the stone…”</p>
+                <p className="mt-1 text-[11px] text-binti-slate/70">Caveat for soul · Sora for strength · Inter for clarity</p>
+              </Card>
+
+              <Card className="rounded-2xl border-binti-sand p-5">
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Logo Pack</h3>
+                <div className="mt-3 space-y-3">
+                  <div className="flex items-center gap-3 rounded-xl bg-binti-cream p-3">
+                    <BintiMark size={26} />
+                    <span className="font-hand text-2xl font-bold text-binti-pink">Binti</span>
+                    <span className="font-display text-lg font-extrabold tracking-widest text-binti">RISING</span>
+                    <span className="ml-auto text-[10px] text-binti-slate">Full color</span>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-xl bg-binti-ink p-3">
+                    <BintiMark light size={26} />
+                    <span className="font-hand text-2xl font-bold text-white">Binti</span>
+                    <span className="font-display text-lg font-extrabold tracking-widest text-white">RISING</span>
+                    <span className="ml-auto text-[10px] text-white/60">White</span>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
+                    <BintiMark size={26} />
+                    <span className="font-hand text-2xl font-bold text-black">Binti</span>
+                    <span className="font-display text-lg font-extrabold tracking-widest text-black">RISING</span>
+                    <span className="ml-auto text-[10px] text-binti-slate">Black</span>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
+                    <img src="/favicon.png" alt="Binti Rising favicon" className="size-8 rounded-full" />
+                    <span className="text-[11px] text-binti-slate">Favicon 32 · App icon 1024</span>
+                  </div>
+                  <div className="flex items-center gap-3 rounded-xl border border-binti-sand p-3">
+                    <img src="/og.png" alt="Binti Rising OG image 1200 by 630" className="h-10 w-[76px] rounded object-cover" />
+                    <span className="text-[11px] text-binti-slate">OG image 1200×630</span>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* UI kit states strip (Phase 2) */}
+            <Card className="rounded-2xl border-binti-sand p-5">
+              <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">UI Kit — Components with ALL states</h3>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Button className="rounded-full bg-binti">Primary · Default</Button>
+                <Button className="rounded-full bg-binti hover:scale-[1.02] hover:shadow-lg">Hover 1.02 + lift</Button>
+                <Button disabled className="rounded-full bg-binti opacity-50">Disabled 50%</Button>
+                <Button className="rounded-full bg-mpesa hover:bg-green-600">
+                  <HeartHandshakePlaceholder /> Donate · M-Pesa green
+                </Button>
+                <Button variant="outline" className="rounded-full border-binti/50 text-binti">Secondary</Button>
+              </div>
+              <div className="mt-4 grid gap-3 text-[12px] text-binti-slate sm:grid-cols-3">
+                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Inputs:</strong> Default · Focus (ring indigo) · Error “Age must be 15–25” · Success · Disabled · DPA consent checkbox</p>
+                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Cards:</strong> Program · KPI · Facilitator (Nairobi photos only) · Skeleton · Empty “No youth yet”</p>
+                <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Feedback:</strong> Toasts · Modals Join/Donate/Safety · Charts loading / empty / error · JTW stepper S1–S8</p>
+              </div>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    </section>
+  );
+}
+
+function HeartHandshakePlaceholder() {
+  return (
+    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      <path d="m12 13-1-1 2-2-3-3 2-2" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
+  return (
+    <>
+      <Hero onNavigate={onNavigate} />
+      <ImpactStrip />
+      <WhatWeDo />
+      <JtwTeaser onNavigate={onNavigate} />
+      <PartnersMarquee />
+      <Quote />
+      <BrandBook />
+    </>
+  );
+}
