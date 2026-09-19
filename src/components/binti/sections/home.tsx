@@ -29,7 +29,7 @@ import {
   Quote as QuoteIcon,
 } from "lucide-react";
 import type { SectionId } from "@/lib/binti/data";
-import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS } from "@/lib/binti/data";
+import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS, MILESTONES } from "@/lib/binti/data";
 import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote, SectionReveal } from "../ui";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +48,7 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-14">
         {/* Left: headline + CTAs */}
         <div>
-          <Badge className="mb-4 gap-1.5 rounded-full bg-binti-pink/10 px-3 py-1.5 text-[12px] font-bold text-binti-pinkdeep border border-binti-pink/30">
+          <Badge className="mb-4 gap-1.5 rounded-full bg-binti-pink/10 px-3 py-1.5 text-[12px] font-bold text-binti-pinkdeep dark:text-pink-300 border border-binti-pink/30">
             <Sparkles className="size-3.5" aria-hidden="true" />
             Peer-led · Journey to Wholeness · AGYW 15–25
           </Badge>
@@ -71,7 +71,7 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             <Button
               onClick={() => onNavigate("dashboard")}
               variant="outline"
-              className="h-12 rounded-full border-2 border-binti/40 bg-white/70 px-6 text-[15px] font-bold text-binti hover:bg-binti hover:text-white hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-binti-pink"
+              className="h-12 rounded-full border-2 border-binti/40 bg-binti-card/70 px-6 text-[15px] font-bold text-binti dark:text-indigo-300 hover:bg-binti hover:text-white hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-binti-pink"
             >
               <Eye className="size-4" aria-hidden="true" /> View Live Data
             </Button>
@@ -121,22 +121,22 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
               className="relative h-full w-full border-[6px] border-white shadow-2xl shadow-binti/20"
             />
             {/* floating stat chips */}
-            <div className="binti-float absolute left-0 top-10 rounded-2xl border border-binti-sand bg-white/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-left-8">
-              <p className="font-display text-[17px] font-extrabold leading-none text-binti">94%</p>
+            <div className="binti-float absolute left-0 top-10 rounded-2xl border border-binti-sand bg-binti-card/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-left-8">
+              <p className="font-display text-[17px] font-extrabold leading-none text-binti dark:text-indigo-300">94%</p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-binti-slate">attendance</p>
             </div>
-            <div className="binti-float-delay absolute -right-2 bottom-14 rounded-2xl border border-binti-sand bg-white/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-right-6">
+            <div className="binti-float-delay absolute bottom-14 right-0 rounded-2xl border border-binti-sand bg-binti-card/95 px-3.5 py-2 shadow-lg backdrop-blur sm:-right-6">
               <p className="font-display text-[17px] font-extrabold leading-none text-binti-pink">87%</p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-binti-slate">referrals closed</p>
             </div>
             {/* overlay badge */}
-            <div className="absolute -bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-red-300 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
+            <div className="absolute -bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-red-300 bg-binti-card/95 px-4 py-2 shadow-lg backdrop-blur">
               <span className="size-2 animate-pulse rounded-full bg-binti-danger" aria-hidden="true" />
               <span className="font-display text-[12px] font-extrabold text-binti-ink">
                 S4 Breaking Silence · <span className="text-binti-danger">VERY HEAVY</span>
               </span>
             </div>
-            <div className="absolute -right-1 top-6 rounded-full border border-binti-amber/40 bg-white/95 px-3 py-1.5 shadow-md">
+            <div className="absolute right-0 top-6 rounded-full border border-binti-amber/40 bg-binti-card/95 px-3 py-1.5 shadow-md sm:-right-6">
               <span className="text-[11px] font-bold text-binti-slate">Safeguarding on standby</span>
             </div>
           </motion.div>
@@ -174,7 +174,7 @@ function ImpactStrip() {
 /* ------------------------------------------------------------------ */
 function StoriesOfRise() {
   return (
-    <section aria-label="Stories of Rise" className="bg-gradient-to-b from-binti-cream to-white py-14">
+    <section aria-label="Stories of Rise" className="bg-gradient-to-b from-binti-cream to-binti-card py-14">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <SectionReveal>
           <SectionHeading
@@ -191,11 +191,11 @@ function StoriesOfRise() {
         <div className="mt-9 grid gap-5 md:grid-cols-3">
           {STORIES.map((s, i) => (
             <SectionReveal key={s.initials} delay={i * 0.08}>
-              <Card className="binti-card-glow h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
+              <Card className="binti-card-glow h-full overflow-hidden rounded-2xl border-binti-sand bg-binti-card pt-0">
                 <div className="binti-img-zoom relative h-44">
                   <NairobiPhoto src={s.photo} alt={`Binti Rising circle session photo — ${s.area}`} sizes="(max-width: 768px) 100vw, 380px" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" aria-hidden="true" />
-                  <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
+                  <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-2.5 py-1 text-[11px] font-bold text-binti dark:text-indigo-300 shadow-sm">
                     {s.tag}
                   </span>
                   <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2.5">
@@ -210,7 +210,7 @@ function StoriesOfRise() {
                   <p className="mt-2 text-[14px] leading-relaxed text-binti-ink">
                     “{s.quote}”
                   </p>
-                  <p className="mt-3 font-display text-[11.5px] font-extrabold uppercase tracking-widest text-binti">
+                  <p className="mt-3 font-display text-[11.5px] font-extrabold uppercase tracking-widest text-binti dark:text-indigo-300">
                     {s.session}
                   </p>
                 </CardContent>
@@ -234,7 +234,7 @@ function StoriesOfRise() {
 /* ------------------------------------------------------------------ */
 function DonorFaq() {
   return (
-    <section aria-label="Donor FAQ" className="bg-white py-14">
+    <section aria-label="Donor FAQ" className="bg-binti-card py-14">
       <div className="mx-auto max-w-4xl px-4 md:px-6">
         <SectionReveal>
           <SectionHeading
@@ -326,7 +326,7 @@ function NewsletterSignup() {
             </p>
             {done ? (
               <div className="mx-auto mt-6 flex max-w-md items-center justify-center gap-2.5 rounded-2xl border border-green-300 bg-green-50 px-5 py-4" role="status">
-                <CheckCircle2 className="size-5 shrink-0 text-green-600" aria-hidden="true" />
+                <CheckCircle2 className="size-5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
                 <p className="text-[13.5px] font-semibold text-green-800">You're subscribed. First digest arrives on the 1st.</p>
               </div>
             ) : (
@@ -338,7 +338,7 @@ function NewsletterSignup() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.org"
                     aria-label="Email address for the Binti Digest"
-                    className="h-12 flex-1 rounded-full border-white/20 bg-white/95 pl-5"
+                    className="h-12 flex-1 rounded-full border-white/20 bg-binti-card/95 pl-5"
                   />
                   <Button
                     onClick={subscribe}
@@ -386,17 +386,17 @@ function WhatWeDo() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: i * 0.08, duration: 0.45 }}
             >
-              <Card className="binti-lift h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
+              <Card className="binti-lift h-full overflow-hidden rounded-2xl border-binti-sand bg-binti-card pt-0">
                 <div className="binti-img-zoom relative h-36 w-full">
                   <NairobiPhoto src={p.photo} alt={`${p.title} — Nairobi team photo`} sizes="(max-width: 640px) 100vw, 320px" />
-                  <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
+                  <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-2.5 py-1 text-[11px] font-bold text-binti dark:text-indigo-300 shadow-sm">
                     {p.tag}
                   </span>
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
                     <span className="flex size-8 items-center justify-center rounded-lg bg-binti/10">
-                      <Icon className="size-4 text-binti" aria-hidden="true" />
+                      <Icon className="size-4 text-binti dark:text-indigo-300" aria-hidden="true" />
                     </span>
                     <h3 className="font-display text-[15px] font-bold text-binti-ink">{p.title}</h3>
                   </div>
@@ -416,7 +416,7 @@ function WhatWeDo() {
 /* ------------------------------------------------------------------ */
 function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   return (
-    <section aria-label="JTW journey teaser" className="bg-white py-14">
+    <section aria-label="JTW journey teaser" className="bg-binti-card py-14">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
@@ -427,7 +427,7 @@ function JtwTeaser({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
           <Button
             onClick={() => onNavigate("work")}
             variant="ghost"
-            className="font-bold text-binti hover:bg-binti-sand"
+            className="font-bold text-binti dark:text-indigo-300 hover:bg-binti-sand"
           >
             Explore all sessions <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
@@ -508,7 +508,7 @@ function Quote() {
       <p className="font-hand text-4xl leading-tight text-binti-ink md:text-[44px]">
         “{HERO_QUOTE.text}”
       </p>
-      <p className="mt-4 font-display text-sm font-bold text-binti">
+      <p className="mt-4 font-display text-sm font-bold text-binti dark:text-indigo-300">
         — {HERO_QUOTE.author} · {HERO_QUOTE.detail}
       </p>
       <p className="mt-1 text-[12px] text-binti-slate/70">Name masked per Kenya DPA 2019</p>
@@ -550,7 +550,7 @@ function BrandBook() {
   ];
 
   return (
-    <section aria-label="Brand book" className="bg-white py-12">
+    <section aria-label="Brand book" className="bg-binti-card py-12">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Collapsible open={open} onOpenChange={setOpen}>
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -560,7 +560,7 @@ function BrandBook() {
               sub="Three directions tested with 36 facilitators in Kibera. Winner: vibrant youth + donor trust. All imagery: Nairobi team only."
             />
             <CollapsibleTrigger asChild>
-              <Button variant="outline" className="rounded-full border-binti/40 font-bold text-binti">
+              <Button variant="outline" className="rounded-full border-binti/40 font-bold text-binti dark:text-indigo-300">
                 {open ? "Hide" : "Show"} mood boards & UI kit
                 <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} aria-hidden="true" />
               </Button>
@@ -617,7 +617,7 @@ function BrandBook() {
             {/* Tokens + typography + logo pack */}
             <div className="grid gap-5 lg:grid-cols-3">
               <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Colour Tokens</h3>
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Colour Tokens</h3>
                 <ul className="mt-3 space-y-2 text-[12.5px]" role="list">
                   {[
                     ["--color-binti", "#4F46E5", "Primary Indigo"],
@@ -640,7 +640,7 @@ function BrandBook() {
               </Card>
 
               <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Typography</h3>
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Typography</h3>
                 <p className="mt-3 font-display text-3xl font-extrabold text-binti-ink">Sora Bold — 56px Hero</p>
                 <p className="mt-2 text-[15px] leading-relaxed text-binti-slate">
                   Inter 18px/28px body — UI text at 16px+, 44px touch targets.
@@ -650,15 +650,15 @@ function BrandBook() {
               </Card>
 
               <Card className="rounded-2xl border-binti-sand p-5">
-                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">Logo Pack</h3>
+                <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">Logo Pack</h3>
                 <div className="mt-3 space-y-3">
                   <div className="flex items-center gap-3 rounded-xl bg-binti-cream p-3">
                     <BintiMark size={26} />
                     <span className="font-hand text-2xl font-bold text-binti-pink">Binti</span>
-                    <span className="font-display text-lg font-extrabold tracking-widest text-binti">RISING</span>
+                    <span className="font-display text-lg font-extrabold tracking-widest text-binti dark:text-indigo-300">RISING</span>
                     <span className="ml-auto text-[10px] text-binti-slate">Full color</span>
                   </div>
-                  <div className="flex items-center gap-3 rounded-xl bg-binti-ink p-3">
+                  <div className="flex items-center gap-3 rounded-xl bg-[#0F172A] p-3">
                     <BintiMark light size={26} />
                     <span className="font-hand text-2xl font-bold text-white">Binti</span>
                     <span className="font-display text-lg font-extrabold tracking-widest text-white">RISING</span>
@@ -684,7 +684,7 @@ function BrandBook() {
 
             {/* UI kit states strip (Phase 2) */}
             <Card className="rounded-2xl border-binti-sand p-5">
-              <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti">UI Kit — Components with ALL states</h3>
+              <h3 className="font-display text-sm font-bold uppercase tracking-widest text-binti dark:text-indigo-300">UI Kit — Components with ALL states</h3>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Button className="rounded-full bg-binti">Primary · Default</Button>
                 <Button className="rounded-full bg-binti hover:scale-[1.02] hover:shadow-lg">Hover 1.02 + lift</Button>
@@ -692,7 +692,7 @@ function BrandBook() {
                 <Button className="rounded-full bg-mpesa hover:bg-green-600">
                   <HeartHandshakePlaceholder /> Donate · M-Pesa green
                 </Button>
-                <Button variant="outline" className="rounded-full border-binti/50 text-binti">Secondary</Button>
+                <Button variant="outline" className="rounded-full border-binti/50 text-binti dark:text-indigo-300">Secondary</Button>
               </div>
               <div className="mt-4 grid gap-3 text-[12px] text-binti-slate sm:grid-cols-3">
                 <p className="rounded-lg bg-binti-cream p-3"><strong className="text-binti-ink">Inputs:</strong> Default · Focus (ring indigo) · Error “Age must be 15–25” · Success · Disabled · DPA consent checkbox</p>
@@ -724,6 +724,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <ImpactStrip />
       <WhatWeDo />
       <JtwTeaser onNavigate={onNavigate} />
+      <OurStoryTimeline />
       <StoriesOfRise />
       <PartnersMarquee />
       <Quote />
@@ -731,5 +732,79 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <NewsletterSignup />
       <BrandBook />
     </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* OUR STORY — milestone timeline 2023 → 2026 (aggregate facts only)   */
+/* Gradient spine + scroll-reveal nodes; alternating cards on desktop. */
+/* ------------------------------------------------------------------ */
+const MILESTONE_TONES: Record<string, { dot: string; chip: string }> = {
+  indigo: { dot: "bg-binti", chip: "bg-binti/10 text-binti dark:text-indigo-300" },
+  pink: { dot: "bg-binti-pink", chip: "bg-binti-pink/10 text-binti-pinkdeep dark:text-pink-300" },
+  cyan: { dot: "bg-binti-cyan", chip: "bg-binti-cyan/10 text-binti-cyan" },
+  amber: { dot: "bg-binti-amber", chip: "bg-binti-amber/10 text-amber-600 dark:text-amber-300" },
+};
+
+function OurStoryTimeline() {
+  return (
+    <section aria-label="Our story 2023 to 2026" className="relative overflow-hidden bg-binti-cream py-14 md:py-20">
+      {/* soft glow decorations */}
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-24 size-72 rounded-full bg-binti-pink/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-10 size-72 rounded-full bg-binti-cyan/10 blur-3xl" />
+      <div className="relative mx-auto max-w-5xl px-4 md:px-6">
+        <SectionReveal>
+          <SectionHeading
+            align="center"
+            eyebrow="Our Story · 2023 → 2026"
+            title={
+              <>
+                Three years ago, fifty girls sat in a circle.{" "}
+                <span className="font-hand text-4xl font-bold text-binti-pink">They never stopped rising.</span>
+              </>
+            }
+            sub="From one room in Laini Saba to a live, audited movement — told in four milestones."
+          />
+        </SectionReveal>
+
+        <ol className="relative mt-12 space-y-10 md:space-y-0" role="list">
+          {/* spine */}
+          <span
+            aria-hidden="true"
+            className="absolute left-[19px] top-2 bottom-2 w-1 rounded-full bg-gradient-to-b from-binti via-binti-pink to-binti-amber md:left-1/2 md:-translate-x-1/2"
+          />
+          {MILESTONES.map((m, i) => {
+            const tone = MILESTONE_TONES[m.tone] ?? MILESTONE_TONES.indigo;
+            const leftSide = i % 2 === 0;
+            return (
+              <li key={m.year} className="relative md:grid md:grid-cols-2 md:gap-12 md:py-6">
+                {/* node */}
+                <span
+                  aria-hidden="true"
+                  className="absolute left-[19px] top-1.5 z-10 flex size-5 -translate-x-1/2 items-center justify-center md:left-1/2 md:top-1/2 md:-translate-y-1/2"
+                >
+                  <span className={cn("absolute inline-flex size-5 rounded-full opacity-25", tone.dot, "animate-ping")} />
+                  <span className={cn("relative inline-flex size-3.5 rounded-full ring-4 ring-binti-cream", tone.dot)} />
+                </span>
+                <SectionReveal delay={i * 0.06} className={cn("pl-12 md:pl-0", leftSide ? "md:col-start-1 md:pr-4 md:text-right" : "md:col-start-2 md:pl-4")}>
+                  <div className={cn("binti-card-glow rounded-2xl border border-binti-sand bg-binti-card p-5 shadow-sm md:p-6", leftSide && "md:ml-auto")}>
+                    <div className={cn("flex items-center gap-3", leftSide && "md:flex-row-reverse")}>
+                      <span className={cn("rounded-full px-3 py-1 font-display text-[13px] font-extrabold", tone.chip)}>{m.year}</span>
+                      <h3 className="font-display text-[16px] font-extrabold leading-snug text-binti-ink md:text-[17px]">{m.title}</h3>
+                    </div>
+                    <p className="mt-2.5 text-[13.5px] leading-relaxed text-binti-slate">{m.body}</p>
+                    <p className={cn("mt-3 font-hand text-xl font-bold text-binti dark:text-indigo-300", leftSide && "md:text-left")}>{m.stat}</p>
+                  </div>
+                </SectionReveal>
+              </li>
+            );
+          })}
+        </ol>
+
+        <SectionReveal className="mt-10 text-center">
+          <p className="font-hand text-2xl text-binti dark:text-indigo-300">Karibu — the next milestone is written with our donors.</p>
+        </SectionReveal>
+      </div>
+    </section>
   );
 }

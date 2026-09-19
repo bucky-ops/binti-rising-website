@@ -28,7 +28,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
-import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, ORG, FACILITATORS } from "@/lib/binti/data";
+import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, CURRENCIES, toKes, fromKes, ORG, FACILITATORS } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -37,51 +37,89 @@ import { cn } from "@/lib/utils";
 /* session for 12 · 10,000 full journey. Aggregates only, no PII.      */
 /* ------------------------------------------------------------------ */
 function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
-  const [amount, setAmount] = useState(10000);
-  const journeys = Math.floor(amount / CALC_UNIT_COSTS.journey);
-  const sessions = Math.floor(amount / CALC_UNIT_COSTS.session);
-  const materials = Math.floor(amount / CALC_UNIT_COSTS.materials);
-  const presets = [2500, 10000, 25000, 50000];
+  const [curCode, setCurCode] = useState<(typeof CURRENCIES)[number]["code"]>("KES");
+  const cur = CURRENCIES.find((c) => c.code === curCode) ?? CURRENCIES[0];
+  const [amount, setAmount] = useState(10000); // in selected currency
+
+  const kesAmount = toKes(amount, cur.rate);
+  const journeys = Math.floor(kesAmount / CALC_UNIT_COSTS.journey);
+  const sessions = Math.floor(kesAmount / CALC_UNIT_COSTS.session);
+  const materials = Math.floor(kesAmount / CALC_UNIT_COSTS.materials);
+
+  const sliderMin = fromKes(500, cur.rate);
+  const sliderMax = fromKes(100000, cur.rate);
+  const presets = [2500, 10000, 25000, 50000].map((k) => fromKes(k, cur.rate));
+  const fmt = (n: number) => `${cur.symbol}${n.toLocaleString()}`;
 
   return (
-    <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-white to-binti-cream p-6 md:p-8">
+    <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti-card to-binti-cream p-6 md:p-8">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-display text-xl font-extrabold text-binti-ink">Impact Calculator</h3>
-        <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti">FY24/25 aggregate unit costs</Badge>
+        <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti dark:text-indigo-300">FY24/25 aggregate unit costs</Badge>
       </div>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
         Drag to see exactly what your gift delivers — same maths the auditors use.
       </p>
 
+      {/* Currency selector — international donors give in their own money */}
+      <div className="mt-5 flex flex-wrap items-center gap-2" role="group" aria-label="Donation currency">
+        {CURRENCIES.map((c) => (
+          <button
+            key={c.code}
+            type="button"
+            onClick={() => {
+              const prevKes = toKes(amount, cur.rate);
+              setCurCode(c.code);
+              setAmount(fromKes(prevKes, c.rate));
+            }}
+            aria-pressed={curCode === c.code}
+            className={cn(
+              "rounded-full border px-3.5 py-1.5 font-display text-[12px] font-extrabold transition",
+              curCode === c.code
+                ? "border-binti bg-binti text-white shadow-sm"
+                : "border-binti/30 bg-binti-card text-binti-slate hover:border-binti hover:text-binti"
+            )}
+          >
+            {c.code}
+          </button>
+        ))}
+        <span className="text-[11px] text-binti-slate/70">indicative rates · monthly</span>
+      </div>
+
       {/* Amount readout */}
       <div className="mt-6 text-center">
         <p className="font-display text-5xl font-extrabold binti-gradient-text tabular-nums">
-          {amount.toLocaleString()}
-          <span className="ml-1.5 align-middle text-lg text-binti-slate">KES</span>
+          {fmt(amount)}
+          {curCode !== "KES" && <span className="ml-1.5 align-middle text-lg text-binti-slate">{curCode}</span>}
         </p>
         <p className="mt-1 text-[12px] font-semibold uppercase tracking-widest text-binti-slate">
           ≈ {journeys} {journeys === 1 ? "girl" : "girls"} rising through the full JTW journey
         </p>
+        {curCode !== "KES" && (
+          <p className="mt-1 text-[12px] font-semibold text-binti-slate/80">
+            ≈ KES {kesAmount.toLocaleString()} — charged in KES via M-Pesa
+          </p>
+        )}
       </div>
 
       {/* Slider */}
       <div className="mt-5">
         <input
           type="range"
-          min={500}
-          max={100000}
-          step={500}
+          min={sliderMin}
+          max={sliderMax}
+          step={cur.step}
           value={amount}
           onChange={(e) => setAmount(parseInt(e.target.value, 10))}
-          aria-label="Donation amount in Kenyan shillings"
+          aria-label={`Donation amount in ${curCode}`}
           className="h-2.5 w-full cursor-pointer appearance-none rounded-full bg-gradient-to-r from-binti via-binti-pink to-binti-amber accent-binti"
           style={{
-            background: `linear-gradient(90deg, #4f46e5 0%, #ec4899 ${Math.min((amount / 100000) * 160, 100)}%, #fef3c7 ${Math.min((amount / 100000) * 100, 100)}%)`,
+            background: `linear-gradient(90deg, #4f46e5 0%, #ec4899 ${Math.min((amount / sliderMax) * 160, 100)}%, #fef3c7 ${Math.min((amount / sliderMax) * 100, 100)}%)`,
           }}
         />
         <div className="mt-1.5 flex justify-between text-[11px] font-semibold text-binti-slate/70">
-          <span>KES 500</span>
-          <span>KES 100,000</span>
+          <span>{fmt(sliderMin)}</span>
+          <span>{fmt(sliderMax)}</span>
         </div>
         <div className="mt-3 flex flex-wrap justify-center gap-2">
           {presets.map((p) => (
@@ -91,10 +129,10 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
               aria-pressed={amount === p}
               className={cn(
                 "rounded-full border px-3 py-1.5 text-[12px] font-bold transition",
-                amount === p ? "border-binti bg-binti text-white" : "border-binti/30 bg-white text-binti hover:border-binti"
+                amount === p ? "border-binti bg-binti text-white" : "border-binti/30 bg-binti-card text-binti dark:text-indigo-300 hover:border-binti"
               )}
             >
-              {p.toLocaleString()}
+              {curCode === "KES" ? p.toLocaleString() : fmt(p)}
             </button>
           ))}
         </div>
@@ -103,9 +141,9 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
       {/* Impact chips */}
       <div className="mt-6 grid grid-cols-3 gap-2.5">
         {[
-          { value: materials, label: "girls' material packs", color: "bg-binti/10 text-binti" },
-          { value: sessions, label: "circle sessions of 12", color: "bg-binti-pink/10 text-binti-pinkdeep" },
-          { value: journeys, label: "full 8-session journeys", color: "bg-mpesa/10 text-green-700" },
+          { value: materials, label: "girls' material packs", color: "bg-binti/10 text-binti dark:text-indigo-300" },
+          { value: sessions, label: "circle sessions of 12", color: "bg-binti-pink/10 text-binti-pinkdeep dark:text-pink-300" },
+          { value: journeys, label: "full 8-session journeys", color: "bg-mpesa/10 text-green-700 dark:text-green-300" },
         ].map((c) => (
           <div key={c.label} className={cn("rounded-2xl p-3.5 text-center", c.color)}>
             <p className="font-display text-2xl font-extrabold tabular-nums">{c.value}</p>
@@ -118,7 +156,8 @@ function ImpactCalculator({ onDonate }: { onDonate: () => void }) {
         <HeartHandshake className="size-5" aria-hidden="true" /> Fund {journeys > 0 ? `${journeys} ${journeys === 1 ? "girl" : "girls"}` : "this impact"} — Give via M-Pesa
       </Button>
       <DataNote className="mt-3">
-        Unit costs from the audited FY24/25 aggregate: KES 500 materials · KES 2,500 session · KES 10,000 journey. Receipt auto · no cash.
+        Unit costs from the audited FY24/25 aggregate: KES 500 materials · KES 2,500 session · KES 10,000 journey.
+        {curCode !== "KES" && ` ${curCode} converted at ${cur.rate} KES (indicative)`}. Receipt auto · no cash.
       </DataNote>
     </Card>
   );
@@ -185,7 +224,7 @@ function JoinCircle() {
   if (done) {
     return (
       <Card className="mx-auto max-w-xl rounded-3xl border-2 border-green-300 bg-green-50 p-8 text-center" role="status">
-        <CheckCircle2 className="mx-auto size-14 text-green-600" aria-hidden="true" />
+        <CheckCircle2 className="mx-auto size-14 text-green-600 dark:text-green-400" aria-hidden="true" />
         <h3 className="mt-4 font-display text-2xl font-extrabold text-binti-ink">Success! Karibu Binti!</h3>
         <p className="mt-2 text-[14.5px] leading-relaxed text-binti-slate">
           Circle starts <strong>Monday 2pm · Laini Saba</strong>. The <strong>Sema na Me</strong> chatbot will confirm
@@ -208,9 +247,9 @@ function JoinCircle() {
   }
 
   return (
-    <Card className="mx-auto max-w-xl rounded-3xl border-binti-sand bg-white p-6 md:p-8">
+    <Card className="mx-auto max-w-xl rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
       <h3 className="flex items-center gap-2 font-display text-xl font-extrabold text-binti-ink">
-        <UserRound className="size-5 text-binti" aria-hidden="true" /> Join Circle
+        <UserRound className="size-5 text-binti dark:text-indigo-300" aria-hidden="true" /> Join Circle
       </h3>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
         For youth 15–25. Privacy first: <strong>initials only</strong> — never your full name (Kenya DPA 2019).
@@ -228,10 +267,10 @@ function JoinCircle() {
             onChange={(e) => setInitials(e.target.value.slice(0, 4))}
             placeholder="F.W."
             aria-invalid={!!errors.initials}
-            className={cn("h-11 rounded-xl border-binti/30 bg-white", errors.initials && "border-red-400 focus-visible:ring-red-300")}
+            className={cn("h-11 rounded-xl border-binti/30 bg-binti-card", errors.initials && "border-red-400 focus-visible:ring-red-300")}
           />
           {errors.initials ? (
-            <p className="text-[12px] font-semibold text-red-600" role="alert">{errors.initials}</p>
+            <p className="text-[12px] font-semibold text-red-600 dark:text-red-400" role="alert">{errors.initials}</p>
           ) : (
             <p className="text-[11.5px] text-binti-slate/80">Success state: initials masked on every public surface.</p>
           )}
@@ -251,14 +290,14 @@ function JoinCircle() {
               onChange={(e) => setAge(e.target.value)}
               placeholder="15-25"
               aria-invalid={!!errors.age}
-              className={cn("h-11 rounded-xl border-binti/30 bg-white", errors.age && "border-red-400 focus-visible:ring-red-300")}
+              className={cn("h-11 rounded-xl border-binti/30 bg-binti-card", errors.age && "border-red-400 focus-visible:ring-red-300")}
             />
-            {errors.age && <p className="text-[12px] font-semibold text-red-600" role="alert">Age must be 15-25</p>}
+            {errors.age && <p className="text-[12px] font-semibold text-red-600 dark:text-red-400" role="alert">Age must be 15-25</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="join-area" className="text-[13px] font-semibold text-binti-ink">Area</Label>
             <Select value={area} onValueChange={setArea}>
-              <SelectTrigger id="join-area" aria-invalid={!!errors.area} className={cn("h-11 rounded-xl border-binti/30 bg-white", errors.area && "border-red-400")}>
+              <SelectTrigger id="join-area" aria-invalid={!!errors.area} className={cn("h-11 rounded-xl border-binti/30 bg-binti-card", errors.area && "border-red-400")}>
                 <SelectValue placeholder="Choose your area" />
               </SelectTrigger>
               <SelectContent>
@@ -267,7 +306,7 @@ function JoinCircle() {
                 ))}
               </SelectContent>
             </Select>
-            {errors.area && <p className="text-[12px] font-semibold text-red-600" role="alert">{errors.area}</p>}
+            {errors.area && <p className="text-[12px] font-semibold text-red-600 dark:text-red-400" role="alert">{errors.area}</p>}
           </div>
         </div>
 
@@ -283,10 +322,10 @@ function JoinCircle() {
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+254 7XX XXX XXX"
             aria-invalid={!!errors.phone}
-            className={cn("h-11 rounded-xl border-binti/30 bg-white", errors.phone && "border-red-400 focus-visible:ring-red-300")}
+            className={cn("h-11 rounded-xl border-binti/30 bg-binti-card", errors.phone && "border-red-400 focus-visible:ring-red-300")}
           />
           {errors.phone ? (
-            <p className="text-[12px] font-semibold text-red-600" role="alert">{errors.phone}</p>
+            <p className="text-[12px] font-semibold text-red-600 dark:text-red-400" role="alert">{errors.phone}</p>
           ) : (
             <p className="text-[11.5px] text-binti-slate/80">Stored only with consent below · never displayed · DPA 2019</p>
           )}
@@ -319,12 +358,12 @@ function JoinCircle() {
           <span className="text-[13px] leading-relaxed text-binti-ink">
             <strong>DPA 2019 consent:</strong> I agree that Binti Rising may store my initials, age, area (and phone if
             given) to place me in a circle. Data is aggregated for reporting; my name is never published.{" "}
-            <a href="/policies/binti-dpa-2019-privacy.pdf" target="_blank" rel="noreferrer" className="font-bold text-binti hover:underline">
+            <a href="/policies/binti-dpa-2019-privacy.pdf" target="_blank" rel="noreferrer" className="font-bold text-binti dark:text-indigo-300 hover:underline">
               Read the policy
             </a>
           </span>
         </label>
-        {errors.dpa && <p className="-mt-2 text-[12px] font-semibold text-red-600" role="alert">{errors.dpa}</p>}
+        {errors.dpa && <p className="-mt-2 text-[12px] font-semibold text-red-600 dark:text-red-400" role="alert">{errors.dpa}</p>}
 
         <Button
           onClick={submit}
@@ -349,12 +388,16 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
   const [frequency, setFrequency] = useState<"once" | "monthly">("once");
   const [amount, setAmount] = useState<number>(DONATE_TIERS[1].amount);
   const [customAmount, setCustomAmount] = useState<string>("");
+  const [curCode, setCurCode] = useState<(typeof CURRENCIES)[number]["code"]>("KES");
+  const cur = CURRENCIES.find((c) => c.code === curCode) ?? CURRENCIES[0];
   const [copied, setCopied] = useState(false);
   const [step, setStep] = useState<DonateStep>("details");
   const [stepIdx, setStepIdx] = useState(0);
   const [receiptNo, setReceiptNo] = useState("");
 
-  const effAmount = customAmount !== "" ? Math.max(0, parseInt(customAmount, 10) || 0) : amount;
+  // effAmount is ALWAYS in KES — M-Pesa charges KES regardless of display currency.
+  const effAmount =
+    customAmount !== "" ? Math.max(0, toKes(Math.max(0, parseInt(customAmount, 10) || 0), cur.rate)) : amount;
 
   // Impact preview: monthly giving multiplies the yearly story
   const impactText =
@@ -450,11 +493,37 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                 ))}
               </div>
               {frequency === "monthly" && (
-                <p className="rounded-xl border border-binti-pink/30 bg-binti-pink/5 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-binti-pinkdeep">
+                <p className="rounded-xl border border-binti-pink/30 bg-binti-pink/5 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-binti-pinkdeep dark:text-pink-300">
                   <strong>Monthly sisters</strong> are our backbone — predictable funding means a girl never waits for
                   materials. Cancel anytime.
                 </p>
               )}
+
+              {/* Currency — international donors give in their own money */}
+              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Donation currency">
+                {CURRENCIES.map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => {
+                      setCurCode(c.code);
+                      setCustomAmount("");
+                    }}
+                    aria-pressed={curCode === c.code}
+                    className={cn(
+                      "rounded-full border px-3 py-1.5 font-display text-[11.5px] font-extrabold transition",
+                      curCode === c.code
+                        ? "border-binti bg-binti text-white shadow-sm"
+                        : "border-binti/30 bg-binti-card text-binti-slate hover:border-binti hover:text-binti"
+                    )}
+                  >
+                    {c.code}
+                  </button>
+                ))}
+                <span className="text-[11px] text-binti-slate/70">
+                  {curCode === "KES" ? "Kenyan shillings" : `≈ ${cur.rate} KES per ${curCode} · charged in KES`}
+                </span>
+              </div>
 
               {/* Amount tiers + custom */}
               <div className="grid grid-cols-3 gap-2.5">
@@ -470,11 +539,14 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                       "rounded-xl border-2 p-3 text-center transition-all",
                       customAmount === "" && amount === t.amount
                         ? "border-mpesa bg-green-50 shadow-sm"
-                        : "border-binti-sand bg-white hover:border-mpesa/50"
+                        : "border-binti-sand bg-binti-card hover:border-mpesa/50"
                     )}
                   >
                     <span className="block font-display text-[15px] font-extrabold text-binti-ink">{t.label}</span>
-                    <span className="mt-0.5 block text-[10.5px] leading-tight text-binti-slate">{t.impact}</span>
+                    <span className="mt-0.5 block text-[10.5px] leading-tight text-binti-slate">
+                      {curCode !== "KES" && `≈ ${cur.symbol}${fromKes(t.amount, cur.rate, false).toLocaleString()} · `}
+                      {t.impact}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -484,39 +556,44 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                 <div className="h-px flex-1 bg-binti-sand" aria-hidden="true" />
               </div>
               <div className="relative">
-                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-display text-[15px] font-extrabold text-binti-slate">KES</span>
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-display text-[15px] font-extrabold text-binti-slate">
+                  {curCode === "KES" ? "KES" : `${cur.symbol} ${curCode}`}
+                </span>
                 <Input
                   type="number"
                   inputMode="numeric"
-                  min={100}
+                  min={curCode === "KES" ? 100 : 1}
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
-                  placeholder="e.g. 1,500"
-                  aria-label="Custom amount in Kenyan shillings"
-                  className="h-12 rounded-xl border-binti/30 bg-white pl-14 font-display text-[16px] font-bold"
+                  placeholder={curCode === "KES" ? "e.g. 1,500" : `e.g. ${fromKes(2500, cur.rate)}`}
+                  aria-label={`Custom amount in ${curCode}`}
+                  className="h-12 rounded-xl border-binti/30 bg-binti-card pl-14 font-display text-[16px] font-bold"
                 />
               </div>
 
               {/* Impact preview */}
-              <div className="flex items-start gap-2.5 rounded-xl border border-binti/25 bg-white p-3.5">
+              <div className="flex items-start gap-2.5 rounded-xl border border-binti/25 bg-binti-card p-3.5">
                 <HeartHandshake className="mt-0.5 size-4.5 shrink-0 text-mpesa" aria-hidden="true" />
                 <p className="text-[13px] leading-relaxed text-binti-ink">
                   <strong>Your impact:</strong> {effAmount >= 100 ? impactText : "choose an amount to see the impact"}
                   {frequency === "monthly" && effAmount >= 100 && (
-                    <span className="text-binti-pinkdeep"> · KES {effAmount.toLocaleString()} × 12 months</span>
+                    <span className="text-binti-pinkdeep dark:text-pink-300"> · KES {effAmount.toLocaleString()} × 12 months</span>
+                  )}
+                  {curCode !== "KES" && customAmount !== "" && effAmount >= 100 && (
+                    <span className="text-binti-slate"> · ≈ KES {effAmount.toLocaleString()} charged</span>
                   )}
                 </p>
               </div>
 
               {/* M-Pesa */}
-              <div className="rounded-2xl border-2 border-mpesa/50 bg-white p-4">
+              <div className="rounded-2xl border-2 border-mpesa/50 bg-binti-card p-4">
                 <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
                   <Smartphone className="size-4.5 text-mpesa" aria-hidden="true" /> M-Pesa Paybill
                 </p>
                 <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl bg-binti-cream px-3.5 py-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Paybill</p>
-                    <p className="font-display text-xl font-extrabold text-binti">{ORG.paybill}</p>
+                    <p className="font-display text-xl font-extrabold text-binti dark:text-indigo-300">{ORG.paybill}</p>
                   </div>
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Account</p>
@@ -534,16 +611,16 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
               </div>
 
               {/* Bank */}
-              <div className="rounded-2xl border border-binti/30 bg-white p-4">
+              <div className="rounded-2xl border border-binti/30 bg-binti-card p-4">
                 <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
-                  <Landmark className="size-4.5 text-binti" aria-hidden="true" /> Bank Transfer
+                  <Landmark className="size-4.5 text-binti dark:text-indigo-300" aria-hidden="true" /> Bank Transfer
                 </p>
                 <div className="mt-2.5 flex items-center justify-between rounded-xl bg-binti-cream px-3.5 py-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Bank · Account</p>
                     <p className="font-display text-[14px] font-bold text-binti-ink">{ORG.bank}</p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => copy("1234567890")} className="rounded-full border-binti/50 font-bold text-binti hover:bg-binti hover:text-white">
+                  <Button variant="outline" size="sm" onClick={() => copy("1234567890")} className="rounded-full border-binti/50 font-bold text-binti dark:text-indigo-300 hover:bg-binti hover:text-white">
                     <Copy className="size-3.5" aria-hidden="true" /> Copy
                   </Button>
                 </div>
@@ -553,11 +630,13 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                 onClick={startDonation}
                 className="h-12 w-full rounded-full bg-mpesa text-[15px] font-bold text-white hover:bg-green-600"
               >
-                <HeartHandshake className="size-5" aria-hidden="true" /> Give KES {effAmount.toLocaleString()}
+                <HeartHandshake className="size-5" aria-hidden="true" />{" "}
+                {curCode !== "KES" && customAmount !== "" ? `${cur.symbol}${parseInt(customAmount, 10).toLocaleString()} (≈ KES ${effAmount.toLocaleString()})` : `Give KES ${effAmount.toLocaleString()}`}
                 {frequency === "monthly" ? " / month via M-Pesa" : " via M-Pesa"}
               </Button>
               <DataNote>
-                Prefer USD or a partnership gift? Email {ORG.email}. Receipt auto · audit logged · no cash.
+                Giving from abroad? Pick USD / EUR / GBP above — M-Pesa charges the KES equivalent at indicative
+                rates. Partnership gifts: {ORG.email}. Receipt auto · audit logged · no cash.
               </DataNote>
             </motion.div>
           )}
@@ -587,8 +666,8 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                         className={cn(
                           "flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-extrabold",
                           state === "done" && "border-mpesa bg-mpesa text-white",
-                          state === "active" && "binti-pulse border-mpesa bg-white text-mpesa",
-                          state === "todo" && "border-binti-sand bg-white text-binti-slate/50"
+                          state === "active" && "binti-pulse border-mpesa bg-binti-card text-mpesa",
+                          state === "todo" && "border-binti-sand bg-binti-card text-binti-slate/50"
                         )}
                       >
                         {state === "done" ? "✓" : i + 1}
@@ -627,11 +706,11 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
               <p className="mt-1 text-[13.5px] text-binti-slate">
                 KES {effAmount.toLocaleString()}{frequency === "monthly" ? " / month" : ""} · M-Pesa {ORG.paybill}
               </p>
-              <div className="mx-auto mt-5 max-w-xs rounded-2xl border border-binti-sand bg-white p-4 text-left">
+              <div className="mx-auto mt-5 max-w-xs rounded-2xl border border-binti-sand bg-binti-card p-4 text-left">
                 <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-binti-slate">
-                  <ReceiptText className="size-4 text-binti" aria-hidden="true" /> Receipt
+                  <ReceiptText className="size-4 text-binti dark:text-indigo-300" aria-hidden="true" /> Receipt
                 </p>
-                <p className="mt-1.5 font-mono text-[14px] font-bold text-binti">{receiptNo}</p>
+                <p className="mt-1.5 font-mono text-[14px] font-bold text-binti dark:text-indigo-300">{receiptNo}</p>
                 <p className="mt-2 text-[12px] leading-relaxed text-binti-slate">
                   Auto-receipt sent · audit logged · funds move to programme delivery (62% per FY24/25 aggregate).
                 </p>
@@ -642,7 +721,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                   onOpenChange(false);
                 }}
                 variant="outline"
-                className="mt-5 h-11 rounded-full border-binti/40 px-6 font-bold text-binti hover:bg-binti hover:text-white"
+                className="mt-5 h-11 rounded-full border-binti/40 px-6 font-bold text-binti dark:text-indigo-300 hover:bg-binti hover:text-white"
               >
                 Close
               </Button>
@@ -692,7 +771,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
               <Card className="overflow-hidden rounded-3xl border-binti-sand pt-0">
                 <div className="relative h-44">
                   <NairobiPhoto src="/nairobi-team/nairobi-13.webp" alt="Nairobi team — circle facilitators" sizes="(max-width: 1024px) 100vw, 380px" />
-                  <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-binti">Your facilitators</span>
+                  <span className="absolute left-3 top-3 rounded-full bg-binti-card/95 px-3 py-1 text-[11px] font-bold text-binti dark:text-indigo-300">Your facilitators</span>
                 </div>
                 <CardContent className="p-4">
                   <ul className="space-y-3" role="list">
@@ -717,7 +796,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
               </Card>
               <Card className="rounded-3xl border-binti-amber/50 bg-binti-sand/40 p-4">
                 <p className="flex items-start gap-2 text-[13px] leading-relaxed text-binti-ink">
-                  <Info className="mt-0.5 size-4 shrink-0 text-binti" aria-hidden="true" />
+                  <Info className="mt-0.5 size-4 shrink-0 text-binti dark:text-indigo-300" aria-hidden="true" />
                   Under 18? We ask a guardian to consent before you join — it's the law (DPA 2019) and it keeps you safe.
                 </p>
               </Card>
@@ -730,7 +809,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
           <div className="grid gap-6 lg:grid-cols-2">
             <ImpactCalculator onDonate={onDonate} />
             <div className="space-y-6">
-              <Card className="rounded-3xl border-binti-sand bg-white p-6 md:p-8">
+              <Card className="rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
                 <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
                   KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
@@ -775,8 +854,8 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
 
         {/* PARTNERS */}
         <TabsContent value="partners" className="mt-6">
-          <Card className="mx-auto max-w-2xl rounded-3xl border-binti-sand bg-white p-6 text-center md:p-8">
-            <Handshake className="mx-auto size-12 text-binti" aria-hidden="true" />
+          <Card className="mx-auto max-w-2xl rounded-3xl border-binti-sand bg-binti-card p-6 text-center md:p-8">
+            <Handshake className="mx-auto size-12 text-binti dark:text-indigo-300" aria-hidden="true" />
             <h3 className="mt-3 font-display text-xl font-extrabold text-binti-ink">Partner with Binti Rising</h3>
             <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-binti-slate">
               Referral partners (LVCT Health, Nairobi County health), content partners (Shujaaz Inc) and funders —
@@ -790,9 +869,19 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
             >
               <FileDown className="size-5" aria-hidden="true" /> Download MOU Template PDF
             </a>
+            <div className="mt-3">
+              <a
+                href="/policies/binti-donor-onepager.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-binti/40 px-5 text-[13.5px] font-bold text-binti transition hover:bg-binti hover:text-white"
+              >
+                <FileDown className="size-4" aria-hidden="true" /> Donor One-Pager · Statement of Need (FY24/25)
+              </a>
+            </div>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {["LVCT Health", "Shujaaz Inc", "Nairobi County", "Malala Sisterhood", "PATH", "Global Fund"].map((p) => (
-                <Badge key={p} variant="outline" className="rounded-full border-binti/30 text-binti">{p}</Badge>
+                <Badge key={p} variant="outline" className="rounded-full border-binti/30 text-binti dark:text-indigo-300">{p}</Badge>
               ))}
             </div>
           </Card>

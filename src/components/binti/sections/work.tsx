@@ -65,17 +65,17 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
                   active
                     ? item.risk === "Very Heavy"
                       ? "border-binti-danger bg-red-50 binti-pulse"
-                      : "border-binti bg-white shadow-md"
+                      : "border-binti bg-binti-card shadow-md"
                     : done
                       ? "border-binti/30 bg-binti/5"
-                      : "border-binti-sand bg-white/60 hover:border-binti/40"
+                      : "border-binti-sand bg-binti-card/60 hover:border-binti/40"
                 )}
               >
                 <span className="flex w-full items-center justify-between">
-                  <span className={cn("font-display text-[12px] font-extrabold", active && item.risk === "Very Heavy" ? "text-binti-danger" : active ? "text-binti" : "text-binti-pink")}>
+                  <span className={cn("font-display text-[12px] font-extrabold", active && item.risk === "Very Heavy" ? "text-binti-danger" : active ? "text-binti dark:text-indigo-300" : "text-binti-pink")}>
                     {item.id}
                   </span>
-                  {done && <span className="text-[10px] font-bold text-green-600">✓ done</span>}
+                  {done && <span className="text-[10px] font-bold text-green-600 dark:text-green-400">✓ done</span>}
                 </span>
                 <span className="font-display text-[13px] font-bold leading-tight text-binti-ink">{item.title}</span>
                 <RiskBadge risk={item.risk} className="!px-1.5 !py-0 !text-[9px]" />
@@ -107,11 +107,11 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 pt-14">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-white/95 px-3 py-1 font-display text-[12px] font-extrabold text-binti">
+                    <span className="rounded-full bg-binti-card/95 px-3 py-1 font-display text-[12px] font-extrabold text-binti dark:text-indigo-300">
                       {s.id}
                     </span>
                     <RiskBadge risk={s.risk} />
-                    <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti-slate">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-binti-card/95 px-2.5 py-1 text-[11px] font-bold text-binti-slate">
                       <Clock className="size-3" aria-hidden="true" /> {s.duration} min
                     </span>
                   </div>
@@ -159,13 +159,13 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-binti-cream p-3.5">
-                    <p className="flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-wider text-binti">
+                    <p className="flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-wider text-binti dark:text-indigo-300">
                       <HomeIcon className="size-3.5" aria-hidden="true" /> Homework
                     </p>
                     <p className="mt-1 text-[13px] leading-relaxed text-binti-slate">{s.homework}</p>
                   </div>
                   <div className="rounded-xl bg-binti-cream p-3.5">
-                    <p className="flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-wider text-binti">
+                    <p className="flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-wider text-binti dark:text-indigo-300">
                       <BookOpen className="size-3.5" aria-hidden="true" /> Materials
                     </p>
                     <p className="mt-1 text-[13px] leading-relaxed text-binti-slate">{s.materials}</p>
@@ -174,7 +174,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
 
                 {/* Navigation + facilitator flow */}
                 <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                  <Button onClick={prev} disabled={current === 0} variant="outline" className="rounded-full border-binti/40 font-bold text-binti">
+                  <Button onClick={prev} disabled={current === 0} variant="outline" className="rounded-full border-binti/40 font-bold text-binti dark:text-indigo-300">
                     <ArrowLeft className="size-4" aria-hidden="true" /> {current > 0 ? JTW[current - 1].id : "Start"}
                   </Button>
                   <Button
@@ -215,7 +215,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       </AnimatePresence>
 
       {/* Web of Support explainer (S4 signature activity) */}
-      <Card className="mt-8 rounded-3xl border-binti-sand bg-gradient-to-br from-white to-binti-cream p-6 md:p-8">
+      <Card className="mt-8 rounded-3xl border-binti-sand bg-gradient-to-br from-binti-card to-binti-cream p-6 md:p-8">
         <div className="grid items-center gap-6 md:grid-cols-2">
           <div>
             <p className="flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-widest text-binti-pink">
@@ -225,13 +225,13 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
             <p className="mt-2 text-[14.5px] leading-relaxed text-binti-slate">
               Every girl draws <strong>3 circles — Self, Trusted, Services</strong> — and memorises her own referral
               list. When silence breaks, she already knows who to call: her trusted person, LVCT Health, Nairobi
-              County facilities, or the GBV hotline <strong className="text-red-600">1195</strong>.
+              County facilities, or the GBV hotline <strong className="text-red-600 dark:text-red-400">1195</strong>.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <Badge variant="outline" className="border-binti/40 text-binti">Self</Badge>
-              <Badge variant="outline" className="border-binti-pink/40 text-binti-pinkdeep">Trusted</Badge>
+              <Badge variant="outline" className="border-binti/40 text-binti dark:text-indigo-300">Self</Badge>
+              <Badge variant="outline" className="border-binti-pink/40 text-binti-pinkdeep dark:text-pink-300">Trusted</Badge>
               <Badge variant="outline" className="border-binti-cyan/50 text-binti-cyan">Services</Badge>
-              <Badge className="bg-binti-ink">Referral lists memorised</Badge>
+              <Badge className="bg-[#0F172A]">Referral lists memorised</Badge>
             </div>
           </div>
           <div className="relative mx-auto size-56 md:size-64">
@@ -239,7 +239,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
             <span aria-hidden="true" className="absolute inset-8 rounded-full border-4 border-dashed border-binti-pink/60" />
             <span aria-hidden="true" className="absolute inset-16 rounded-full border-4 border-dashed border-binti/60" />
             <span className="absolute inset-16 flex items-center justify-center rounded-full bg-binti font-display text-sm font-extrabold text-white">Self</span>
-            <span className="absolute inset-8 flex items-start justify-center pt-2 text-[11px] font-bold text-binti-pinkdeep">Trusted</span>
+            <span className="absolute inset-8 flex items-start justify-center pt-2 text-[11px] font-bold text-binti-pinkdeep dark:text-pink-300">Trusted</span>
             <span className="absolute inset-0 flex items-start justify-center pt-1.5 text-[11px] font-bold text-binti-cyan">Services</span>
           </div>
         </div>

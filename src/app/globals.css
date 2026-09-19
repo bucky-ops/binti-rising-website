@@ -42,7 +42,14 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* ---- BINTI RISING BRAND TOKENS (winner mood: Vibrant Youth + Donor Trust) ---- */
+  --font-display: var(--font-sora); /* Sora - headlines */
+  --font-hand: var(--font-caveat); /* Caveat - handwritten soul */
+}
+
+/* ---- BINTI RISING BRAND TOKENS (winner mood: Vibrant Youth + Donor Trust) ----
+   NOTE: kept in a NON-inline @theme so tokens are emitted as real CSS vars —
+   .dark overrides below then cascade into every utility (bg-binti-cream, etc.) */
+@theme {
   --color-binti: #4f46e5; /* Primary Indigo - donor trust */
   --color-binti-deep: #3730a3;
   --color-binti-pink: #ec4899; /* Pink Binti - youth vibrancy */
@@ -53,11 +60,9 @@
   --color-binti-sand: #fef3c7;
   --color-binti-ink: #0f172a; /* Text */
   --color-binti-slate: #475569;
+  --color-binti-card: #ffffff; /* Card surface (flips in dark) */
   --color-binti-danger: #ef4444; /* ONLY for GBV / Very Heavy sessions */
   --color-mpesa: #22c55e; /* M-Pesa donate green */
-
-  --font-display: var(--font-sora); /* Sora - headlines */
-  --font-hand: var(--font-caveat); /* Caveat - handwritten soul */
 }
 
 :root {
@@ -96,19 +101,19 @@
 }
 
 .dark {
-  --background: #0f172a;
+  --background: #0d1526;
   --foreground: #fffbeb;
-  --card: #1e293b;
+  --card: #16203c;
   --card-foreground: #fffbeb;
-  --popover: #1e293b;
+  --popover: #16203c;
   --popover-foreground: #fffbeb;
   --primary: #818cf8;
   --primary-foreground: #0f172a;
-  --secondary: #1e293b;
+  --secondary: #16203c;
   --secondary-foreground: #fffbeb;
-  --muted: #1e293b;
+  --muted: #16203c;
   --muted-foreground: #94a3b8;
-  --accent: #1e293b;
+  --accent: #16203c;
   --accent-foreground: #fffbeb;
   --destructive: #ef4444;
   --border: rgb(255 255 255 / 10%);
@@ -119,14 +124,23 @@
   --chart-3: #22d3ee;
   --chart-4: #fbbf24;
   --chart-5: #4ade80;
-  --sidebar: #1e293b;
+  --sidebar: #16203c;
   --sidebar-foreground: #fffbeb;
   --sidebar-primary: #818cf8;
   --sidebar-primary-foreground: #0f172a;
-  --sidebar-accent: #1e293b;
+  --sidebar-accent: #16203c;
   --sidebar-accent-foreground: #fffbeb;
   --sidebar-border: rgb(255 255 255 / 10%);
   --sidebar-ring: #818cf8;
+
+  /* ---- Binti "Nairobi Midnight" flip — neutral surfaces only.
+     Brand hues (binti/pink/cyan/amber/danger/mpesa) stay TRUE so buttons,
+     charts and gradients keep their identity; text tokens get dark: patches. */
+  --color-binti-cream: #0d1526; /* page background */
+  --color-binti-sand: #1e2a47; /* soft surface + borders */
+  --color-binti-ink: #eef2ff; /* primary text -> light */
+  --color-binti-slate: #a3b1cf; /* muted text */
+  --color-binti-card: #16203c; /* card surface */
 }
 
 @layer base {
@@ -139,6 +153,12 @@
 }
 
 /* ---- Binti Rising custom styles ---- */
+
+/* Brand selection color (donor-grade detail) */
+::selection {
+  background: rgba(236, 72, 153, 0.28);
+  color: inherit;
+}
 
 /* Marquee for partner logos */
 @keyframes binti-marquee {
@@ -217,11 +237,27 @@
   background-clip: text;
   color: transparent;
 }
+.dark .binti-gradient-text {
+  background: linear-gradient(92deg, #a5b4fc 0%, #f472b6 55%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 /* Focus ring brand (Accessibility spec: Focus - Ring Indigo) */
 .binti-focus:focus-visible {
   outline: 3px solid #4f46e5;
   outline-offset: 2px;
+}
+.dark .binti-focus:focus-visible {
+  outline-color: #a5b4fc;
+}
+
+/* Dark-mode scrollbar (list UI rule) */
+.dark .binti-scroll::-webkit-scrollbar-track {
+  background: #1e2a47;
+}
+.dark .binti-scroll {
+  scrollbar-color: #818cf8 #1e2a47;
 }
 
 /* Card gradient glow on hover (donor-grade polish) */
@@ -329,6 +365,16 @@
 /* Scroll progress bar (donor-site polish) */
 .binti-progress {
   background: linear-gradient(90deg, #4f46e5, #ec4899 55%, #f59e0b);
+}
+
+/* Smooth theme transition (respects disableTransitionOnChange via .theme-switching) */
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .binti-theme-fade,
+  .binti-theme-fade * {
+    transition-property: background-color, border-color;
+    transition-duration: 0.25s;
+  }
 }
 
 /* Page section enter transition (keyed div replays on section switch) */

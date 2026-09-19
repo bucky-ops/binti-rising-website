@@ -39,7 +39,7 @@ function BackToTop() {
           exit={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-4 left-4 z-40 flex size-11 items-center justify-center rounded-full border border-binti/30 bg-white/90 text-binti shadow-lg backdrop-blur transition hover:bg-binti hover:text-white"
+          className="fixed bottom-4 left-4 z-40 flex size-11 items-center justify-center rounded-full border border-binti/30 bg-binti-card/90 text-binti dark:text-indigo-300 shadow-lg backdrop-blur transition hover:bg-binti hover:text-white"
           aria-label="Back to top"
         >
           <ArrowUp className="size-5" aria-hidden="true" />

@@ -98,3 +98,30 @@ Stage Summary:
 - lint clean; server 200; no console errors on clean reload; privacy rules maintained (chat stores nothing, feed areas+counts only).
 - Risks: dev-server may die between shell sessions (restart: setsid bash -c 'exec bun run dev' >/dev/null 2>&1 < /dev/null &); Sema chat is client-side canned (no backend) by design — nothing persisted; hot-reload can transiently show false "Issue" badges.
 - Recommended next: push branch overhaul/nairobi-team-redesign to GitHub (repo bucky-ops/binti-rising-website) + Vercel preview; optional: wire newsletter/voice-note to Supabase when keys arrive; add "Our Story 2023→2026" milestone timeline if another content round is desired.
+
+---
+Task ID: 5
+Agent: Orchestrator (Z.ai Code)
+Task: Round 3 — QA baseline, "Nairobi Midnight" dark mode (full), multi-currency donations, dashboard area filter, Our Story timeline, donor one-pager PDF
+
+Work Log:
+- Read worklog.md (Tasks 1-a…4): site stable. Baseline agent-browser QA (desktop 1280 + mobile 390, fresh session): all 5 sections render, no console errors, no horizontal overflow, lint clean → pivoted to mandatory styling + features.
+- BUG FIXED: hero "Safeguarding on standby" + "87% referrals" chips clipped at 390px (-right-1/-right-2) → right-0 on mobile, sm:-right-6 desktop; verified right edge 374 < 390.
+- DARK MODE "Nairobi Midnight" (the styling centerpiece):
+  * Moved Binti color tokens from `@theme inline` to a NON-inline `@theme` block so they emit real CSS vars; added `--color-binti-card` (#ffffff / #16203c).
+  * `.dark` flips ONLY neutral surfaces: cream→#0d1526, sand→#1e2a47, ink→#eef2ff (text), slate→#a3b1cf, card→#16203c; brand hues (binti/pink/cyan/amber/danger/mpesa) stay TRUE so buttons/charts/gradients keep identity; shadcn tokens matched (#0d1526 bg).
+  * Perl sweep with boundary guards: bg-white→bg-binti-card (+ /95 /90 /70 /60 variants; kept white/10-15-30 overlays on colored gradients), from-white/to-white→binti-card, bg-binti-ink→bg-[#0F172A] (constant dark surfaces: TopBar, Footer, Sema launcher, badges), 57× `text-binti` + `dark:text-indigo-300`, 6× text-binti-pinkdeep + dark:text-pink-300, text-red/green-600/700 + dark:-400/300.
+  * Charts: CartesianGrid #f1f5f9→rgba(148,163,184,0.16), ticks #475569→#94a3b8 (readable both themes); tooltips stay light (standard).
+  * globals.css extras: ::selection pink, .dark scrollbar track, .dark gradient-text (a5b4fc/f472b6/fbbf24), .dark focus outline, theme fade transition.
+  * ThemeProvider (next-themes, attribute=class, default light) in layout.tsx; ThemeToggle (sun/moon rotate, useSyncExternalStore mount guard — avoids react-hooks/set-state-in-effect lint error) in navbar desktop + labelled pill in mobile sheet.
+  * Fixed Turbopack STALE CSS cache trap: edited globals.css served old chunk after restart → rm -rf .next + restart required (documented!).
+- FEATURE — Multi-currency (KES/USD/EUR/GBP): CURRENCIES/toKes/fromKes in data.ts (indicative rates labelled, monthly). ImpactCalculator: currency chips, slider/presets/range per currency, impact math converts to KES, "≈ KES X — charged in KES via M-Pesa" note. DonateModal: currency chips (resets custom), tier buttons show ≈ converted, custom input per-currency prefix/placeholder/min, effAmount ALWAYS KES, CTA "£25 (≈ KES 4,125) via M-Pesa". QA: USD 80→KES 10,320 ✓; GBP 25→4,125 ✓ → full flow to receipt BRI-2026-740841 ✓.
+- FEATURE — Dashboard area filter: chips All(28)/Kibera(12)/Mathare(9)/Kawangware(7) with per-area brand colors; per-area aggregates (AREA_KPIS, AREA_RISK, WELLBEING_BY_AREA + FY2425 variant) in data.ts; filters KPI row (Alumni→Attendance card swap), attendance bar (single-series via mapped Bar fill), wellbeing line, risk donut, activity feed; heatmap rows clickable (ring + "viewing" chip). BUG FIXED during QA: CountUp started-guard kept stale value on filter switch → key={area-label} remount (242/9/84%/89% verified for Kawangware).
+- FEATURE — Our Story timeline (Home): MILESTONES 2023→2026, gradient spine + pinging nodes, alternating cards (md) / left spine (mobile), tone-coded year chips, Caveat stat lines, scroll-reveal; inserted between JTW teaser and Stories.
+- FEATURE — Donor One-Pager PDF: scripts/binti-onepager.ts (pdf-lib, brand-styled A4: need, 6 aggregate stats, 62/18/7/8/5 finance bars, safeguarding, M-Pesa CTA) → /public/policies/binti-donor-onepager.pdf (200); added to POLICIES (footer follows) + download buttons in Accountability hero and Partners tab.
+- Ops: dev server restarted detached (setsid); transient white-screen during HMR full reload = reload artifact only, fresh load clean.
+
+Stage Summary:
+- QA (agent-browser, fresh sessions, light+dark × desktop+mobile): all 5 sections + timeline + filtered dashboard + currency donate flow verified; console clean (0 errors after stale-buffer restart); no horizontal overflow (0px); lint exit 0; privacy rules intact (aggregates only, masked names, indicative FX labelled, no PII in PDF).
+- Known risks: FX rates hardcoded (indicative, need monthly update source); donate receipt still client-side simulation (Daraja keys pending); minor pre-existing warnings (LCP eager on facilitator photo, DialogContent aria-describedby); Turbopack caches edited globals.css until .next cleared.
+- Recommended next: push branch + Vercel preview; wire KPIs/newsletter to Supabase when keys arrive; optional real Daraja STK integration + FX-rate fetch endpoint.

@@ -99,7 +99,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
         aria-expanded={open}
         className={cn(
           "fixed right-4 z-40 flex size-14 items-center justify-center rounded-full shadow-2xl transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-binti-ink",
-          open ? "bottom-4 bg-binti-ink text-white" : "bottom-20 bg-mpesa text-white sm:bottom-5 sm:right-5",
+          open ? "bottom-4 bg-[#0F172A] text-white" : "bottom-20 bg-mpesa text-white sm:bottom-5 sm:right-5",
           !open && "binti-pulse"
         )}
       >
@@ -113,7 +113,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
       {!open && (
         <span
           aria-hidden="true"
-          className="pointer-events-none fixed bottom-[4.9rem] right-[4.6rem] z-40 hidden rounded-full bg-binti-ink px-3 py-1.5 font-display text-[11px] font-bold text-white shadow-lg sm:block"
+          className="pointer-events-none fixed bottom-[4.9rem] right-[4.6rem] z-40 hidden rounded-full bg-[#0F172A] px-3 py-1.5 font-display text-[11px] font-bold text-white shadow-lg sm:block"
         >
           Sema na Me
         </span>
@@ -132,7 +132,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
           >
             {/* Header */}
             <div className="flex items-center gap-3 bg-gradient-to-r from-mpesa to-green-600 px-4 py-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/95">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-binti-card/95">
                 <BintiMark size={22} />
               </span>
               <div className="min-w-0 flex-1">
@@ -157,7 +157,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
                       "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed shadow-sm",
                       m.from === "user"
                         ? "rounded-br-md bg-mpesa text-white"
-                        : "rounded-bl-md border border-binti-sand bg-white text-binti-ink"
+                        : "rounded-bl-md border border-binti-sand bg-binti-card text-binti-ink"
                     )}
                   >
                     {m.text}
@@ -177,7 +177,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
               ))}
               {typing && (
                 <div className="flex justify-start" aria-hidden="true">
-                  <div className="flex gap-1 rounded-2xl rounded-bl-md border border-binti-sand bg-white px-3.5 py-3">
+                  <div className="flex gap-1 rounded-2xl rounded-bl-md border border-binti-sand bg-binti-card px-3.5 py-3">
                     {[0, 1, 2].map((i) => (
                       <span
                         key={i}
@@ -195,7 +195,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
                     <button
                       key={o.id}
                       onClick={() => onOption(o.id, o.label)}
-                      className="rounded-full border border-mpesa/40 bg-white px-2.5 py-1.5 text-[11.5px] font-semibold text-green-700 transition hover:bg-mpesa hover:text-white"
+                      className="rounded-full border border-mpesa/40 bg-binti-card px-2.5 py-1.5 text-[11.5px] font-semibold text-green-700 dark:text-green-300 transition hover:bg-mpesa hover:text-white"
                     >
                       {o.label}
                     </button>
@@ -210,7 +210,7 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
                 e.preventDefault();
                 onUser(input);
               }}
-              className="flex items-center gap-2 border-t border-binti-sand bg-white px-3 py-2.5"
+              className="flex items-center gap-2 border-t border-binti-sand bg-binti-card px-3 py-2.5"
             >
               <input
                 value={input}
@@ -229,8 +229,8 @@ export function SemaChat({ onNavigate }: { onNavigate?: (s: SectionId) => void }
                 <SendHorizonal className="size-4.5" aria-hidden="true" />
               </button>
             </form>
-            <p className="flex items-center justify-center gap-1.5 bg-white pb-2 text-[10px] text-binti-slate/70">
-              <ShieldCheck className="size-3 text-green-600" aria-hidden="true" />
+            <p className="flex items-center justify-center gap-1.5 bg-binti-card pb-2 text-[10px] text-binti-slate/70">
+              <ShieldCheck className="size-3 text-green-600 dark:text-green-400" aria-hidden="true" />
               Anonymous · nothing you type is stored (Kenya DPA 2019)
             </p>
           </motion.div>

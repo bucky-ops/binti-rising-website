@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { ORG, type SectionId, POLICIES } from "@/lib/binti/data";
 import { BintiWordmark, BintiLogoImage, BintiMark } from "./ui";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV: { id: SectionId; label: string; icon: typeof Home }[] = [
   { id: "home", label: "Home", icon: Home },
@@ -37,7 +38,7 @@ const NAV: { id: SectionId; label: string; icon: typeof Home }[] = [
 /* ------------------------------------------------------------------ */
 function TopBar() {
   return (
-    <div className="w-full bg-binti-ink text-white/80 text-[11px] leading-[16px] tracking-wide px-4 md:px-6 py-2 flex flex-wrap gap-x-4 gap-y-1 items-center justify-between">
+    <div className="w-full bg-[#0F172A] text-white/80 text-[11px] leading-[16px] tracking-wide px-4 md:px-6 py-2 flex flex-wrap gap-x-4 gap-y-1 items-center justify-between">
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         <span className="font-medium text-white">CBO Reg: {ORG.cboReg}</span>
         <span>KRA PIN: {ORG.kraPin}</span>
@@ -115,6 +116,7 @@ export function Navbar({
           </ul>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button
               onClick={onDonate}
               className="hidden sm:inline-flex bg-mpesa hover:bg-green-600 text-white font-bold rounded-full h-10 px-4 gap-1.5 shadow-sm focus-visible:outline-2 focus-visible:outline-binti-ink"
@@ -130,10 +132,10 @@ export function Navbar({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="lg:hidden border-binti/30 bg-white/70"
+                  className="lg:hidden border-binti/30 bg-binti-card/70"
                   aria-label="Open navigation menu"
                 >
-                  <Menu className="size-5 text-binti" />
+                  <Menu className="size-5 text-binti dark:text-indigo-300" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] bg-binti-cream border-binti-sand">
@@ -170,10 +172,14 @@ export function Navbar({
                     </Button>
                     <a
                       href="tel:1195"
-                      className="mt-2 flex items-center justify-center gap-2 rounded-full border border-red-300 bg-red-50 py-2.5 text-sm font-bold text-red-600"
+                      className="mt-2 flex items-center justify-center gap-2 rounded-full border border-red-300 bg-red-50 py-2.5 text-sm font-bold text-red-600 dark:text-red-400"
                     >
                       <Phone className="size-4" aria-hidden="true" /> GBV Hotline 1195
                     </a>
+                    {/* Dark / light switch (mobile) */}
+                    <div className="mt-2 flex items-center justify-center">
+                      <ThemeToggle withLabel />
+                    </div>
                   </div>
                 </div>
               </SheetContent>
@@ -191,7 +197,7 @@ export function Navbar({
 /* ------------------------------------------------------------------ */
 export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   return (
-    <footer className="mt-auto w-full bg-binti-ink text-white">
+    <footer className="mt-auto w-full bg-[#0F172A] text-white">
       <div className="mx-auto max-w-7xl px-4 md:px-6 py-10 grid gap-8 md:grid-cols-4">
         {/* Brand */}
         <div className="space-y-3">

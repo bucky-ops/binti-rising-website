@@ -56,7 +56,7 @@ export function BintiWordmark({
         <span
           className={cn(
             "font-display text-[17px] font-extrabold tracking-[0.14em]",
-            isWhite ? "text-white" : variant === "black" ? "text-black" : "text-binti"
+            isWhite ? "text-white" : variant === "black" ? "text-black" : "text-binti dark:text-indigo-300"
           )}
         >
           RISING
@@ -118,7 +118,7 @@ export function NairobiPhoto({
           <circle cx="8.5" cy="8.5" r="1.5" />
           <path d="m21 15-5-5L5 21" />
         </svg>
-        <p className="text-[11px] font-semibold text-binti leading-tight">
+        <p className="text-[11px] font-semibold text-binti dark:text-indigo-300 leading-tight">
           Awaiting Nairobi Team photo upload
         </p>
       </div>

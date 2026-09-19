@@ -259,6 +259,7 @@ export const POLICIES = [
   { title: "Safeguarding Policy", file: "/policies/binti-safeguarding-policy.pdf", size: "PDF · 3 KB" },
   { title: "DPA 2019 Data Protection Policy", file: "/policies/binti-dpa-2019-privacy.pdf", size: "PDF · 3 KB · Encrypted storage" },
   { title: "Finance Manual — Segregation of Duties", file: "/policies/binti-finance-manual.pdf", size: "PDF · 3 KB" },
+  { title: "Donor One-Pager FY24/25 — Statement of Need", file: "/policies/binti-donor-onepager.pdf", size: "PDF · 1 page" },
 ] as const;
 
 export const PARTNERS = [
@@ -399,6 +400,134 @@ export const CALC_UNIT_COSTS = {
   session: 2500,
   journey: 10000,
 } as const;
+
+// ---------- CURRENCIES (international donors) ----------
+// rate = KES per 1 unit, indicative interbank mid-rates (checked monthly,
+// clearly labelled "indicative" in the UI). M-Pesa always charges KES.
+export interface Currency {
+  code: "KES" | "USD" | "EUR" | "GBP";
+  symbol: string;
+  rate: number; // KES per unit
+  step: number; // slider step in this currency
+}
+
+export const CURRENCIES: Currency[] = [
+  { code: "KES", symbol: "KSh ", rate: 1, step: 500 },
+  { code: "USD", symbol: "$", rate: 129, step: 5 },
+  { code: "EUR", symbol: "€", rate: 141, step: 5 },
+  { code: "GBP", symbol: "£", rate: 165, step: 5 },
+];
+
+export const toKes = (amount: number, rate: number) => Math.round(amount * rate);
+export const fromKes = (kes: number, rate: number, round5 = true) =>
+  round5 ? Math.max(5, Math.round(kes / rate / 5) * 5) : Math.round(kes / rate);
+
+// ---------- OUR STORY — milestone timeline 2023 → 2026 (aggregate facts) ----------
+export const MILESTONES = [
+  {
+    year: "2023",
+    title: "Fifty youth, one room in Laini Saba",
+    body: "Binti Rising is born: 50 young women co-design the Journey to Wholeness curriculum in Kibera — because nothing about us, without us.",
+    stat: "50 co-creators · 1 circle",
+    tone: "indigo",
+  },
+  {
+    year: "2024",
+    title: "From one circle to a movement",
+    body: "Sisterhood circles open across Mathare and Kawangware. First external audit, no-cash M-Pesa policy and the Finance Manual with segregation of duties.",
+    stat: "28 circles · 3 areas · first audit",
+    tone: "pink",
+  },
+  {
+    year: "2025",
+    title: "Data becomes our superpower",
+    body: "The masked SSK master aggregation goes live: 94% data quality, Kenya DPA 2019 compliance, DATIM-ready exports. 36 peer facilitators certified (S1–S8).",
+    stat: "36 facilitators · 94% data quality",
+    tone: "cyan",
+  },
+  {
+    year: "2026",
+    title: "JTW field-tested. Donors, you can watch it live.",
+    body: "Oct 2025 – Mar 2026 cohort completes the 8-session journey. This donor dashboard, the accountability page and 4,500+ alumni — every number aggregated, every shilling receipted.",
+    stat: "4,500+ alumni · live dashboard",
+    tone: "amber",
+  },
+] as const;
+
+// ---------- PER-AREA AGGREGATES (dashboard filter) ----------
+// Everything below is area-level aggregation — no facility coords, no names.
+export type AreaName = "Kibera" | "Mathare" | "Kawangware";
+
+export const AREA_KPIS: Record<
+  AreaName,
+  { youth: number; facilitators: number; referralClosure: number; attendance: number }
+> = {
+  Kibera: { youth: 612, facilitators: 16, referralClosure: 89, attendance: 93 },
+  Mathare: { youth: 394, facilitators: 11, referralClosure: 86, attendance: 90 },
+  Kawangware: { youth: 242, facilitators: 9, referralClosure: 84, attendance: 89 },
+};
+
+// Risk split per area: [Low %, Medium %, High→Referred %]
+export const AREA_RISK: Record<AreaName, [number, number, number]> = {
+  Kibera: [64, 26, 10],
+  Mathare: [61, 29, 10],
+  Kawangware: [58, 31, 11],
+};
+
+// Wellbeing score per area per month (matches the org line, ±2 pts)
+export const WELLBEING_BY_AREA: Record<AreaName, { month: string; score: number }[]> = {
+  Kibera: [
+    { month: "Apr", score: 63 },
+    { month: "May", score: 66 },
+    { month: "Jun", score: 70 },
+    { month: "Jul", score: 73 },
+    { month: "Aug", score: 76 },
+    { month: "Sep", score: 79 },
+  ],
+  Mathare: [
+    { month: "Apr", score: 60 },
+    { month: "May", score: 63 },
+    { month: "Jun", score: 67 },
+    { month: "Jul", score: 70 },
+    { month: "Aug", score: 73 },
+    { month: "Sep", score: 76 },
+  ],
+  Kawangware: [
+    { month: "Apr", score: 59 },
+    { month: "May", score: 62 },
+    { month: "Jun", score: 66 },
+    { month: "Jul", score: 69 },
+    { month: "Aug", score: 72 },
+    { month: "Sep", score: 75 },
+  ],
+};
+
+export const WELLBEING_FY2425_BY_AREA: Record<AreaName, { month: string; score: number }[]> = {
+  Kibera: [
+    { month: "Oct", score: 54 },
+    { month: "Nov", score: 56 },
+    { month: "Dec", score: 55 },
+    { month: "Jan", score: 58 },
+    { month: "Feb", score: 60 },
+    { month: "Mar", score: 63 },
+  ],
+  Mathare: [
+    { month: "Oct", score: 51 },
+    { month: "Nov", score: 53 },
+    { month: "Dec", score: 52 },
+    { month: "Jan", score: 55 },
+    { month: "Feb", score: 57 },
+    { month: "Mar", score: 60 },
+  ],
+  Kawangware: [
+    { month: "Oct", score: 50 },
+    { month: "Nov", score: 52 },
+    { month: "Dec", score: 51 },
+    { month: "Jan", score: 54 },
+    { month: "Feb", score: 56 },
+    { month: "Mar", score: 59 },
+  ],
+};
 
 // ---------- LIVE ACTIVITY FEED (aggregate, privacy-safe) ----------
 // Masked circle events — areas + counts only, NEVER names or identifiers.

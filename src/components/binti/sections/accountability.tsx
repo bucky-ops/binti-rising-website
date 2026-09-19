@@ -188,18 +188,30 @@ export function AccountabilitySection() {
         sub="No cash badge, segregation chart, policy PDFs — everything a USAID / Global Fund / Mastercard Foundation reviewer needs, in aggregate."
       />
 
+      {/* One-pager download — the 30-second donor brief */}
+      <div className="mt-5">
+        <a
+          href="/policies/binti-donor-onepager.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-binti/40 bg-binti-card px-5 text-[13.5px] font-bold text-binti transition hover:bg-binti hover:text-white focus-visible:outline-2 focus-visible:outline-binti-pink"
+        >
+          <FileDown className="size-4" aria-hidden="true" /> Donor One-Pager · Statement of Need FY24/25 (PDF)
+        </a>
+      </div>
+
       {/* Trust badges */}
       <div className="mt-6 flex flex-wrap gap-2.5">
         <Badge className="rounded-full bg-binti px-3.5 py-2 text-[12px] font-bold text-white">✓ No cash · M-Pesa only</Badge>
         <Badge className="rounded-full bg-binti-pink px-3.5 py-2 text-[12px] font-bold text-white">✓ DPA 2019</Badge>
         <Badge className="rounded-full bg-binti-cyan px-3.5 py-2 text-[12px] font-bold text-white">✓ Safeguarding certified</Badge>
-        <Badge className="rounded-full bg-binti-ink px-3.5 py-2 text-[12px] font-bold text-white">✓ Finance segregation</Badge>
+        <Badge className="rounded-full bg-[#0F172A] px-3.5 py-2 text-[12px] font-bold text-white">✓ Finance segregation</Badge>
         <Badge className="rounded-full bg-mpesa px-3.5 py-2 text-[12px] font-bold text-white">✓ Audited FY24</Badge>
       </div>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         {/* Financial table */}
-        <Card className="overflow-hidden rounded-2xl border-binti-sand bg-white">
+        <Card className="overflow-hidden rounded-2xl border-binti-sand bg-binti-card">
           <div className="flex flex-wrap items-center justify-between gap-2 p-5 pb-3">
             <h3 className="font-display text-[15px] font-bold text-binti-ink">Financial Table FY24/25 · No Cash Policy</h3>
             <Badge className="rounded-full bg-green-100 border border-green-300 text-[11px] font-bold text-green-800">
@@ -227,7 +239,7 @@ export function AccountabilitySection() {
                         <div className="hidden h-2 w-16 overflow-hidden rounded-full bg-binti-cream sm:block">
                           <div className="h-full rounded-full bg-gradient-to-r from-binti to-binti-pink" style={{ width: `${f.pct}%` }} />
                         </div>
-                        <span className="text-[13px] font-bold text-binti">{f.pct}%</span>
+                        <span className="text-[13px] font-bold text-binti dark:text-indigo-300">{f.pct}%</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right text-[13px] text-binti-slate">{f.kes}</TableCell>
@@ -245,7 +257,7 @@ export function AccountabilitySection() {
         </Card>
 
         {/* Segregation of duties org chart */}
-        <Card className="rounded-2xl border-binti-sand bg-white p-5">
+        <Card className="rounded-2xl border-binti-sand bg-binti-card p-5">
           <h3 className="font-display text-[15px] font-bold text-binti-ink">Org Chart · Segregation of Duties — Audit Proof</h3>
           <div className="mt-4 space-y-3">
             {SEGREGATION.map((s, i) => {
@@ -254,13 +266,13 @@ export function AccountabilitySection() {
                 <div key={s.role}>
                   <div className="binti-lift flex items-start gap-3.5 rounded-xl border border-binti-sand bg-binti-cream/60 p-4">
                     <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-binti/10">
-                      <Icon className="size-5 text-binti" aria-hidden="true" />
+                      <Icon className="size-5 text-binti dark:text-indigo-300" aria-hidden="true" />
                     </span>
                     <div>
                       <p className="font-display text-[14px] font-bold text-binti-ink">{s.role}</p>
                       <p className="mt-0.5 text-[13px] leading-relaxed text-binti-slate">{s.detail}</p>
                     </div>
-                    {i === 0 && <Badge className="ml-auto rounded-full bg-binti-cream text-[10px] font-bold text-binti">UNPAID</Badge>}
+                    {i === 0 && <Badge className="ml-auto rounded-full bg-binti-cream text-[10px] font-bold text-binti dark:text-indigo-300">UNPAID</Badge>}
                   </div>
                   {i < SEGREGATION.length - 1 && (
                     <div className="flex justify-center" aria-hidden="true">
@@ -279,7 +291,7 @@ export function AccountabilitySection() {
       </div>
 
       {/* Policy downloads */}
-      <Card className="mt-6 rounded-2xl border-binti-sand bg-white p-5">
+      <Card className="mt-6 rounded-2xl border-binti-sand bg-binti-card p-5">
         <h3 className="font-display text-[15px] font-bold text-binti-ink">Policy Downloads · Audit Ready</h3>
         <p className="mt-1 text-[13px] text-binti-slate">
           Constitution non-profit clause, Safeguarding, DPA 2019 (encrypted storage), Finance Manual segregation — downloadable.
@@ -294,11 +306,11 @@ export function AccountabilitySection() {
               className="binti-lift group flex flex-col justify-between rounded-xl border border-binti-sand bg-binti-cream/50 p-4 focus-visible:outline-2 focus-visible:outline-binti"
             >
               <div>
-                <FileDown className="size-5 text-binti" aria-hidden="true" />
+                <FileDown className="size-5 text-binti dark:text-indigo-300" aria-hidden="true" />
                 <p className="mt-2 font-display text-[13.5px] font-bold leading-snug text-binti-ink">{p.title}</p>
                 <p className="mt-1 text-[11px] text-binti-slate">{p.size}</p>
               </div>
-              <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-bold text-binti group-hover:underline">
+              <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-bold text-binti dark:text-indigo-300 group-hover:underline">
                 <Download className="size-3.5" aria-hidden="true" /> Download PDF
               </span>
             </a>
@@ -308,13 +320,13 @@ export function AccountabilitySection() {
 
       {/* Anonymous complaints box */}
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        <Card className="rounded-2xl border-2 border-dashed border-binti-pink/50 bg-white p-6">
+        <Card className="rounded-2xl border-2 border-dashed border-binti-pink/50 bg-binti-card p-6">
           <h3 className="flex items-center gap-2 font-display text-lg font-extrabold text-binti-ink">
             <Lock className="size-5 text-binti-pink" aria-hidden="true" /> Anonymous Complaints Box
           </h3>
           <p className="mt-2 text-[13px] leading-relaxed text-binti-slate">
             <strong>No retaliation.</strong> Safeguarding Lead independent. Report via this box, WhatsApp{" "}
-            <a href={ORG.whatsappLink} target="_blank" rel="noreferrer" className="font-bold text-binti hover:underline">{ORG.whatsapp}</a>, shortcode{" "}
+            <a href={ORG.whatsappLink} target="_blank" rel="noreferrer" className="font-bold text-binti dark:text-indigo-300 hover:underline">{ORG.whatsapp}</a>, shortcode{" "}
             <strong>{ORG.shortcode}</strong>, or the sealed box at the Laini Saba centre.
             <br />
             <span className="mt-1 inline-block text-[12px] text-binti-slate/80">
@@ -325,7 +337,7 @@ export function AccountabilitySection() {
           {ref ? (
             <div className="mt-5 rounded-xl border border-green-300 bg-green-50 p-4 text-center" role="status">
               <p className="font-display text-[15px] font-bold text-green-800">Submitted anonymously ✓</p>
-              <p className="mt-1 text-[13px] text-green-700">
+              <p className="mt-1 text-[13px] text-green-700 dark:text-green-300">
                 Your reference: <strong>{ref}</strong>. FO notified. Track it anytime with this code.
               </p>
             </div>
@@ -334,7 +346,7 @@ export function AccountabilitySection() {
               <div className="space-y-1.5">
                 <Label htmlFor="complaint-category" className="text-[13px] font-semibold text-binti-ink">Category</Label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger id="complaint-category" className="h-11 rounded-xl border-binti/30 bg-white">
+                  <SelectTrigger id="complaint-category" className="h-11 rounded-xl border-binti/30 bg-binti-card">
                     <SelectValue placeholder="Choose category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -354,7 +366,7 @@ export function AccountabilitySection() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Describe what happened. Avoid names — write roles and areas instead, e.g. 'a facilitator in S4…'"
-                  className="min-h-[110px] rounded-xl border-binti/30 bg-white"
+                  className="min-h-[110px] rounded-xl border-binti/30 bg-binti-card"
                   maxLength={2000}
                 />
                 <p className="text-right text-[11px] text-binti-slate/70">{message.length}/2000</p>
@@ -367,7 +379,7 @@ export function AccountabilitySection() {
                 )}
               >
                 <div className="flex items-center gap-2.5">
-                  <Mic className={cn("size-4", voice.recording ? "text-red-600" : "text-binti")} aria-hidden="true" />
+                  <Mic className={cn("size-4", voice.recording ? "text-red-600 dark:text-red-400" : "text-binti dark:text-indigo-300")} aria-hidden="true" />
                   <p className="flex-1 text-[13px] font-semibold text-binti-ink">
                     {voice.recording
                       ? `Recording… ${voice.seconds}s / 60s — speak freely, stay anonymous`
@@ -380,7 +392,7 @@ export function AccountabilitySection() {
                       size="sm"
                       variant="outline"
                       onClick={voiceCtl.stop}
-                      className="h-9 rounded-full border-red-400 font-bold text-red-600 hover:bg-red-600 hover:text-white"
+                      className="h-9 rounded-full border-red-400 font-bold text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white"
                     >
                       Stop
                     </Button>
@@ -428,7 +440,7 @@ export function AccountabilitySection() {
                   onChange={(e) => setHasVoice(e.target.checked)}
                   className="size-4.5 accent-binti"
                 />
-                <Mic className="size-4 text-binti" aria-hidden="true" />
+                <Mic className="size-4 text-binti dark:text-indigo-300" aria-hidden="true" />
                 <span className="text-[13px] font-semibold text-binti-ink">
                   I have a voice note to drop at the sealed box (Laini Saba centre)
                 </span>
