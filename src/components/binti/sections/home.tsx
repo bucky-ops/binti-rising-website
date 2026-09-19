@@ -60,6 +60,20 @@ function Hero({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             From Silence,{" "}
             <span className="binti-gradient-text">She Rises.</span>
           </h1>
+          {/* Kiswahili micro-gloss - the programme's soul language, handwritten.
+              lang attrs let screen readers switch voice: sw line, en gloss. */}
+          <p
+            lang="sw"
+            className="mt-3 -rotate-1 font-hand text-[24px] font-bold leading-none text-binti-pinkdeep dark:text-pink-300"
+          >
+            Kimya kwisha, yeye anainuka.{" "}
+            <span
+              lang="en"
+              className="ml-1 hidden align-middle font-sans text-[12.5px] font-semibold tracking-wide text-binti-slate/70 sm:inline dark:text-slate-400"
+            >
+              Kiswahili for &ldquo;From silence, she rises.&rdquo;
+            </span>
+          </p>
           <p className="mt-5 max-w-xl text-[18px] leading-[28px] text-binti-slate">
             Peer-led 8-session mentorship for young people aged 15–25 (all genders) on SRH, mental
             health and healthy relationships in Kibera, Mathare & Kawangware. Binti does not just

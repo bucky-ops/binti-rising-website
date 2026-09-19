@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Command,
@@ -27,6 +27,7 @@ import {
   Phone,
   MessageCircle,
   History,
+  Eraser,
   ArrowRight,
   Search as SearchIcon,
   type LucideIcon,
@@ -104,6 +105,10 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
   // shows nothing, and every open render re-reads localStorage so entries
   // are always fresh right after a selection.
   const recents = open && typeof window !== "undefined" ? readRecent() : [];
+
+  // Bumped when the visitor clears recents: forces a re-render so the
+  // render-time localStorage read above picks up the emptied list at once.
+  const [, setClearTick] = useState(0);
 
   // Global ⌘K / Ctrl+K toggle
   useEffect(() => {
@@ -191,6 +196,24 @@ export function BintiCommandPalette({ open, onOpenChange, onNavigate, onDonate }
                       </CommandItem>
                     );
                   })}
+                  {/* Device-local reset - maintenance action: never tracked as
+                      a recent itself, keeps the palette open so the group
+                      vanishing is the immediate visual confirmation. */}
+                  <CommandItem
+                    value="clear recently used history privacy reset device"
+                    onSelect={() => {
+                      try {
+                        window.localStorage.removeItem(RECENT_KEY);
+                      } catch {
+                        /* storage unavailable - nothing to clear */
+                      }
+                      setClearTick((t) => t + 1);
+                    }}
+                    className="mt-1 border-t border-dashed border-binti-sand/80 pt-1 text-[12px] text-binti-slate/80 data-[selected=true]:text-binti-danger"
+                  >
+                    <Eraser className="size-4 text-binti-slate/70" aria-hidden="true" />
+                    <span>Clear recently used (this device)</span>
+                  </CommandItem>
                 </CommandGroup>
                 <CommandSeparator />
               </>

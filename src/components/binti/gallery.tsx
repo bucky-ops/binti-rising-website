@@ -10,10 +10,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { zip, strToU8 } from "fflate";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Download, FileDown, Image as ImageIcon, MapPin, ShieldCheck, X, MoveHorizontal } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  FileDown,
+  FolderDown,
+  Image as ImageIcon,
+  Loader2,
+  MapPin,
+  ShieldCheck,
+  X,
+  MoveHorizontal,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GALLERY, GALLERY_KINDS, type GalleryKind } from "@/lib/binti/data";
+import { GALLERY, GALLERY_KINDS, ORG, type GalleryKind } from "@/lib/binti/data";
 
 const FILTERS: ("All" | GalleryKind)[] = ["All", ...GALLERY_KINDS];
 
@@ -176,11 +191,84 @@ function Lightbox({
 }
 
 /* ------------------------------ GALLERY ------------------------------- */
+
+/** Press-pack build states: idle -> working (fetch 12 photos, then zip) -> done | error */
+type PackState = { status: "idle" | "working" | "done" | "error"; done: number; total: number };
+const PACK_IDLE: PackState = { status: "idle", done: 0, total: 0 };
+
 export function CircleGallery() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [pack, setPack] = useState<PackState>(PACK_IDLE);
 
   const items = useMemo(() => (filter === "All" ? GALLERY : GALLERY.filter((g) => g.kind === filter)), [filter]);
+
+  /**
+   * One-click press pack, built ENTIRELY on the device: photos are fetched
+   * from the same CDN the gallery already uses, zipped in the browser with
+   * fflate and handed to the visitor as one download. No new server endpoint,
+   * no copies of consented media in extra places (DPA 2019 minimal footprint).
+   * The ZIP includes CREDITS.txt with the press credit + per-photo captions.
+   */
+  const downloadPressPack = useCallback(async () => {
+    if (pack.status === "working") return;
+    const total = GALLERY.length;
+    setPack({ status: "working", done: 0, total });
+    try {
+      const files: Record<string, Uint8Array> = {};
+      const credits: string[] = [
+        "BINTI RISING INITIATIVE - PRESS & PARTNER PHOTO PACK",
+        "=====================================================",
+        "",
+        "Credit line (required): \u201CBinti Rising Initiative\u201D",
+        "All photos published with consent of the communities shown.",
+        "Captions are activity-level only: no names, no phones, no IDs",
+        "(Kenya Data Protection Act, 2019). Please keep it that way.",
+        "",
+        "PHOTOS",
+        "------",
+      ];
+      for (const [i, g] of GALLERY.entries()) {
+        const res = await fetch(g.src);
+        if (!res.ok) throw new Error(`fetch ${g.src} -> ${res.status}`);
+        const name = g.src.split("/").pop() ?? `photo-${i + 1}.webp`;
+        files[`photos/${name}`] = new Uint8Array(await res.arrayBuffer());
+        credits.push(`${String(i + 1).padStart(2, "0")}. ${name} - ${g.area} \u00B7 ${g.kind}${g.session ? ` \u00B7 ${g.session}` : ""}`);
+        credits.push(`    ${g.caption}`);
+        setPack({ status: "working", done: i + 1, total });
+      }
+      credits.push(
+        "",
+        "STORY FACTS",
+        "-----------",
+        "Peer-led JTW programme (8 sessions, S1-S8), all genders 15-25,",
+        "Kibera / Mathare / Kawangware, Nairobi. 24 facilitators co-led",
+        "in 12 pairs. Aggregate data on the Live Impact Dashboard.",
+        "",
+        "Contact: WhatsApp " + ORG.whatsapp + " (Sema na Me) \u00B7 GBV Hotline 1195",
+        "bintirising.or.ke",
+      );
+      files["CREDITS.txt"] = strToU8(credits.join("\n"));
+
+      const zipped = await new Promise<Uint8Array>((resolve, reject) => {
+        zip(files, { level: 6 }, (err, data) => (err ? reject(err) : resolve(data)));
+      });
+
+      const url = URL.createObjectURL(new Blob([zipped as unknown as BlobPart], { type: "application/zip" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `binti-press-pack-${new Date().getFullYear()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+      setPack({ status: "done", done: total, total });
+      window.setTimeout(() => setPack(PACK_IDLE), 6000);
+    } catch {
+      setPack({ status: "error", done: 0, total });
+      window.setTimeout(() => setPack(PACK_IDLE), 6000);
+    }
+  }, [pack.status]);
 
   return (
     <section aria-label="Photo gallery - inside the circles" className="relative overflow-hidden bg-binti-cream py-14 md:py-20">
@@ -284,15 +372,86 @@ export function CircleGallery() {
           })}
         </div>
 
-        {/* DPA footer note + press line */}
+        {/* DPA footer note + press-pack card */}
         <p className="mx-auto mt-6 flex max-w-xl items-center justify-center gap-2 text-center text-[12px] font-semibold text-binti-slate/80">
           <ShieldCheck className="size-4 shrink-0 text-binti-cyan" aria-hidden="true" />
           Photos published with consent · aggregated captions only - never names, phones or IDs (Kenya DPA 2019)
         </p>
-        <p className="mx-auto mt-2 flex max-w-xl items-center justify-center gap-1.5 text-center text-[12px] text-binti-slate/70">
+
+        {/* PRESS PACK - one click, built on the device (fflate in-browser zip).
+            Journalists & partners get all consented photos + CREDITS.txt with
+            the required credit line, per-photo captions and story facts. */}
+        <div className="binti-gradient-border mx-auto mt-5 flex max-w-2xl flex-col gap-4 rounded-2xl bg-binti-card/80 p-4 shadow-sm backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:gap-6 md:p-5">
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 font-display text-[15px] font-extrabold text-binti-ink">
+              <FolderDown className="size-4.5 shrink-0 text-binti-amber" aria-hidden="true" />
+              Press &amp; partner pack
+            </p>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-binti-slate">
+              All {GALLERY.length} consented photos in one ZIP with{" "}
+              <span className="font-bold text-binti-slate">CREDITS.txt</span> (credit line, captions, story
+              facts). Built privately on your device - nothing is uploaded.
+            </p>
+            {/* progress rail (determinate while fetching, hidden otherwise) */}
+            <div aria-hidden="true" className={cn("mt-2.5 h-1 w-full overflow-hidden rounded-full bg-binti-sand", pack.status !== "working" && "invisible")}>
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-binti via-binti-pink to-binti-amber transition-all duration-300"
+                style={{ width: `${pack.total ? Math.round((pack.done / pack.total) * 100) : 4}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex shrink-0 flex-col items-stretch gap-1.5 sm:items-end">
+            <button
+              type="button"
+              onClick={downloadPressPack}
+              disabled={pack.status === "working"}
+              aria-busy={pack.status === "working"}
+              className={cn(
+                "inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[13.5px] font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-binti",
+                pack.status === "working" && "cursor-wait bg-binti-sand text-binti-slate",
+                pack.status === "idle" && "bg-binti text-white shadow-md shadow-binti/25 hover:bg-binti-deep hover:scale-[1.02]",
+                pack.status === "done" && "bg-green-600 text-white",
+                pack.status === "error" && "bg-binti-amber text-[#7C2D12]"
+              )}
+            >
+              {pack.status === "idle" && (
+                <>
+                  <FolderDown className="size-4" aria-hidden="true" /> Download press pack
+                </>
+              )}
+              {pack.status === "working" && (
+                <>
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  <span className="tabular-nums">
+                    Zipping {pack.done} / {pack.total}…
+                  </span>
+                </>
+              )}
+              {pack.status === "done" && (
+                <>
+                  <CheckCircle2 className="size-4" aria-hidden="true" /> Saved · asante!
+                </>
+              )}
+              {pack.status === "error" && (
+                <>
+                  <AlertTriangle className="size-4" aria-hidden="true" /> Failed - tap to retry
+                </>
+              )}
+            </button>
+            <p aria-live="polite" className="text-[11px] font-semibold text-binti-slate/70 sm:text-right">
+              {pack.status === "idle" && `ZIP · ~${GALLERY.length} photos · CREDITS.txt included`}
+              {pack.status === "working" && "Preparing on your device, hang tight…"}
+              {pack.status === "done" && "Check your downloads folder."}
+              {pack.status === "error" && "Something broke - a tap retries."}
+            </p>
+          </div>
+        </div>
+
+        <p className="mx-auto mt-3 flex max-w-xl items-center justify-center gap-1.5 text-center text-[12px] text-binti-slate/70">
           <FileDown className="size-3.5 shrink-0 text-binti-amber" aria-hidden="true" />
           <span>
-            Press &amp; partners: open any photo to download the original - credit
+            Prefer single photos? Open any photo to download the original - credit
             <span className="font-bold text-binti-slate"> “Binti Rising Initiative”</span>. Facts for stories live in the{" "}
             <a
               href="/policies/binti-donor-onepager.pdf"
