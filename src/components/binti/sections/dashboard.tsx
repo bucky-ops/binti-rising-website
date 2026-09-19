@@ -118,13 +118,16 @@ function SskCyclePanel() {
       </div>
 
       <div className="p-5">
-        {/* Cycle stats */}
+        {/* Cycle stats - count-up on first view (reduced-motion safe) */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
-            <div key={s.label} className="rounded-2xl border border-binti-sand bg-binti-cream/60 p-4">
+            <div
+              key={s.label}
+              className="rounded-2xl border border-binti-sand bg-binti-cream/60 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-binti/40 hover:shadow-md hover:shadow-binti/10"
+            >
               <p className="font-display text-[11px] font-bold uppercase tracking-widest text-binti-slate">{s.label}</p>
-              <p className="mt-1 font-display text-3xl font-extrabold tabular-nums text-binti-ink">
-                {s.value.toLocaleString("en-GB")}
+              <p className="mt-1 font-display text-3xl font-extrabold text-binti-ink">
+                <CountUp end={s.value} />
               </p>
               <p className="mt-0.5 text-[11.5px] text-binti-slate/80">{s.sub}</p>
             </div>
@@ -228,7 +231,7 @@ function SskCyclePanel() {
 /* ------------------------------------------------------------------ */
 export function DashboardSection() {
   const [state, setState] = useState<LoadState>("loading");
-  const [syncedAt, setSyncedAt] = useState(ORG.lastSync);
+  const [syncedAt, setSyncedAt] = useState<string>(ORG.lastSync);
   const [fiscal, setFiscal] = useState<FiscalYear>("fy2526");
   const [area, setArea] = useState<AreaFilter>("All");
 
@@ -237,7 +240,7 @@ export function DashboardSection() {
   const wellbeing = area === "All" ? orgWellbeing : fiscal === "fy2526" ? WELLBEING_BY_AREA[area] : WELLBEING_FY2425_BY_AREA[area];
 
   // Per-area risk donut (org-level split when All)
-  const riskDonut =
+  const riskDonut: { name: string; value: number; color: string }[] =
     area === "All"
       ? RISK_DONUT
       : ([
@@ -661,8 +664,8 @@ export function DashboardSection() {
             <h3 className="font-display text-[15px] font-bold text-binti-ink">Indicators · Baseline → Target → Actual</h3>
             <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti dark:text-indigo-300">Report exported · 94% data quality · Audit trail kept</Badge>
           </div>
-          <div className="binti-scroll max-h-96 overflow-y-auto">
-            <Table className="binti-table">
+          <div className="binti-scroll max-h-96 overflow-x-auto overflow-y-auto">
+            <Table className="binti-table min-w-[540px]">
               <TableHeader className="sticky top-0 bg-binti-cream">
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="font-display text-[12px] font-bold text-binti-ink">Indicator</TableHead>

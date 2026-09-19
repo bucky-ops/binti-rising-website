@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Image as ImageIcon, MapPin, ShieldCheck, X, MoveHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, FileDown, Image as ImageIcon, MapPin, ShieldCheck, X, MoveHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GALLERY, GALLERY_KINDS, type GalleryKind } from "@/lib/binti/data";
 
@@ -78,6 +78,18 @@ function Lightbox({
         <X className="size-5" aria-hidden="true" />
       </button>
 
+      {/* Download - journalists & partners can pull the consented original
+          (DPA-safe: photos carry no names/identifiers by design). */}
+      <a
+        href={item.src}
+        download
+        onClick={(e) => e.stopPropagation()}
+        aria-label={`Download photo: ${item.caption}`}
+        className="absolute left-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-full bg-white/10 px-4 text-[12.5px] font-bold text-white backdrop-blur transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+      >
+        <Download className="size-4" aria-hidden="true" /> Download
+      </a>
+
       {/* Prev / next */}
       <button
         onClick={(e) => {
@@ -141,8 +153,8 @@ function Lightbox({
               )}
             </p>
             <p className="mt-0.5 font-display text-[15px] font-bold text-white md:text-[16px]">{item.caption}</p>
-            <p className="mt-1 flex items-center gap-1 text-[10.5px] font-semibold text-white/70 md:hidden">
-              <ShieldCheck className="size-3" aria-hidden="true" /> Published with consent · no names (DPA 2019)
+            <p className="mt-1 flex items-center gap-1 text-[10.5px] font-semibold text-white/70">
+              <ShieldCheck className="size-3 shrink-0" aria-hidden="true" /> Published with consent · no names (DPA 2019) · Press credit: “Binti Rising Initiative”
             </p>
           </div>
           <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-[12px] font-bold tabular-nums text-white">
@@ -151,11 +163,7 @@ function Lightbox({
         </figcaption>
       </motion.figure>
 
-      {/* Input hints + DPA note: desktop pills, mobile micro-line in caption */}
-      <p className="absolute bottom-14 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:flex">
-        <ShieldCheck className="size-3.5" aria-hidden="true" />
-        Photos published with consent · no names, no identifiers (Kenya DPA 2019)
-      </p>
+      {/* Input hints: desktop pill, mobile micro-line in caption */}
       <p className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/85 md:flex">
         <MoveHorizontal className="size-3.5" aria-hidden="true" />
         Swipe or use ← → keys to browse · Esc to close
@@ -276,10 +284,26 @@ export function CircleGallery() {
           })}
         </div>
 
-        {/* DPA footer note */}
+        {/* DPA footer note + press line */}
         <p className="mx-auto mt-6 flex max-w-xl items-center justify-center gap-2 text-center text-[12px] font-semibold text-binti-slate/80">
           <ShieldCheck className="size-4 shrink-0 text-binti-cyan" aria-hidden="true" />
           Photos published with consent · aggregated captions only - never names, phones or IDs (Kenya DPA 2019)
+        </p>
+        <p className="mx-auto mt-2 flex max-w-xl items-center justify-center gap-1.5 text-center text-[12px] text-binti-slate/70">
+          <FileDown className="size-3.5 shrink-0 text-binti-amber" aria-hidden="true" />
+          <span>
+            Press &amp; partners: open any photo to download the original - credit
+            <span className="font-bold text-binti-slate"> “Binti Rising Initiative”</span>. Facts for stories live in the{" "}
+            <a
+              href="/policies/binti-donor-onepager.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="font-bold text-binti underline decoration-binti/40 underline-offset-2 transition hover:decoration-binti dark:text-indigo-300"
+            >
+              donor one-pager
+            </a>
+            .
+          </span>
         </p>
       </div>
 

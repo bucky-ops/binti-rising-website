@@ -164,6 +164,11 @@ export function CountUp({
       (entries) => {
         if (entries[0].isIntersecting && !started.current) {
           started.current = true;
+          // Accessibility: respect prefers-reduced-motion - snap to final value
+          if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            setValue(end);
+            return;
+          }
           const t0 = performance.now();
           const tick = (t: number) => {
             const p = Math.min((t - t0) / duration, 1);

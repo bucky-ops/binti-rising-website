@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -20,6 +20,9 @@ import {
   Facebook,
   Linkedin,
   Twitter,
+  Share2,
+  Link2,
+  Check,
 } from "lucide-react";
 import { ORG, type SectionId, POLICIES } from "@/lib/binti/data";
 import { BintiWordmark, BintiLogoImage, BintiMark } from "./ui";
@@ -200,6 +203,71 @@ export function Navbar({
 }
 
 /* ------------------------------------------------------------------ */
+/* ShareRow - WhatsApp / X / copy link (device-local, no trackers).     */
+/* ------------------------------------------------------------------ */
+function ShareRow() {
+  const [copied, setCopied] = useState(false);
+  // Mount-safe origin: server + first client render share the canonical URL,
+  // then useSyncExternalStore exposes the real origin (no hydration mismatch,
+  // no setState-in-effect). Origin is static per page load, so an empty
+  // subscribe is enough.
+  const url = useSyncExternalStore(
+    () => () => {},
+    () => window.location.origin,
+    () => "https://binti-rising-initiative.vercel.app"
+  );
+  const text = "Binti Rising Initiative - From Silence, She Rises. Peer-led JTW for all genders 15-25 in Nairobi.";
+  const enc = encodeURIComponent(`${text} ${url}`);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard unavailable - ignore */
+    }
+  };
+
+  const btn =
+    "flex size-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:scale-105 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-binti-amber";
+
+  return (
+    <div className="pt-1">
+      <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-white/50">
+        <Share2 className="size-3.5" aria-hidden="true" /> Share Binti
+      </p>
+      <div className="mt-2 flex gap-2">
+        <a
+          href={`https://wa.me/?text=${enc}`}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Share Binti Rising on WhatsApp"
+          className={`${btn} hover:bg-mpesa`}
+        >
+          <MessageCircle className="size-4" aria-hidden="true" />
+        </a>
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Share Binti Rising on X (Twitter)"
+          className={`${btn} hover:bg-black`}
+        >
+          <Twitter className="size-4" aria-hidden="true" />
+        </a>
+        <button onClick={copy} aria-label="Copy website link" className={`${btn} hover:bg-binti`}>
+          {copied ? <Check className="size-4 text-green-400" aria-hidden="true" /> : <Link2 className="size-4" aria-hidden="true" />}
+        </button>
+      </div>
+      <p aria-live="polite" className="mt-1.5 h-3 text-[11px] font-semibold text-green-400">
+        {copied ? "Link copied - asante for spreading the word!" : ""}
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Footer - Reg No NC/SD/CBO/2026/0123 + Hotline 1195 + WhatsApp       */
 /* Sticky to bottom via mt-auto in parent (min-h-screen flex flex-col) */
 /* ------------------------------------------------------------------ */
@@ -218,6 +286,7 @@ export function Footer({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
             <ShieldCheck className="size-4 text-green-400" aria-hidden="true" />
             Kenya DPA 2019 compliant · Data aggregated only
           </div>
+          <ShareRow />
         </div>
 
         {/* Explore */}
