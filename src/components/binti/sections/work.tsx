@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,9 +29,36 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
   const [current, setCurrent] = useState(3); // default S4 (index 3) — the pivotal session
   const s = JTW[current];
   const isVeryHeavy = s.risk === "Very Heavy";
+  const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const prev = () => setCurrent((c) => Math.max(0, c - 1));
   const next = () => setCurrent((c) => Math.min(JTW.length - 1, c + 1));
+
+  // Keep the active step visible inside the horizontal rail (no vertical jump)
+  useEffect(() => {
+    stepRefs.current[current]?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  }, [current]);
+
+  // Keyboard: ← → move sessions, Home/End jump — roving focus follows selection
+  const onRailKeyDown = (e: React.KeyboardEvent) => {
+    const jump = (n: number) => {
+      setCurrent(n);
+      stepRefs.current[n]?.focus();
+    };
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      jump(Math.min(current + 1, JTW.length - 1));
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      jump(Math.max(current - 1, 0));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      jump(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      jump(JTW.length - 1);
+    }
+  };
 
   return (
     <section aria-label="Our Work — Journey to Wholeness" className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
@@ -46,11 +73,36 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
         sub="Peer-led 8-session mentorship for 15–25 AGYW in Kibera, Mathare & Kawangware. Field-tested Oct 2025–Mar 2026 by 36 Surround Sound facilitators. Every activity below is illustrated with our real Nairobi team."
       />
 
+      {/* Journey progress — Session N of 8 + gradient track + kbd hint */}
+      <div className="mt-8 flex items-center gap-3">
+        <span className="whitespace-nowrap font-display text-[11.5px] font-extrabold uppercase tracking-widest text-binti dark:text-indigo-300">
+          Session {current + 1} / {JTW.length}
+        </span>
+        <div
+          className="h-1.5 flex-1 overflow-hidden rounded-full bg-binti-sand"
+          role="progressbar"
+          aria-valuemin={1}
+          aria-valuemax={JTW.length}
+          aria-valuenow={current + 1}
+          aria-label={`JTW journey progress: session ${current + 1} of ${JTW.length}`}
+        >
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-binti via-binti-pink to-binti-amber transition-[width] duration-500 ease-out"
+            style={{ width: `${((current + 1) / JTW.length) * 100}%` }}
+          />
+        </div>
+        <span className="hidden items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold text-binti-slate sm:flex">
+          <kbd className="binti-kbd">←</kbd>
+          <kbd className="binti-kbd">→</kbd> keys to move
+        </span>
+      </div>
+
       {/* Stepper rail */}
       <ol
-        className="binti-scroll mt-8 flex snap-x gap-2 overflow-x-auto pb-3"
+        className="binti-scroll mt-4 flex snap-x gap-2 overflow-x-auto pb-3"
         role="list"
         aria-label="JTW 8-step stepper"
+        onKeyDown={onRailKeyDown}
       >
         {JTW.map((item, i) => {
           const active = i === current;
@@ -58,6 +110,9 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
           return (
             <li key={item.id} className="snap-start">
               <button
+                ref={(el) => {
+                  stepRefs.current[i] = el;
+                }}
                 onClick={() => setCurrent(i)}
                 aria-current={active ? "step" : undefined}
                 className={cn(

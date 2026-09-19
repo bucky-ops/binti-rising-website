@@ -855,6 +855,325 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
 }
 
 /* ------------------------------------------------------------------ */
+/* PARTNER INQUIRY FORM — For Partners tab (full-stack, /api/partners) */
+/* Institutional contacts only (not beneficiary data). Data-minimised, */
+/* DPA 2019 consent mandatory, honeypot anti-spam, ref code returned.  */
+/* ------------------------------------------------------------------ */
+const PARTNER_ORG_TYPES = [
+  { value: "funder", label: "Funder / Foundation", icon: "💰" },
+  { value: "ngo", label: "NGO / CBO", icon: "🤝" },
+  { value: "government", label: "Government / County", icon: "🏛️" },
+  { value: "corporate", label: "Corporate / CSR", icon: "🏢" },
+  { value: "community", label: "Community Group", icon: "🌍" },
+] as const;
+
+const PARTNER_INTERESTS = [
+  { value: "funding", label: "Funding a cohort" },
+  { value: "referral", label: "Referral pathway" },
+  { value: "content", label: "Content / Shujaaz" },
+  { value: "technical", label: "Technical help" },
+  { value: "volunteering", label: "Skilled volunteering" },
+] as const;
+
+function PartnerInquiryForm() {
+  const [orgName, setOrgName] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [orgType, setOrgType] = useState("");
+  const [interests, setInterests] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — humans never see/fill this
+  const [consent, setConsent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [ref, setRef] = useState<string | null>(null);
+
+  const toggleInterest = (v: string) =>
+    setInterests((cur) => (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]));
+
+  const reset = () => {
+    setOrgName("");
+    setContactName("");
+    setRole("");
+    setEmail("");
+    setOrgType("");
+    setInterests([]);
+    setMessage("");
+    setConsent(false);
+    setError(null);
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSending(true);
+    try {
+      const res = await fetch("/api/partners", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgName, contactName, role, email, orgType, interests, message, website, consentDpa: consent }),
+      });
+      const data = (await res.json()) as { ok?: boolean; reference?: string; error?: string };
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Could not send your inquiry. Please try again.");
+        return;
+      }
+      setRef(data.reference ?? "PTN-2026-000000");
+      toast({ title: "Partnership inquiry sent", description: `Reference ${data.reference} — we reply within 3 working days.` });
+    } catch {
+      setError("Network error — check your connection and try again, or email hello@bintirising.or.ke.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  /* Success state — reference code + next steps */
+  if (ref) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Card className="binti-gradient-border rounded-3xl bg-binti-card p-6 text-center md:p-8">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-binti to-binti-pink text-white shadow-lg shadow-binti/25" aria-hidden="true">
+            <CheckCircle2 className="size-7" />
+          </span>
+          <h4 className="mt-4 font-display text-xl font-extrabold text-binti-ink">Inquiry received — asante!</h4>
+          <p className="mx-auto mt-2 max-w-sm text-[13.5px] leading-relaxed text-binti-slate">
+            Our partnerships lead replies within <strong className="text-binti-ink">3 working days</strong>. Meanwhile,
+            download and review the MOU template so we can move fast when we meet.
+          </p>
+          <div className="mx-auto mt-4 w-fit rounded-2xl border border-binti/25 bg-binti-cream px-5 py-3 dark:bg-binti-sand/40">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-binti-slate">Your reference</p>
+            <p className="mt-0.5 flex items-center justify-center gap-2 font-display text-lg font-extrabold tabular-nums text-binti dark:text-indigo-300">
+              {ref}
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(ref).catch(() => {});
+                  toast({ title: "Reference copied", description: ref });
+                }}
+                aria-label="Copy reference code"
+                className="rounded-full p-1.5 text-binti-slate transition hover:bg-binti-sand hover:text-binti-ink"
+              >
+                <Copy className="size-3.5" aria-hidden="true" />
+              </button>
+            </p>
+          </div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+            <a
+              href="/policies/binti-mou-template.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-binti px-5 text-[13.5px] font-bold text-white transition hover:bg-binti-deep"
+            >
+              <FileDown className="size-4" aria-hidden="true" /> MOU Template
+            </a>
+            <Button
+              variant="outline"
+              onClick={reset}
+              className="h-11 rounded-full border-binti/40 px-5 font-bold text-binti dark:text-indigo-300 hover:bg-binti hover:text-white"
+            >
+              Send another inquiry
+            </Button>
+          </div>
+        </Card>
+      </motion.div>
+    );
+  }
+
+  return (
+    <Card className="binti-gradient-border rounded-3xl bg-binti-card p-6 md:p-8">
+      <h4 className="flex items-center gap-2 font-display text-lg font-extrabold text-binti-ink">
+        <Handshake className="size-5 text-binti dark:text-indigo-300" aria-hidden="true" />
+        Start a partnership
+      </h4>
+      <p className="mt-1 text-[13px] leading-relaxed text-binti-slate">
+        Tell us who you are and how you'd like to work together — 3 minutes, answered in 3 working days.
+      </p>
+
+      <form onSubmit={submit} className="mt-5 space-y-4" noValidate>
+        {/* Honeypot — visually hidden, ignored by humans, filled by bots */}
+        <div aria-hidden="true" className="absolute -left-[9999px] top-auto size-px overflow-hidden">
+          <label htmlFor="ptn-website">Leave this field empty</label>
+          <input id="ptn-website" type="text" value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="ptn-org" className="text-[12.5px] font-bold text-binti-ink">Organisation *</Label>
+            <Input
+              id="ptn-org"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              placeholder="e.g. LVCT Health"
+              required
+              maxLength={160}
+              className="h-11 rounded-xl border-binti/25 bg-binti-cream/50 focus-visible:ring-binti"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="ptn-contact" className="text-[12.5px] font-bold text-binti-ink">Contact person *</Label>
+            <Input
+              id="ptn-contact"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              placeholder="Full name"
+              required
+              maxLength={120}
+              className="h-11 rounded-xl border-binti/25 bg-binti-cream/50 focus-visible:ring-binti"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="ptn-role" className="text-[12.5px] font-bold text-binti-ink">Role / title</Label>
+            <Input
+              id="ptn-role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="e.g. Programme Director"
+              maxLength={120}
+              className="h-11 rounded-xl border-binti/25 bg-binti-cream/50 focus-visible:ring-binti"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="ptn-email" className="text-[12.5px] font-bold text-binti-ink">Work email *</Label>
+            <Input
+              id="ptn-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@organisation.org"
+              required
+              maxLength={254}
+              className="h-11 rounded-xl border-binti/25 bg-binti-cream/50 focus-visible:ring-binti"
+            />
+          </div>
+        </div>
+
+        {/* Org type — selectable chips */}
+        <div className="space-y-2">
+          <Label className="text-[12.5px] font-bold text-binti-ink">Organisation type *</Label>
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Organisation type">
+            {PARTNER_ORG_TYPES.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                role="radio"
+                aria-checked={orgType === t.value}
+                onClick={() => setOrgType(t.value)}
+                className={cn(
+                  "rounded-full border px-3.5 py-2 text-[12.5px] font-semibold transition",
+                  orgType === t.value
+                    ? "border-binti bg-binti text-white shadow-sm"
+                    : "border-binti/25 bg-binti-cream/50 text-binti-slate hover:border-binti/50 hover:text-binti-ink"
+                )}
+              >
+                <span aria-hidden="true" className="mr-1">{t.icon}</span>
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Interests — multi-select chips */}
+        <div className="space-y-2">
+          <Label className="text-[12.5px] font-bold text-binti-ink">How would you like to partner? *</Label>
+          <div className="flex flex-wrap gap-2" aria-label="Partnership interests">
+            {PARTNER_INTERESTS.map((i) => {
+              const on = interests.includes(i.value);
+              return (
+                <button
+                  key={i.value}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => toggleInterest(i.value)}
+                  className={cn(
+                    "rounded-full border px-3.5 py-2 text-[12.5px] font-semibold transition",
+                    on
+                      ? "border-binti-pink bg-binti-pink text-white shadow-sm"
+                      : "border-binti/25 bg-binti-cream/50 text-binti-slate hover:border-binti-pink/50 hover:text-binti-ink"
+                  )}
+                >
+                  {on && <CheckCircle2 className="mr-1 inline size-3.5" aria-hidden="true" />}
+                  {i.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="ptn-message" className="text-[12.5px] font-bold text-binti-ink">
+            Anything else? <span className="font-normal text-binti-slate">(optional)</span>
+          </Label>
+          <textarea
+            id="ptn-message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={3}
+            maxLength={2000}
+            placeholder="Timeline, cohort size, geography, questions…"
+            className="w-full resize-none rounded-xl border border-binti/25 bg-binti-cream/50 px-3.5 py-2.5 text-[14px] text-binti-ink placeholder:text-binti-slate/60 focus-visible:outline-2 focus-visible:outline-binti"
+          />
+        </div>
+
+        {/* DPA notice + consent */}
+        <div className="rounded-xl border border-binti-cyan/40 bg-binti-cyan/5 p-3.5">
+          <p className="text-[12px] leading-relaxed text-binti-slate">
+            <strong className="text-binti-ink">Privacy note (Kenya DPA 2019):</strong> partner contacts are institutional
+            records — kept only to run this partnership, never published, never shared, deleted on request. Beneficiary
+            data everywhere else on this site stays aggregated and name-free.
+          </p>
+          <label className="mt-2.5 flex cursor-pointer items-start gap-2.5">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 size-4.5 shrink-0 accent-binti"
+              required
+            />
+            <span className="text-[12.5px] font-semibold leading-snug text-binti-ink">
+              I consent to Binti Rising storing this inquiry for partnership correspondence. *
+            </span>
+          </label>
+        </div>
+
+        {error && (
+          <p role="alert" className="rounded-xl border border-red-300 bg-red-50 px-3.5 py-2.5 text-[12.5px] font-semibold text-red-700">
+            {error}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="submit"
+            disabled={sending}
+            className="h-12 flex-1 rounded-full bg-binti font-display text-[15px] font-extrabold hover:bg-binti-deep sm:flex-none sm:px-8"
+          >
+            {sending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Sending…
+              </>
+            ) : (
+              <>
+                <Handshake className="size-4.5" aria-hidden="true" /> Send inquiry
+              </>
+            )}
+          </Button>
+          <p className="text-[11.5px] text-binti-slate">
+            You'll get a <strong className="text-binti-ink">PTN-2026-XXXXXX</strong> reference instantly.
+          </p>
+        </div>
+      </form>
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* GET INVOLVED — tabs: Youth / Donors / Partners                      */
 /* ------------------------------------------------------------------ */
 export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
@@ -978,37 +1297,67 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
 
         {/* PARTNERS */}
         <TabsContent value="partners" className="mt-6">
-          <Card className="mx-auto max-w-2xl rounded-3xl border-binti-sand bg-binti-card p-6 text-center md:p-8">
-            <Handshake className="mx-auto size-12 text-binti dark:text-indigo-300" aria-hidden="true" />
-            <h3 className="mt-3 font-display text-xl font-extrabold text-binti-ink">Partner with Binti Rising</h3>
-            <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-binti-slate">
-              Referral partners (LVCT Health, Nairobi County health), content partners (Shujaaz Inc) and funders —
-              start with our MOU template, then meet the team in Kibera.
-            </p>
-            <a
-              href="/policies/binti-mou-template.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex h-12 items-center gap-2 rounded-full bg-binti px-6 text-[15px] font-bold text-white transition hover:bg-binti-deep"
-            >
-              <FileDown className="size-5" aria-hidden="true" /> Download MOU Template PDF
-            </a>
-            <div className="mt-3">
-              <a
-                href="/policies/binti-donor-onepager.pdf"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-binti/40 px-5 text-[13.5px] font-bold text-binti transition hover:bg-binti hover:text-white"
-              >
-                <FileDown className="size-4" aria-hidden="true" /> Donor One-Pager · Statement of Need (FY24/25)
-              </a>
+          <div className="grid items-start gap-6 lg:grid-cols-[1fr_1fr]">
+            {/* Left: intro, downloads, partner badges */}
+            <div className="space-y-4">
+              <Card className="rounded-3xl border-binti-sand bg-binti-card p-6 text-center md:p-8">
+                <Handshake className="mx-auto size-12 text-binti dark:text-indigo-300" aria-hidden="true" />
+                <h3 className="mt-3 font-display text-xl font-extrabold text-binti-ink">Partner with Binti Rising</h3>
+                <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-binti-slate">
+                  Referral partners (LVCT Health, Nairobi County health), content partners (Shujaaz Inc) and funders —
+                  start with our MOU template, then meet the team in Kibera.
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+                  <a
+                    href="/policies/binti-mou-template.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-12 items-center gap-2 rounded-full bg-binti px-6 text-[15px] font-bold text-white transition hover:bg-binti-deep"
+                  >
+                    <FileDown className="size-5" aria-hidden="true" /> Download MOU Template PDF
+                  </a>
+                  <a
+                    href="/policies/binti-donor-onepager.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-binti/40 px-5 text-[13.5px] font-bold text-binti transition hover:bg-binti hover:text-white"
+                  >
+                    <FileDown className="size-4" aria-hidden="true" /> Donor One-Pager (FY24/25)
+                  </a>
+                </div>
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  {["LVCT Health", "Shujaaz Inc", "Nairobi County", "Malala Sisterhood", "PATH", "Global Fund"].map((p) => (
+                    <Badge key={p} variant="outline" className="rounded-full border-binti/30 text-binti dark:text-indigo-300">{p}</Badge>
+                  ))}
+                </div>
+                <DataNote className="mt-5">
+                  Partnerships are institutional — this form never collects beneficiary data. Existing partner? Reach the
+                  partnerships lead directly: {ORG.email} · WhatsApp {ORG.whatsapp}.
+                </DataNote>
+              </Card>
+              <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti-cyan/10 to-binti-pink/10 p-6">
+                <h4 className="font-display text-[15px] font-extrabold text-binti-ink">What a partnership looks like</h4>
+                <ol className="mt-3 space-y-2.5" role="list">
+                  {[
+                    "Send the inquiry form → reference code PTN-2026-XXXXXX",
+                    "30-min intro call within 3 working days (Zoom or Kibera site visit)",
+                    "Sign the MOU template — scope, safeguarding annex, data clause",
+                    "Quarterly aggregate report + invite to a circle graduation",
+                  ].map((step, i) => (
+                    <li key={step} className="flex items-start gap-3 text-[13px] leading-relaxed text-binti-slate">
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-binti font-display text-[11px] font-extrabold text-white" aria-hidden="true">
+                        {i + 1}
+                      </span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </Card>
             </div>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {["LVCT Health", "Shujaaz Inc", "Nairobi County", "Malala Sisterhood", "PATH", "Global Fund"].map((p) => (
-                <Badge key={p} variant="outline" className="rounded-full border-binti/30 text-binti dark:text-indigo-300">{p}</Badge>
-              ))}
-            </div>
-          </Card>
+
+            {/* Right: inquiry form */}
+            <PartnerInquiryForm />
+          </div>
         </TabsContent>
       </Tabs>
     </section>

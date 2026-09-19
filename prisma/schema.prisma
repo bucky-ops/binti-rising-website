@@ -51,6 +51,28 @@ model Newsletter {
   createdAt  DateTime @default(now())
 }
 
+// Partner inquiries (Get Involved → For Partners). Institutional contacts
+// (funders, NGOs, government, corporates) — NOT beneficiary data. Partner
+// contact details are stored only for partnership correspondence, with an
+// explicit DPA 2019 notice + consent checkbox on the form. Beneficiary
+// privacy rules (initials-only) do not apply here because the submitter is
+// an organisation representative, but data minimisation still applies:
+// only fields needed to start a partnership are collected.
+model PartnerInquiry {
+  id           String   @id @default(cuid())
+  reference    String   @unique // shared externally, e.g. "PTN-2026-740841"
+  orgName      String
+  contactName  String
+  role         String?
+  email        String
+  orgType      String // funder | ngo | government | corporate | community
+  interests    String // comma-separated: funding | referral | content | technical | volunteering
+  message      String?
+  consentDpa   Boolean // must be true — enforced server-side
+  status       String   @default("new") // new | contacted | mou-sent | active | closed
+  createdAt    DateTime @default(now())
+}
+
 // Aggregated monthly KPI snapshots feeding the Live Impact Dashboard.
 // One row per (month, area). No PII anywhere - counts and percentages only.
 model KpiMonthly {

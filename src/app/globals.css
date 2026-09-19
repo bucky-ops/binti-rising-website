@@ -467,6 +467,86 @@
   }
 }
 
+/* Keyboard hint chips (kbd) — ⌘K palette, JTW stepper hints */
+.binti-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  padding: 0.08rem 0.35rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(79 70 229 / 0.28);
+  background: rgb(255 251 235 / 0.92);
+  color: #4f46e5;
+  font-family: var(--font-sora), ui-sans-serif, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  box-shadow: 0 1.5px 0 rgb(79 70 229 / 0.18);
+}
+.dark .binti-kbd {
+  border-color: rgb(129 140 248 / 0.4);
+  background: rgb(30 42 71 / 0.92);
+  color: #a5b4fc;
+  box-shadow: 0 1.5px 0 rgb(0 0 0 / 0.35);
+}
+
+/* Constant gradient border — "always on" variant of binti-card-glow
+   (used on partner form / success cards). Safe in dark: opacity tuned. */
+.binti-gradient-border {
+  position: relative;
+}
+.binti-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    120deg,
+    rgb(79 70 229 / 0.45),
+    rgb(236 72 153 / 0.38) 55%,
+    rgb(6 182 212 / 0.4)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.dark .binti-gradient-border::before {
+  background: linear-gradient(
+    120deg,
+    rgb(129 140 248 / 0.4),
+    rgb(244 114 182 / 0.35) 55%,
+    rgb(34 211 238 / 0.35)
+  );
+}
+
+/* Command palette (⌘K) brand styling — group headings become brand chips */
+.binti-palette [cmdk-group-heading] {
+  font-family: var(--font-sora), ui-sans-serif, sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4f46e5;
+}
+.dark .binti-palette [cmdk-group-heading] {
+  color: #a5b4fc;
+}
+.binti-palette [cmdk-input] {
+  font-family: var(--font-sora), ui-sans-serif, sans-serif;
+  font-weight: 600;
+}
+.binti-palette [cmdk-item][data-selected="true"] {
+  background: rgb(79 70 229 / 0.08);
+}
+.dark .binti-palette [cmdk-item][data-selected="true"] {
+  background: rgb(129 140 248 / 0.14);
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .binti-marquee-track,

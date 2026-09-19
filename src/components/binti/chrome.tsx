@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { ORG, type SectionId, POLICIES } from "@/lib/binti/data";
 import { BintiWordmark, BintiLogoImage, BintiMark } from "./ui";
+import { SearchTrigger } from "./palette";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV: { id: SectionId; label: string; icon: typeof Home }[] = [
@@ -65,10 +66,12 @@ export function Navbar({
   active,
   onNavigate,
   onDonate,
+  onSearch,
 }: {
   active: SectionId;
   onNavigate: (s: SectionId) => void;
   onDonate: () => void;
+  onSearch: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -116,6 +119,7 @@ export function Navbar({
           </ul>
 
           <div className="flex items-center gap-2">
+            <SearchTrigger onClick={onSearch} />
             <ThemeToggle />
             <Button
               onClick={onDonate}
@@ -141,6 +145,13 @@ export function Navbar({
               <SheetContent side="right" className="w-[300px] bg-binti-cream border-binti-sand">
                 <SheetTitle className="sr-only">Navigation</SheetTitle>
                 <div className="mt-2 flex flex-col gap-1">
+                  <SearchTrigger
+                      variant="mobile"
+                      onClick={() => {
+                        setOpen(false);
+                        onSearch();
+                      }}
+                    />
                   {NAV.map((item) => {
                     const Icon = item.icon;
                     return (

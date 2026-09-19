@@ -9,6 +9,7 @@ import { DashboardSection } from "./sections/dashboard";
 import { AccountabilitySection } from "./sections/accountability";
 import { InvolvedSection, DonateModal } from "./sections/involved";
 import { SemaChat } from "./sema";
+import { BintiCommandPalette } from "./palette";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeartHandshake, ArrowUp, ShieldCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -214,6 +215,7 @@ function SectionDots({ active, onNavigate }: { active: SectionId; onNavigate: (s
 export function BintiSite() {
   const [section, setSection] = useState<SectionId>("home");
   const [donateOpen, setDonateOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const navigate = useCallback((s: SectionId) => {
     setSection(s);
@@ -241,7 +243,12 @@ export function BintiSite() {
       </a>
 
       <ScrollProgress />
-      <Navbar active={section} onNavigate={navigate} onDonate={() => setDonateOpen(true)} />
+      <Navbar
+        active={section}
+        onNavigate={navigate}
+        onDonate={() => setDonateOpen(true)}
+        onSearch={() => setPaletteOpen(true)}
+      />
       <SectionDots active={section} onNavigate={navigate} />
 
       <main id="main-content" className="flex-1">
@@ -277,6 +284,14 @@ export function BintiSite() {
       </button>
 
       <DonateModal open={donateOpen} onOpenChange={setDonateOpen} />
+
+      {/* ⌘K quick-switcher — pure navigation, stores nothing */}
+      <BintiCommandPalette
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+        onNavigate={navigate}
+        onDonate={() => setDonateOpen(true)}
+      />
     </div>
   );
 }
