@@ -337,7 +337,7 @@ export function AccountabilitySection() {
           {ref ? (
             <div className="mt-5 rounded-xl border border-green-300 bg-green-50 p-4 text-center" role="status">
               <p className="font-display text-[15px] font-bold text-green-800">Submitted anonymously ✓</p>
-              <p className="mt-1 text-[13px] text-green-700 dark:text-green-300">
+              <p className="mt-1 text-[13px] text-green-700">
                 Your reference: <strong>{ref}</strong>. FO notified. Track it anytime with this code.
               </p>
             </div>

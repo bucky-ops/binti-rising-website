@@ -456,7 +456,7 @@ export function DashboardSection() {
             <Badge className="rounded-full bg-binti-cream text-[11px] font-bold text-binti dark:text-indigo-300">Report exported · 94% data quality · Audit trail kept</Badge>
           </div>
           <div className="binti-scroll max-h-96 overflow-y-auto">
-            <Table>
+            <Table className="binti-table">
               <TableHeader className="sticky top-0 bg-binti-cream">
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="font-display text-[12px] font-bold text-binti-ink">Indicator</TableHead>

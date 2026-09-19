@@ -125,3 +125,32 @@ Stage Summary:
 - QA (agent-browser, fresh sessions, light+dark × desktop+mobile): all 5 sections + timeline + filtered dashboard + currency donate flow verified; console clean (0 errors after stale-buffer restart); no horizontal overflow (0px); lint exit 0; privacy rules intact (aggregates only, masked names, indicative FX labelled, no PII in PDF).
 - Known risks: FX rates hardcoded (indicative, need monthly update source); donate receipt still client-side simulation (Daraja keys pending); minor pre-existing warnings (LCP eager on facilitator photo, DialogContent aria-describedby); Turbopack caches edited globals.css until .next cleared.
 - Recommended next: push branch + Vercel preview; wire KPIs/newsletter to Supabase when keys arrive; optional real Daraja STK integration + FX-rate fetch endpoint.
+
+---
+Task ID: 6
+Agent: Orchestrator (Z.ai Code)
+Task: Round 4 — QA baseline, dark-mode contrast bug sweep, Circle Gallery + lightbox, DPA privacy notice, FY26 fund thermometer, section dot-navigator, table styling
+
+Work Log:
+- Read worklog.md (Tasks 1-a…5): site stable. Baseline agent-browser QA (fresh session, 1440 + 390): all 5 sections render, 0 console errors, 0 horizontal overflow, lint clean → pivoted to fixes found + new features per mandate.
+- BUG CLASS FOUND & SWEPT (7 fixes): light backgrounds that DON'T flip in dark mode paired with text tokens that DO flip (text-binti-ink/slate → near-white) = unreadable. Fixed:
+  (1) involved.tsx DonateModal selected tier (bg-green-50) → constant text-green-950/green-800;
+  (2) involved.tsx Join success "Karibu Binti" card → text-green-950/green-800 + icon dark:text-green-700;
+  (3) involved.tsx DPA consent error state (bg-red-50) → conditional text-red-900;
+  (4) accountability.tsx complaint-ref card → removed dark:text-green-300 (kept green-700 on light card);
+  (5) chrome.tsx mobile GBV Hotline 1195 pill → dark:text-red-700 (was red-400, washed out);
+  (6) gallery.tsx kind chips (bg-white/90) → constant text-slate-900 — caught during QA;
+  (7) involved.tsx thermometer % badge (bg-white/90) → text-slate-900 — caught during QA.
+  Verified remaining bg-binti-cream/sand usages are consistent flip pairs (safe).
+- FEATURE — Circle Gallery "Inside the Circles" (NEW src/components/binti/gallery.tsx + GALLERY/GALLERY_KINDS in data.ts): 12 DPA-safe captioned photos (only /public/nairobi-team/ webp, activity-level captions, area + kind + optional JTW session label); filter chips All(12)/Circle Session(6)/Facilitator Training(3)/Community Day(3) with aria-pressed + counts; masonry rhythm grid (2 featured tiles row-span/col-span) with binti-img-zoom hover, gradient scrim, kind+session badges, area labels, mobile always-on captions (md: hover reveal); LIGHTBOX via createPortal(document.body) — BUG FIXED during QA: initial in-section overlay sat under sticky navbar/Sema FAB stacking contexts → portaled to body (z-[80] now covers all); keyboard nav (ArrowLeft/Right wrap, Escape close), body scroll lock, backdrop-click close, counter "N / 12", DPA note footer, AnimatePresence scale-fade transitions.
+- FEATURE — PrivacyNotice (site.tsx): "Our data promise" bottom-center card, springs in after 1.4 s, localStorage binti-dpa-notice-v1 dismiss (persists across reloads — verified), "See how we protect data" → navigates Accountability + dismisses, X + "Got it" buttons; mobile position bottom-24 (above Sema + Donate FABs — fixed after QA overlap), desktop bottom-5; no-print.
+- FEATURE — FundThermometer (involved.tsx For Donors tab top): FY26 Circles Fund KES 8,240,000 / 12,000,000 (69%, aria progressbar), framer whileInView animated gradient bar + .binti-shimmer sweep (new keyframes + reduced-motion guard), milestone ticks 25/50/75, milestone labels (3M·900 girls / 6M·new area / 9M·alumni hub / 12M), trust chips (1,432 givers · ≈824 journeys funded · Aggregate/DPA label), "Add your shilling" M-Pesa CTA wired to DonateModal; FundThermometer wraps existing donor grid (space-y-6 > [thermometer, grid > calculator + cards]).
+- FEATURE — SectionDots (site.tsx): fixed right-rail quick-switcher for the 5 in-app sections, xl-only (hidden below 1280px), gradient elongated active pill + hover tooltip labels, aria-current, navigates via existing navigate() (#hash verified: dot 4 → #accountability).
+- STYLING: .binti-table (globals.css) zebra odd-rows + brand hover on indicators table (light: cream 55% + binti 7%; dark: sand 45% + indigo 10%) applied to dashboard Table; CountUp now tabular-nums (KPI cards stop jitter during count); binti-shimmer keyframes; reduced-motion block extended to shimmer.
+- QA (agent-browser): gallery open→arrow→escape verified via real key events ("Photo 2 of 12" aria-label after ArrowRight, closed after Escape); filter chip click → 3 tiles; thermometer 69% badge readable both themes; donate tier KES 2,500 readable in dark; privacy banner appears/dismisses/persists on reload; dots navigate + hash updates; clean-reload console = 0 errors/0 warnings/0 hydration (stale console history from pre-fix compile error cleared by fresh session); overflow 0px @1440 & 390; lint exit 0; GET / 200.
+- Known transient: Next dev "1 Issue" badge after HMR edits = Fast Refresh artifact (clean reload shows none — reconfirmed).
+
+Stage Summary:
+- 7 dark-mode contrast bugs fixed; 4 new features shipped (gallery+lightbox, DPA notice, fund thermometer, section dots) + zebra table + tabular-nums polish. All QA-verified light+dark × desktop+mobile; lint clean; privacy rules intact (gallery captions name-free, thermometer aggregates-only, notice sets only a localStorage dismiss flag).
+- Risks: DonateModal receipt still client-side simulation (Daraja keys pending); thermometer/ FX figures are labelled aggregates (need monthly update source); gallery lightbox z-[80] assumes no other portal uses higher z (Dialogs are Radix portal z-50 — lightbox intentionally on top).
+- Recommended next: push branch overhaul/nairobi-team-redesign to GitHub + Vercel preview; wire KPIs/newsletter/thermometer to Supabase when client supplies keys; optional: lightbox swipe gestures on touch, gallery "download press pack" link.

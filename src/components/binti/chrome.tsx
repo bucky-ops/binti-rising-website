@@ -172,7 +172,7 @@ export function Navbar({
                     </Button>
                     <a
                       href="tel:1195"
-                      className="mt-2 flex items-center justify-center gap-2 rounded-full border border-red-300 bg-red-50 py-2.5 text-sm font-bold text-red-600 dark:text-red-400"
+                      className="mt-2 flex items-center justify-center gap-2 rounded-full border border-red-300 bg-red-50 py-2.5 text-sm font-bold text-red-600 dark:text-red-700"
                     >
                       <Phone className="size-4" aria-hidden="true" /> GBV Hotline 1195
                     </a>

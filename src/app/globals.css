@@ -367,6 +367,44 @@
   background: linear-gradient(90deg, #4f46e5, #ec4899 55%, #f59e0b);
 }
 
+/* Thermometer / progress shimmer sweep (FY26 Circles Fund) */
+@keyframes binti-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  55%,
+  100% {
+    transform: translateX(220%);
+  }
+}
+.binti-shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 80%
+  );
+  animation: binti-shimmer 2.8s ease-in-out infinite;
+  mix-blend-mode: overlay;
+}
+
+/* Indicators / data tables — zebra rows + brand hover (dashboard polish) */
+.binti-table tbody tr {
+  transition: background-color 0.18s ease;
+}
+.binti-table tbody tr:nth-child(odd) {
+  background-color: rgb(255 251 235 / 0.55);
+}
+.dark .binti-table tbody tr:nth-child(odd) {
+  background-color: rgb(30 42 71 / 0.45);
+}
+.binti-table tbody tr:hover {
+  background-color: rgb(79 70 229 / 0.07);
+}
+.dark .binti-table tbody tr:hover {
+  background-color: rgb(129 140 248 / 0.1);
+}
+
 /* Smooth theme transition (respects disableTransitionOnChange via .theme-switching) */
 @media (prefers-reduced-motion: no-preference) {
   body,
@@ -419,7 +457,8 @@
   .binti-float,
   .binti-float-delay,
   .binti-spin-slow,
-  .binti-page-enter {
+  .binti-page-enter,
+  .binti-shimmer {
     animation: none;
   }
   .binti-lift:hover,

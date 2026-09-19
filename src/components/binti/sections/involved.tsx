@@ -26,10 +26,117 @@ import {
   CalendarClock,
   ReceiptText,
   Loader2,
+  Target,
+  Users,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
 import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, CURRENCIES, toKes, fromKes, ORG, FACILITATORS } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
+
+/* ------------------------------------------------------------------ */
+/* FUND THERMOMETER — FY26 Circles Fund (aggregate, updated monthly)   */
+/* Animated gradient bar + milestone ticks + trust chips. Figures are  */
+/* wireframe-anchored aggregates, labelled as such (no real PII).      */
+/* ------------------------------------------------------------------ */
+const FUND = {
+  raised: 8_240_000,
+  target: 12_000_000,
+  givers: 1_432, // monthly & one-time givers YTD (aggregate count)
+  journeys: 824, // ≈ raised / KES 10,000
+  daysLeft: 127,
+};
+
+function FundThermometer({ onDonate }: { onDonate: () => void }) {
+  const pct = Math.min(Math.round((FUND.raised / FUND.target) * 100), 100);
+  return (
+    <Card className="binti-card-glow relative overflow-hidden rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
+      {/* ambient glow */}
+      <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-52 rounded-full bg-binti-pink/15 blur-3xl" />
+      <div className="relative flex flex-col gap-1.5 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="flex items-center gap-2 text-[11.5px] font-extrabold uppercase tracking-[0.18em] text-binti-cyan">
+            <Target className="size-4" aria-hidden="true" /> FY26 Circles Fund · live tracker
+          </p>
+          <h3 className="mt-1 font-display text-2xl font-extrabold tracking-tight text-binti-ink">
+            Help us reach <span className="binti-gradient-text">12,000 girls</span> this year
+          </h3>
+        </div>
+        <div className="text-left md:text-right">
+          <p className="font-display text-3xl font-extrabold tabular-nums text-binti dark:text-indigo-300">
+            KES {FUND.raised.toLocaleString()}
+          </p>
+          <p className="text-[12.5px] font-semibold text-binti-slate">
+            of KES {FUND.target.toLocaleString()} · {FUND.daysLeft} days left
+          </p>
+        </div>
+      </div>
+
+      {/* Thermometer bar */}
+      <div
+        className="relative mt-5 h-7 overflow-hidden rounded-full border border-binti-sand bg-binti-cream dark:bg-binti-sand/40"
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`FY26 fundraising progress: ${pct}% of KES ${FUND.target.toLocaleString()}`}
+      >
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${pct}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="relative h-full rounded-full bg-gradient-to-r from-binti via-binti-pink to-binti-amber"
+        >
+          {/* shimmer sweep */}
+          <span className="binti-shimmer absolute inset-0 rounded-full" aria-hidden="true" />
+        </motion.div>
+        {/* milestone ticks */}
+        {[25, 50, 75].map((m) => (
+          <span
+            key={m}
+            aria-hidden="true"
+            className={cn(
+              "absolute top-1/2 h-3.5 w-0.5 -translate-y-1/2 rounded-full",
+              pct >= m ? "bg-white/80" : "bg-binti-slate/25"
+            )}
+            style={{ left: `${m}%` }}
+          />
+        ))}
+        {/* pct badge */}
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-2.5 py-0.5 font-display text-[12px] font-extrabold tabular-nums text-slate-900 shadow-sm">
+          {pct}%
+        </span>
+      </div>
+
+      {/* Milestone labels */}
+      <div className="mt-1.5 flex justify-between text-[10.5px] font-bold uppercase tracking-wider text-binti-slate/70" aria-hidden="true">
+        <span>0</span>
+        <span className="tabular-nums">3M · 900 girls</span>
+        <span className="tabular-nums">6M · new area</span>
+        <span className="tabular-nums">9M · alumni hub</span>
+        <span className="tabular-nums">12M</span>
+      </div>
+
+      {/* Trust chips + CTA */}
+      <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge className="gap-1 rounded-full border border-binti/25 bg-binti/10 text-[11.5px] font-bold text-binti hover:bg-binti/10 dark:text-indigo-300">
+            <Users className="size-3.5" aria-hidden="true" /> {FUND.givers.toLocaleString()} givers this year
+          </Badge>
+          <Badge className="gap-1 rounded-full border border-mpesa/30 bg-mpesa/10 text-[11.5px] font-bold text-green-700 hover:bg-mpesa/10 dark:text-green-400">
+            <HeartHandshake className="size-3.5" aria-hidden="true" /> ≈ {FUND.journeys.toLocaleString()} journeys funded
+          </Badge>
+          <Badge variant="outline" className="rounded-full border-binti-sand text-[11.5px] font-semibold text-binti-slate">
+            Aggregate · updated monthly · DPA 2019
+          </Badge>
+        </div>
+        <Button onClick={onDonate} className="h-11 rounded-full bg-mpesa px-6 font-bold text-white shadow-lg shadow-green-600/25 hover:bg-green-600">
+          <HeartHandshake className="size-4.5" aria-hidden="true" /> Add your shilling
+        </Button>
+      </div>
+    </Card>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* IMPACT CALCULATOR — "what does my gift do?" (donor conversion tool) */
@@ -224,9 +331,9 @@ function JoinCircle() {
   if (done) {
     return (
       <Card className="mx-auto max-w-xl rounded-3xl border-2 border-green-300 bg-green-50 p-8 text-center" role="status">
-        <CheckCircle2 className="mx-auto size-14 text-green-600 dark:text-green-400" aria-hidden="true" />
-        <h3 className="mt-4 font-display text-2xl font-extrabold text-binti-ink">Success! Karibu Binti!</h3>
-        <p className="mt-2 text-[14.5px] leading-relaxed text-binti-slate">
+        <CheckCircle2 className="mx-auto size-14 text-green-600 dark:text-green-700" aria-hidden="true" />
+        <h3 className="mt-4 font-display text-2xl font-extrabold text-green-950">Success! Karibu Binti!</h3>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-green-800">
           Circle starts <strong>Monday 2pm · Laini Saba</strong>. The <strong>Sema na Me</strong> chatbot will confirm
           on WhatsApp <strong>{ORG.whatsapp}</strong> (shortcode {ORG.shortcode}).
         </p>
@@ -355,7 +462,7 @@ function JoinCircle() {
           )}
         >
           <input type="checkbox" checked={dpa} onChange={(e) => setDpa(e.target.checked)} className="mt-0.5 size-4.5 accent-binti" />
-          <span className="text-[13px] leading-relaxed text-binti-ink">
+          <span className={cn("text-[13px] leading-relaxed", errors.dpa ? "text-red-900" : "text-binti-ink")}>
             <strong>DPA 2019 consent:</strong> I agree that Binti Rising may store my initials, age, area (and phone if
             given) to place me in a circle. Data is aggregated for reporting; my name is never published.{" "}
             <a href="/policies/binti-dpa-2019-privacy.pdf" target="_blank" rel="noreferrer" className="font-bold text-binti dark:text-indigo-300 hover:underline">
@@ -542,8 +649,22 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
                         : "border-binti-sand bg-binti-card hover:border-mpesa/50"
                     )}
                   >
-                    <span className="block font-display text-[15px] font-extrabold text-binti-ink">{t.label}</span>
-                    <span className="mt-0.5 block text-[10.5px] leading-tight text-binti-slate">
+                    <span
+                      className={cn(
+                        "block font-display text-[15px] font-extrabold",
+                        // Selected tier keeps its light mint bg in BOTH themes ->
+                        // force constant dark-green text so it stays readable in dark mode.
+                        customAmount === "" && amount === t.amount ? "text-green-950" : "text-binti-ink"
+                      )}
+                    >
+                      {t.label}
+                    </span>
+                    <span
+                      className={cn(
+                        "mt-0.5 block text-[10.5px] leading-tight",
+                        customAmount === "" && amount === t.amount ? "text-green-800" : "text-binti-slate"
+                      )}
+                    >
                       {curCode !== "KES" && `≈ ${cur.symbol}${fromKes(t.amount, cur.rate, false).toLocaleString()} · `}
                       {t.impact}
                     </span>
@@ -806,48 +927,51 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
 
         {/* DONORS */}
         <TabsContent value="donors" className="mt-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ImpactCalculator onDonate={onDonate} />
-            <div className="space-y-6">
-              <Card className="rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
-                <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
-                  KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
-                </p>
-                <ul className="mt-5 space-y-3" role="list">
-                  {DONATE_TIERS.map((t) => (
-                    <li key={t.amount} className="flex items-center justify-between rounded-xl border border-binti-sand bg-binti-cream/50 px-4 py-3">
-                      <div>
-                        <p className="font-display text-[14.5px] font-extrabold text-binti-ink">{t.label}</p>
-                        <p className="text-[12px] text-binti-slate">{t.impact}</p>
-                      </div>
-                      <Button onClick={onDonate} size="sm" className="rounded-full bg-mpesa font-bold text-white hover:bg-green-600">
-                        Donate
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-                <Button onClick={onDonate} className="mt-5 h-12 w-full rounded-full bg-binti font-bold hover:bg-binti-deep">
-                  Open Donate — M-Pesa Paybill {ORG.paybill}
-                </Button>
-              </Card>
-              <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white md:p-8">
-                <h3 className="font-display text-xl font-extrabold">Why donors trust Binti</h3>
-                <ul className="mt-4 space-y-3" role="list">
-                  {[
-                    "✓ No cash — M-Pesa Till 522522 only, receipts auto-generated",
-                    "✓ Board unpaid · ED cannot sign alone · FO not related to ED",
-                    "✓ 94% data quality, live aggregated dashboard, DATIM-ready",
-                    "✓ Financials published in aggregate on the Accountability page",
-                    "✓ Kenya DPA 2019 compliant — no PII in any report",
-                  ].map((t) => (
-                    <li key={t} className="text-[13.5px] leading-relaxed text-white/90">{t}</li>
-                  ))}
-                </ul>
-                <p className="mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] text-white/80">
-                  Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation — audit pack ready.
-                </p>
-              </Card>
+          <div className="space-y-6">
+            <FundThermometer onDonate={onDonate} />
+            <div className="grid gap-6 lg:grid-cols-2">
+              <ImpactCalculator onDonate={onDonate} />
+              <div className="space-y-6">
+                <Card className="rounded-3xl border-binti-sand bg-binti-card p-6 md:p-8">
+                  <h3 className="font-display text-xl font-extrabold text-binti-ink">Fund a full journey</h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-binti-slate">
+                    KES 10,000 takes one girl through all 8 sessions — materials, facilitator, referrals and the alumni wall.
+                  </p>
+                  <ul className="mt-5 space-y-3" role="list">
+                    {DONATE_TIERS.map((t) => (
+                      <li key={t.amount} className="flex items-center justify-between rounded-xl border border-binti-sand bg-binti-cream/50 px-4 py-3">
+                        <div>
+                          <p className="font-display text-[14.5px] font-extrabold text-binti-ink">{t.label}</p>
+                          <p className="text-[12px] text-binti-slate">{t.impact}</p>
+                        </div>
+                        <Button onClick={onDonate} size="sm" className="rounded-full bg-mpesa font-bold text-white hover:bg-green-600">
+                          Donate
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button onClick={onDonate} className="mt-5 h-12 w-full rounded-full bg-binti font-bold hover:bg-binti-deep">
+                    Open Donate — M-Pesa Paybill {ORG.paybill}
+                  </Button>
+                </Card>
+                <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti to-binti-deep p-6 text-white md:p-8">
+                  <h3 className="font-display text-xl font-extrabold">Why donors trust Binti</h3>
+                  <ul className="mt-4 space-y-3" role="list">
+                    {[
+                      "✓ No cash — M-Pesa Till 522522 only, receipts auto-generated",
+                      "✓ Board unpaid · ED cannot sign alone · FO not related to ED",
+                      "✓ 94% data quality, live aggregated dashboard, DATIM-ready",
+                      "✓ Financials published in aggregate on the Accountability page",
+                      "✓ Kenya DPA 2019 compliant — no PII in any report",
+                    ].map((t) => (
+                      <li key={t} className="text-[13.5px] leading-relaxed text-white/90">{t}</li>
+                    ))}
+                  </ul>
+                  <p className="mt-5 rounded-xl bg-white/10 p-3.5 text-[12.5px] text-white/80">
+                    Malala Sisterhood · Gold Tier partner. USAID · Global Fund · Mastercard Foundation — audit pack ready.
+                  </p>
+                </Card>
+              </div>
             </div>
           </div>
         </TabsContent>

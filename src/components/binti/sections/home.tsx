@@ -31,6 +31,7 @@ import {
 import type { SectionId } from "@/lib/binti/data";
 import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS, MILESTONES } from "@/lib/binti/data";
 import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote, SectionReveal } from "../ui";
+import { CircleGallery } from "../gallery";
 import { cn } from "@/lib/utils";
 
 const ICONS = { Heart, Users, ShieldCheck, BarChart3 } as const;
@@ -726,6 +727,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <JtwTeaser onNavigate={onNavigate} />
       <OurStoryTimeline />
       <StoriesOfRise />
+      <CircleGallery />
       <PartnersMarquee />
       <Quote />
       <DonorFaq />

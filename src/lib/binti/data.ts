@@ -562,3 +562,32 @@ export const SEMA_FLOWS = {
   fallback:
     "I can help with: joining a circle, immediate support, what JTW is, or donating. For anything else, WhatsApp +254758919709 or dial 1195 if you need help now.",
 } as const;
+
+// ---------- GALLERY — "Inside the Circles" --------------------------------
+// Photos come ONLY from /public/nairobi-team/ (Drive manifest). Captions are
+// activity-level and DPA-safe: NEVER names, never faces-identified claims.
+export type GalleryKind = "Circle Session" | "Facilitator Training" | "Community Day";
+export type GalleryItem = {
+  src: string;
+  area: AreaName;
+  kind: GalleryKind;
+  caption: string;
+  session?: string; // JTW session label where relevant
+};
+
+export const GALLERY: GalleryItem[] = [
+  { src: "/nairobi-team/nairobi-02.webp", area: "Kibera", kind: "Circle Session", caption: "Opening round — every voice heard before the session begins", session: "S1 · Welcome" },
+  { src: "/nairobi-team/nairobi-04.webp", area: "Mathare", kind: "Circle Session", caption: "Body mapping exercise — naming emotions without shame", session: "S3 · My Body" },
+  { src: "/nairobi-team/nairobi-05.webp", area: "Kawangware", kind: "Facilitator Training", caption: "Facilitators rehearse referral scripts before every heavy session" },
+  { src: "/nairobi-team/nairobi-07.webp", area: "Kibera", kind: "Community Day", caption: "Guardians' open day — families tour the circle space" },
+  { src: "/nairobi-team/nairobi-08.webp", area: "Mathare", kind: "Circle Session", caption: "Web of Support — each thread is a person she can call", session: "S4 · Breaking Silence" },
+  { src: "/nairobi-team/nairobi-09.webp", area: "Kawangware", kind: "Community Day", caption: "Shujaaz comics distribution — learning between sessions" },
+  { src: "/nairobi-team/nairobi-10.webp", area: "Kibera", kind: "Facilitator Training", caption: "Monthly data huddle — registers checked, no names on paper" },
+  { src: "/nairobi-team/nairobi-12.webp", area: "Mathare", kind: "Circle Session", caption: "Media Reflection Box — unpacking what the feeds tell us", session: "S6 · Media" },
+  { src: "/nairobi-team/nairobi-13.webp", area: "Kawangware", kind: "Circle Session", caption: "Money heist skit — practising savings goals with laughter", session: "S7 · Money" },
+  { src: "/nairobi-team/nairobi-14.webp", area: "Kibera", kind: "Community Day", caption: "Closing circle — certificates, pins and proud guardians", session: "S8 · Closing" },
+  { src: "/nairobi-team/nairobi-03.webp", area: "Mathare", kind: "Facilitator Training", caption: "New cohort training — 36 facilitators, ratio 1:35 held" },
+  { src: "/nairobi-team/nairobi-11.webp", area: "Kawangware", kind: "Circle Session", caption: "Trust game — the quiet half of the room speaks first", session: "S2 · Trust" },
+];
+
+export const GALLERY_KINDS: GalleryKind[] = ["Circle Session", "Facilitator Training", "Community Day"];

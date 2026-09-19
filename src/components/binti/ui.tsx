@@ -181,7 +181,7 @@ export function CountUp({
   }, [end, duration]);
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={cn("tabular-nums", className)}>
       {value.toLocaleString()}
       {suffix}
     </span>
