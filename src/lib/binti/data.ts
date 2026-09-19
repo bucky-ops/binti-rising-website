@@ -294,3 +294,98 @@ export const HERO_QUOTE = {
   author: "Binti, 19, Mathare",
   detail: "S4 Graduate",
 };
+
+// ---------- STORIES OF RISE (masked, DPA 2019 — initials + age + area only) ----------
+export const STORIES = [
+  {
+    initials: "A. N.",
+    age: 17,
+    area: "Mathare",
+    session: "S4 · Breaking Silence",
+    quote:
+      "In S4 I spoke for the first time about what happened to me. The Web of Support card has three numbers I now know by heart.",
+    photo: "/nairobi-team/nairobi-09.webp",
+    tag: "Referral closed in 48h",
+  },
+  {
+    initials: "F. W.",
+    age: 19,
+    area: "Kibera",
+    session: "S8 · Closing",
+    quote:
+      "I joined in silence. I left with a certificate, a pin, and my little sister's hand — I mentor her circle now.",
+    photo: "/nairobi-team/nairobi-02.webp",
+    tag: "Alumni → mentor",
+  },
+  {
+    initials: "M. A.",
+    age: 22,
+    area: "Kawangware",
+    session: "S6 · Media Reflection",
+    quote:
+      "The Media Box taught me to read the ads that were reading me. Now I rewrite the message — and my story.",
+    photo: "/nairobi-team/nairobi-13.webp",
+    tag: "Shujaaz Special featured",
+  },
+] as const;
+
+// ---------- DONOR FAQ (accordion) ----------
+export const FAQS = [
+  {
+    q: "Where exactly does my donation go?",
+    a: "62% funds programme delivery (circles, materials, referrals), 18% peer-facilitator stipends, 7% monitoring & data, 8% admin (board-capped) and 5% fundraising & audit. Every line is published in aggregate on the Accountability page.",
+  },
+  {
+    q: "Is my gift eligible for a tax receipt?",
+    a: "Yes. Every M-Pesa or bank gift auto-generates a receipt with our KRA PIN (P051823456K). We operate a strict no-cash policy — money never touches our hands.",
+  },
+  {
+    q: "How is girls' data protected?",
+    a: "Kenya DPA 2019 compliant end-to-end: initials only on forms, guardian consent for 15-17, encrypted storage, aggregates-only reporting. The masked Excel master never leaves the encrypted store and is never committed to any repository.",
+  },
+  {
+    q: "What makes S4 'Very Heavy'?",
+    a: "Session 4 — Breaking Silence — is where girls speak about violence. Safeguarding focal points are on standby, referral lists are memorised by every facilitator, and the team holds a mandatory debrief the same day.",
+  },
+  {
+    q: "Can donors visit a circle?",
+    a: "Yes — with a 2-week notice and our safeguarding escort protocol. Donor observation never includes photography of youth without DPA consent from guardians.",
+  },
+  {
+    q: "How do referrals actually close?",
+    a: "Facilitators memorise the LVCT Health and Nairobi County referral lists. A case is opened the day it is disclosed and tracked until the service confirms attendance — currently 87% closure.",
+  },
+] as const;
+
+// ---------- DONATE: impact preview map + frequency copy ----------
+export const DONATE_IMPACT: Record<number, string> = {
+  500: "Materials for 1 girl for 1 session",
+  2500: "A full JTW session for a circle of 12",
+  10000: "One girl — the complete 8-session journey",
+};
+
+// ---------- DASHBOARD EXTRAS: sparklines + YoY comparison (aggregates only) ----------
+export const KPI_SPARKS: Record<string, number[]> = {
+  "Total Youth (YTD)": [820, 878, 942, 1030, 1118, 1248],
+  Facilitators: [24, 26, 28, 30, 33, 36],
+  "Referral Closure": [64, 68, 73, 79, 82, 87],
+  Alumni: [3600, 3850, 4020, 4210, 4380, 4500],
+};
+
+export const ATTENDANCE_FY2425 = [
+  { month: "Oct", Kibera: 88, Mathare: 84, Kawangware: 81 },
+  { month: "Nov", Kibera: 89, Mathare: 85, Kawangware: 83 },
+  { month: "Dec", Kibera: 87, Mathare: 83, Kawangware: 80 },
+  { month: "Jan", Kibera: 89, Mathare: 86, Kawangware: 84 },
+  { month: "Feb", Kibera: 90, Mathare: 87, Kawangware: 85 },
+  { month: "Mar", Kibera: 91, Mathare: 87, Kawangware: 86 },
+];
+
+export const WELLBEING_FY2425 = [
+  { month: "Oct", score: 52 },
+  { month: "Nov", score: 54 },
+  { month: "Dec", score: 53 },
+  { month: "Jan", score: 56 },
+  { month: "Feb", score: 58 },
+  { month: "Mar", score: 61 },
+];

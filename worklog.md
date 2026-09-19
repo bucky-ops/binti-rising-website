@@ -54,3 +54,27 @@ Stage Summary:
 - Site fully rebuilt per wireframe on single / route with 5 in-app sections; dev server 200; lint clean.
 - QA via agent-browser (desktop 1280 + mobile 390): hero, photos (real Nairobi Drive images), count-up, charts, stepper, join flow (incl. guardian consent path + server rejection of full names), donate modal, anonymous complaint (ref BRI-2026-0002), mobile hamburger + sticky donate, no horizontal scroll, no console page errors; all 5 PDFs + og + favicon + webp assets 200.
 - Artifacts: qa-*.png screenshots in project root (untracked). Known limitation: Excel .lnk contains no data — aggregated figures anchored to wireframe/prompt numbers, clearly labeled; Supabase env vars empty until client supplies project URL/keys.
+
+---
+Task ID: 3
+Agent: Orchestrator (Z.ai Code)
+Task: Status assessment + agent-browser QA + feature expansion round (donor-grade polish)
+
+Work Log:
+- Read worklog.md (Tasks 1-a, 1-b, 2): site fully built and stable. Assessed dev.log (200) and re-ran full agent-browser QA on desktop 1280 + mobile 390: all 5 sections rendered, no horizontal overflow, no console page errors → no blocking bugs; pivoted to new features + styling per mandate.
+- Prisma: added Newsletter model + Complaint.voiceNote (base64, size-capped); db:push OK.
+- APIs: NEW POST /api/newsletter (email regex + mandatory DPA consent, idempotent upsert, email never rendered); extended POST /api/complaints to accept voiceNote data:audio base64 (400 KB cap, silently dropped if larger; hasVoiceNote derived server-side).
+- DonateModal v2 (involved.tsx): one-time/monthly toggle (monthly nudge copy), custom KES amount input (min 100 validated), live impact preview (DONATE_IMPACT map, monthly ×12), simulated Daraja STK-push 3-step flow (STK sent → M-Pesa PIN → receipt) with AnimatePresence step transitions, spring-animated receipt card w/ ref number BRI-YYYY-XXXXXX, honest "demo simulation" note.
+- Dashboard v2 (dashboard.tsx): KPI cards now have icons (Users/UserCheck/Route/GraduationCap) + SparkLine mini area-charts (per-KPI brand colors, KPI_SPARKS data); YoY fiscal toggle FY25/26 ↔ FY24/25 on attendance (ATTENDANCE_FY2425) and wellbeing (WELLBEING_FY2425) charts; gradient bar fills (indigo/pink/cyan defs), wellbeing line + gradient Area band (ComposedChart), donut center label "62% LOW RISK"; renamed export button to "Export DATIM CSV" (matches actual CSV); added "Print Donor Report" (window.print + @media print stylesheet hiding nav/footer/buttons).
+- Home new sections: StoriesOfRise (3 masked cards DPA-compliant: initials+age+area, Nairobi photos w/ gradient overlay + tag + quote + session label, consent/erasure note); DonorFaq (6-question Radix accordion); NewsletterSignup (email + DPA checkbox → API, success state, gradient card w/ glows). ImpactStrip got md-stat dividers.
+- Accountability: real MediaRecorder voice-note hook (useVoiceRecorder): Record/Stop/Delete, 60 s auto-stop, live timer + red pulse (binti-recording), audio preview player, permission-denied graceful fallback to sealed-box checkbox, base64 attached to complaint POST; mic-stream cleanup on unmount.
+- Styling polish: .binti-card-glow (gradient border glow hover), .binti-recording pulse, .binti-stat dividers, print stylesheet, BackToTop floating button (AnimatePresence, appears >700px scroll).
+- BUG FOUND & FIXED: hydration mismatch — framer-motion AnimatePresence PresenceChild useId() shifted all downstream Radix useIds (Collapsible id differed SSR vs client). Replaced page-transition AnimatePresence in site.tsx with keyed div + pure CSS animation .binti-page-enter (identical visual, zero hydration risk). Verified clean on reload (console + errors empty).
+- Fixed lint error (react-hooks/set-state-in-effect in useVoiceRecorder → click-time support check) and missing DONATE_IMPACT import (caught via dev.log 500).
+- Ops: killed stale dev server to reload regenerated Prisma client (Newsletter model); restarted detached (setsid bun run dev). NOTE: background processes die between tool invocations in this sandbox — restart with `setsid bash -c 'exec bun run dev' >/dev/null 2>&1 < /dev/null &` if server is down.
+
+Stage Summary:
+- All new features QA-verified via agent-browser: newsletter subscribe + duplicate upsert (DB row: donor@example.org), complaint BRI-2026-0003 with voice note stored (hasVoice=true, base64 persisted), YoY toggle switching Oct–Mar/Apr–Sep datasets, donate full flow KES 2,500 → 3-step processing → receipt BRI-2026-772149, Stories/FAQ/Newsletter rendering, mobile 390 join form + sticky donate OK.
+- lint clean (0/0); no console errors; no hydration warnings; no horizontal overflow; privacy rules respected (aggregates only, masked names, voice note never rendered, *.xlsx/*.csv/.env.local gitignored).
+- Known risks: DonateModal receipt flow is client-side simulation (production needs Daraja env keys); BackToTop visually overlaps Next dev-tools button in dev only (no conflict in prod); sandbox kills background dev server between shell sessions.
+- Recommended next: git push branch overhaul/nairobi-team-redesign + Vercel preview via env tokens; consider real M-Pesa Daraja integration + Supabase KPI sync when client provides project keys.

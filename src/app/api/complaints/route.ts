@@ -12,7 +12,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const message = String(body.message ?? "").trim();
     const category = String(body.category ?? "other");
-    const hasVoiceNote = Boolean(body.hasVoiceNote);
+    let voiceNote: string | null =
+      typeof body.voiceNote === "string" && body.voiceNote.startsWith("data:audio/")
+        ? body.voiceNote
+        : null;
 
     if (message.length < 10) {
       return NextResponse.json({ error: "Message too short" }, { status: 400 });
@@ -22,12 +25,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
     }
 
+    // Voice note: hard size cap (~400 KB base64 ≈ 300 KB audio ≈ ~60-90 s opus/webm).
+    // Stored for the Safeguarding Lead ONLY — never returned by any API or UI.
+    if (voiceNote && voiceNote.length > 400_000) {
+      voiceNote = null; // too large — drop silently, complaint still accepted
+    }
+    const hasVoiceNote = Boolean(body.hasVoiceNote) || !!voiceNote;
+
     // Anonymous reference, e.g. BRI-2026-0042
     const count = await db.complaint.count();
     const reference = `BRI-2026-${String(count + 1).padStart(4, "0")}`;
 
     await db.complaint.create({
-      data: { reference, category, message, hasVoiceNote },
+      data: { reference, category, message, hasVoiceNote, voiceNote },
     });
 
     return NextResponse.json({ ok: true, reference, status: "received" });

@@ -7,7 +7,8 @@ import {
   CartesianGrid,
   Cell,
   Line,
-  LineChart,
+  Area,
+  ComposedChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -20,21 +21,50 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, RefreshCw, MapPin, TrendingUp, Database } from "lucide-react";
-import { CountUp, SectionHeading, DataNote } from "./../ui";
+import {
+  Download,
+  RefreshCw,
+  MapPin,
+  TrendingUp,
+  Database,
+  Users,
+  UserCheck,
+  Route,
+  GraduationCap,
+  Printer,
+} from "lucide-react";
+import { CountUp, SectionHeading, DataNote, SparkLine } from "./../ui";
 import {
   KPIS,
   AREAS,
   ATTENDANCE_BY_MONTH,
+  ATTENDANCE_FY2425,
   WELLBEING_LINE,
+  WELLBEING_FY2425,
   RISK_DONUT,
   INDICATORS,
   DATA_QUALITY,
+  KPI_SPARKS,
   ORG,
 } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
 
 type LoadState = "loading" | "ready" | "error";
+type FiscalYear = "fy2526" | "fy2425";
+
+const KPI_ICONS: Record<string, typeof Users> = {
+  "Total Youth (YTD)": Users,
+  Facilitators: UserCheck,
+  "Referral Closure": Route,
+  Alumni: GraduationCap,
+};
+
+const KPI_SPARK_COLORS: Record<string, string> = {
+  "Total Youth (YTD)": "#4f46e5",
+  Facilitators: "#ec4899",
+  "Referral Closure": "#06b6d4",
+  Alumni: "#f59e0b",
+};
 
 /* ------------------------------------------------------------------ */
 /* LIVE IMPACT DASHBOARD — aggregated KPIs from Supabase (env), no PII */
@@ -42,6 +72,10 @@ type LoadState = "loading" | "ready" | "error";
 export function DashboardSection() {
   const [state, setState] = useState<LoadState>("loading");
   const [syncedAt, setSyncedAt] = useState(ORG.lastSync);
+  const [fiscal, setFiscal] = useState<FiscalYear>("fy2526");
+
+  const attendance = fiscal === "fy2526" ? ATTENDANCE_BY_MONTH : ATTENDANCE_FY2425;
+  const wellbeing = fiscal === "fy2526" ? WELLBEING_LINE : WELLBEING_FY2425;
 
   useEffect(() => {
     let alive = true;
@@ -85,11 +119,18 @@ export function DashboardSection() {
             className="inline-flex h-10 items-center gap-1.5 rounded-full bg-binti px-4 text-[13px] font-bold text-white shadow-sm transition hover:bg-binti-deep focus-visible:outline-2 focus-visible:outline-binti-pink"
             aria-label="Download DATIM / Global Fund aggregated report (CSV)"
           >
-            <Download className="size-4" aria-hidden="true" /> DATIM / Global Fund PDF
+            <Download className="size-4" aria-hidden="true" /> Export DATIM CSV
           </a>
           <button
+            onClick={() => window.print()}
+            className="no-print inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti transition hover:bg-binti hover:text-white"
+            aria-label="Print this dashboard as a donor report"
+          >
+            <Printer className="size-4" aria-hidden="true" /> Print Donor Report
+          </button>
+          <button
             onClick={refresh}
-            className="inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti transition hover:bg-binti hover:text-white"
+            className="no-print inline-flex h-10 items-center gap-1.5 rounded-full border border-binti/40 px-4 text-[13px] font-bold text-binti transition hover:bg-binti hover:text-white"
             aria-label="Refresh dashboard data"
           >
             <RefreshCw className="size-4" aria-hidden="true" /> Refresh
@@ -97,40 +138,87 @@ export function DashboardSection() {
         </div>
       </div>
 
-      {/* KPI ROW */}
+      {/* KPI ROW — icon + sparkline per card (aggregate trends only) */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {KPIS.map((k) => (
-          <Card key={k.label} className="binti-lift rounded-2xl border-binti-sand bg-white p-5">
-            <p className="font-display text-[12px] font-bold uppercase tracking-widest text-binti-slate">{k.label}</p>
-            {state === "loading" ? (
-              <Skeleton className="mt-2 h-10 w-24" />
-            ) : (
-              <p className="mt-1 font-display text-4xl font-extrabold text-binti-ink">
-                <CountUp end={k.value} suffix={"suffix" in k ? k.suffix : ""} />
-              </p>
-            )}
-            <div className="mt-2 flex items-center gap-2">
-              <Badge className="rounded-full bg-binti-pink/10 text-[11px] font-bold text-binti-pinkdeep">{k.delta}</Badge>
-            </div>
-            <p className="mt-1.5 text-[12px] text-binti-slate/80">{k.sub}</p>
-          </Card>
-        ))}
+        {KPIS.map((k) => {
+          const Icon = KPI_ICONS[k.label] ?? Database;
+          const sparkColor = KPI_SPARK_COLORS[k.label] ?? "#4f46e5";
+          const spark = KPI_SPARKS[k.label] ?? [];
+          return (
+            <Card key={k.label} className="binti-card-glow rounded-2xl border-binti-sand bg-white p-5">
+              <div className="flex items-center justify-between">
+                <p className="font-display text-[12px] font-bold uppercase tracking-widest text-binti-slate">{k.label}</p>
+                <span className="flex size-9 items-center justify-center rounded-xl bg-binti/10">
+                  <Icon className="size-4.5 text-binti" aria-hidden="true" />
+                </span>
+              </div>
+              {state === "loading" ? (
+                <Skeleton className="mt-2 h-10 w-24" />
+              ) : (
+                <p className="mt-1 font-display text-4xl font-extrabold text-binti-ink">
+                  <CountUp end={k.value} suffix={"suffix" in k ? k.suffix : ""} />
+                </p>
+              )}
+              {state === "ready" && spark.length > 0 && <SparkLine data={spark} color={sparkColor} />}
+              <div className="mt-2 flex items-center gap-2">
+                <Badge className="rounded-full bg-binti-pink/10 text-[11px] font-bold text-binti-pinkdeep">{k.delta}</Badge>
+              </div>
+              <p className="mt-1.5 text-[12px] text-binti-slate/80">{k.sub}</p>
+            </Card>
+          );
+        })}
       </div>
 
       {/* CHARTS ROW */}
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
-        {/* Attendance Bar */}
+        {/* Attendance Bar — gradient fills + YoY toggle */}
         <Card className="rounded-2xl border-binti-sand bg-white p-5 lg:col-span-2">
-          <div className="flex items-center justify-between">
-            <h3 className="font-display text-[15px] font-bold text-binti-ink">Attendance by Area · Apr–Sep</h3>
-            <Badge variant="outline" className="border-binti/40 text-[11px] font-bold text-binti">Bar · Attendance</Badge>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-display text-[15px] font-bold text-binti-ink">Attendance by Area · {fiscal === "fy2526" ? "Apr–Sep FY25/26" : "Oct–Mar FY24/25"}</h3>
+            <div className="flex items-center gap-2">
+              <div className="flex rounded-full bg-binti-cream p-1" role="group" aria-label="Compare fiscal year">
+                {(
+                  [
+                    { id: "fy2526", label: "FY25/26" },
+                    { id: "fy2425", label: "FY24/25" },
+                  ] as const
+                ).map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setFiscal(f.id)}
+                    aria-pressed={fiscal === f.id}
+                    className={cn(
+                      "rounded-full px-3 py-1 text-[11.5px] font-bold transition-all",
+                      fiscal === f.id ? "bg-binti text-white shadow-sm" : "text-binti-slate hover:text-binti"
+                    )}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+              <Badge variant="outline" className="border-binti/40 text-[11px] font-bold text-binti">Bar · Attendance</Badge>
+            </div>
           </div>
           {state === "loading" ? (
             <Skeleton className="mt-4 h-[240px] w-full" />
           ) : (
-            <div className="mt-4 h-[240px]" role="img" aria-label="Grouped bar chart: attendance percentage by area per month, Kibera highest at 95 percent">
+            <div className="mt-4 h-[240px]" role="img" aria-label={`Grouped bar chart: attendance percentage by area per month, ${fiscal === "fy2526" ? "Kibera highest at 95 percent" : "Kibera highest at 91 percent"}`}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={ATTENDANCE_BY_MONTH} barGap={2}>
+                <BarChart data={attendance} barGap={2}>
+                  <defs>
+                    <linearGradient id="grad-kibera" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#4f46e5" />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.55} />
+                    </linearGradient>
+                    <linearGradient id="grad-mathare" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ec4899" />
+                      <stop offset="100%" stopColor="#ec4899" stopOpacity={0.55} />
+                    </linearGradient>
+                    <linearGradient id="grad-kawang" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#06b6d4" />
+                      <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.55} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                   <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#475569" }} axisLine={false} tickLine={false} />
                   <YAxis domain={[80, 100]} tick={{ fontSize: 12, fill: "#475569" }} axisLine={false} tickLine={false} unit="%" />
@@ -140,14 +228,14 @@ export function DashboardSection() {
                     formatter={(v) => [`${v}%`, ""]}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Bar dataKey="Kibera" fill="#4F46E5" radius={[5, 5, 0, 0]} maxBarSize={22} />
-                  <Bar dataKey="Mathare" fill="#EC4899" radius={[5, 5, 0, 0]} maxBarSize={22} />
-                  <Bar dataKey="Kawangware" fill="#06B6D4" radius={[5, 5, 0, 0]} maxBarSize={22} />
+                  <Bar dataKey="Kibera" fill="url(#grad-kibera)" radius={[5, 5, 0, 0]} maxBarSize={22} />
+                  <Bar dataKey="Mathare" fill="url(#grad-mathare)" radius={[5, 5, 0, 0]} maxBarSize={22} />
+                  <Bar dataKey="Kawangware" fill="url(#grad-kawang)" radius={[5, 5, 0, 0]} maxBarSize={22} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
-          <DataNote className="mt-2">Bar chart hover → shows 94% retention. Aggregated from monthly circle registers.</DataNote>
+          <DataNote className="mt-2">Aggregated from monthly circle registers. Toggle fiscal years to compare YoY.</DataNote>
         </Card>
 
         {/* Risk Donut */}
@@ -159,7 +247,7 @@ export function DashboardSection() {
           {state === "loading" ? (
             <Skeleton className="mx-auto mt-4 size-[200px] rounded-full" />
           ) : (
-            <div className="mt-2 h-[200px]" role="img" aria-label="Donut chart: risk levels — low 62 percent, medium 28 percent, high 10 percent referred">
+            <div className="relative mt-2 h-[200px]" role="img" aria-label="Donut chart: risk levels — low 62 percent, medium 28 percent, high 10 percent referred">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={RISK_DONUT} dataKey="value" nameKey="name" innerRadius={52} outerRadius={80} paddingAngle={3} strokeWidth={0}>
@@ -170,6 +258,11 @@ export function DashboardSection() {
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 12 }} formatter={(v) => [`${v}%`, ""]} />
                 </PieChart>
               </ResponsiveContainer>
+              {/* Donut center label */}
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <p className="font-display text-2xl font-extrabold text-binti-ink">{RISK_DONUT[0].value}%</p>
+                <p className="text-[10.5px] font-bold uppercase tracking-widest text-binti-slate">low risk</p>
+              </div>
             </div>
           )}
           <ul className="mt-2 space-y-1.5" role="list">
@@ -182,10 +275,10 @@ export function DashboardSection() {
           </ul>
         </Card>
 
-        {/* Wellbeing Line */}
+        {/* Wellbeing Line — gradient area + YoY */}
         <Card className="rounded-2xl border-binti-sand bg-white p-5 lg:col-span-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-display text-[15px] font-bold text-binti-ink">Wellbeing Score · All Areas</h3>
+            <h3 className="font-display text-[15px] font-bold text-binti-ink">Wellbeing Score · All Areas · {fiscal === "fy2526" ? "Apr–Sep" : "Oct–Mar"}</h3>
             <Badge variant="outline" className="gap-1 border-binti/40 text-[11px] font-bold text-binti">
               <TrendingUp className="size-3.5" aria-hidden="true" /> Line · Wellbeing · ↑ 2.3% avg monthly
             </Badge>
@@ -193,15 +286,22 @@ export function DashboardSection() {
           {state === "loading" ? (
             <Skeleton className="mt-4 h-[220px] w-full" />
           ) : (
-            <div className="mt-4 h-[220px]" role="img" aria-label="Line chart: average wellbeing score rising from 61 in April to 77 in September">
+            <div className="mt-4 h-[220px]" role="img" aria-label={`Line chart: average wellbeing score rising across the ${fiscal === "fy2526" ? "Apr–Sep" : "Oct–Mar"} period`}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={WELLBEING_LINE}>
+                <ComposedChart data={wellbeing}>
+                  <defs>
+                    <linearGradient id="grad-wellbeing" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ec4899" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="#ec4899" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                   <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#475569" }} axisLine={false} tickLine={false} />
                   <YAxis domain={[50, 90]} tick={{ fontSize: 12, fill: "#475569" }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 12 }} />
                   <Line type="monotone" dataKey="score" stroke="#EC4899" strokeWidth={3} dot={{ r: 4, fill: "#4F46E5" }} activeDot={{ r: 6 }} name="Wellbeing score" />
-                </LineChart>
+                  <Area type="monotone" dataKey="score" stroke="none" fill="url(#grad-wellbeing)" name="Wellbeing band" />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           )}

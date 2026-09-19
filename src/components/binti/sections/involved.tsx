@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy,
   Smartphone,
@@ -21,9 +22,13 @@ import {
   UserRound,
   HeartHandshake,
   Info,
+  Repeat,
+  CalendarClock,
+  ReceiptText,
+  Loader2,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
-import { AREA_OPTIONS, DONATE_TIERS, ORG, FACILITATORS } from "@/lib/binti/data";
+import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, ORG, FACILITATORS } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -241,11 +246,34 @@ function JoinCircle() {
 }
 
 /* ------------------------------------------------------------------ */
-/* DONATE MODAL — M-Pesa Paybill 522522 + KCB, no cash                 */
+/* DONATE MODAL v2 — M-Pesa Paybill 522522 + KCB, no cash              */
+/* NEW: one-time/monthly toggle · custom amount · impact preview ·     */
+/*      simulated receipt flow (Daraja STK push in production)         */
 /* ------------------------------------------------------------------ */
+type DonateStep = "details" | "processing" | "receipt";
+
 export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const [frequency, setFrequency] = useState<"once" | "monthly">("once");
   const [amount, setAmount] = useState<number>(DONATE_TIERS[1].amount);
+  const [customAmount, setCustomAmount] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [step, setStep] = useState<DonateStep>("details");
+  const [stepIdx, setStepIdx] = useState(0);
+  const [receiptNo, setReceiptNo] = useState("");
+
+  const effAmount = customAmount !== "" ? Math.max(0, parseInt(customAmount, 10) || 0) : amount;
+
+  // Impact preview: monthly giving multiplies the yearly story
+  const impactText =
+    frequency === "monthly"
+      ? `${DONATE_IMPACT[amount] ?? "Your chosen amount, put to work"} — every month of the year`
+      : DONATE_IMPACT[amount] ?? "Your chosen amount, put to work";
+
+  const reset = () => {
+    setStep("details");
+    setStepIdx(0);
+    setCustomAmount("");
+  };
 
   const copy = async (text: string) => {
     try {
@@ -258,93 +286,276 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
     }
   };
 
+  const startDonation = () => {
+    if (effAmount < 100) {
+      toast({ title: "Minimum is KES 100", description: "Every shilling counts — but M-Pesa needs at least 100.", variant: "destructive" });
+      return;
+    }
+    setStep("processing");
+    setStepIdx(0);
+    // Simulated Daraja STK-push flow (production: env keys, server-side)
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(setTimeout(() => setStepIdx(1), 1400));
+    timers.push(setTimeout(() => setStepIdx(2), 2800));
+    timers.push(
+      setTimeout(() => {
+        setReceiptNo(`BRI-${new Date().getFullYear()}-${String(Math.floor(100000 + Math.random() * 899999))}`);
+        setStep("receipt");
+      }, 3800)
+    );
+  };
+
+  const STEPS = ["STK push sent to your phone", "Enter your M-Pesa PIN", "Confirming & issuing receipt"];
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-3xl border-binti-sand bg-binti-cream p-0 overflow-hidden">
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        onOpenChange(v);
+        if (!v) reset();
+      }}
+    >
+      <DialogContent className="max-w-lg overflow-hidden rounded-3xl border-binti-sand bg-binti-cream p-0">
         <DialogHeader className="bg-gradient-to-r from-binti to-binti-pink px-6 py-5">
-          <DialogTitle className="font-display text-xl font-extrabold text-white">Donate · M-Pesa / Bank</DialogTitle>
+          <DialogTitle className="font-display text-xl font-extrabold text-white">
+            {step === "receipt" ? "Asante sana! 🎉" : "Donate · M-Pesa / Bank"}
+          </DialogTitle>
           <DialogDescription className="text-[13px] text-white/85">
             Every shilling is receipted and audit-logged. <strong>No cash</strong> — card never touches our hands.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 px-6 py-6">
-          {/* Amount tiers */}
-          <div className="grid grid-cols-3 gap-2.5">
-            {DONATE_TIERS.map((t) => (
-              <button
-                key={t.amount}
-                onClick={() => setAmount(t.amount)}
-                aria-pressed={amount === t.amount}
-                className={cn(
-                  "rounded-xl border-2 p-3 text-center transition-all",
-                  amount === t.amount
-                    ? "border-mpesa bg-green-50 shadow-sm"
-                    : "border-binti-sand bg-white hover:border-mpesa/50"
-                )}
-              >
-                <span className="block font-display text-[15px] font-extrabold text-binti-ink">{t.label}</span>
-                <span className="mt-0.5 block text-[10.5px] leading-tight text-binti-slate">{t.impact}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* M-Pesa */}
-          <div className="rounded-2xl border-2 border-mpesa/50 bg-white p-4">
-            <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
-              <Smartphone className="size-4.5 text-mpesa" aria-hidden="true" /> M-Pesa Paybill
-            </p>
-            <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl bg-binti-cream px-3.5 py-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Paybill</p>
-                <p className="font-display text-xl font-extrabold text-binti">{ORG.paybill}</p>
+        <AnimatePresence mode="wait">
+          {step === "details" && (
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22 }}
+              className="space-y-5 px-6 py-6"
+            >
+              {/* Frequency toggle — monthly is flagship for donor LTV */}
+              <div className="grid grid-cols-2 gap-2 rounded-full bg-binti-sand/70 p-1.5" role="group" aria-label="Donation frequency">
+                {(
+                  [
+                    { id: "once", label: "One-time", icon: CalendarClock },
+                    { id: "monthly", label: "Monthly ♥", icon: Repeat },
+                  ] as const
+                ).map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setFrequency(f.id)}
+                    aria-pressed={frequency === f.id}
+                    className={cn(
+                      "flex h-10 items-center justify-center gap-1.5 rounded-full font-display text-[13px] font-bold transition-all",
+                      frequency === f.id ? "bg-binti text-white shadow" : "text-binti-slate hover:text-binti-ink"
+                    )}
+                  >
+                    <f.icon className="size-4" aria-hidden="true" /> {f.label}
+                  </button>
+                ))}
               </div>
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Account</p>
-                <p className="font-display text-[15px] font-bold text-binti-ink">{ORG.paybillAccount}</p>
+              {frequency === "monthly" && (
+                <p className="rounded-xl border border-binti-pink/30 bg-binti-pink/5 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-binti-pinkdeep">
+                  <strong>Monthly sisters</strong> are our backbone — predictable funding means a girl never waits for
+                  materials. Cancel anytime.
+                </p>
+              )}
+
+              {/* Amount tiers + custom */}
+              <div className="grid grid-cols-3 gap-2.5">
+                {DONATE_TIERS.map((t) => (
+                  <button
+                    key={t.amount}
+                    onClick={() => {
+                      setAmount(t.amount);
+                      setCustomAmount("");
+                    }}
+                    aria-pressed={customAmount === "" && amount === t.amount}
+                    className={cn(
+                      "rounded-xl border-2 p-3 text-center transition-all",
+                      customAmount === "" && amount === t.amount
+                        ? "border-mpesa bg-green-50 shadow-sm"
+                        : "border-binti-sand bg-white hover:border-mpesa/50"
+                    )}
+                  >
+                    <span className="block font-display text-[15px] font-extrabold text-binti-ink">{t.label}</span>
+                    <span className="mt-0.5 block text-[10.5px] leading-tight text-binti-slate">{t.impact}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-binti-sand" aria-hidden="true" />
+                <span className="text-[11px] font-bold uppercase tracking-widest text-binti-slate/70">or choose your own</span>
+                <div className="h-px flex-1 bg-binti-sand" aria-hidden="true" />
+              </div>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-display text-[15px] font-extrabold text-binti-slate">KES</span>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={100}
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  placeholder="e.g. 1,500"
+                  aria-label="Custom amount in Kenyan shillings"
+                  className="h-12 rounded-xl border-binti/30 bg-white pl-14 font-display text-[16px] font-bold"
+                />
+              </div>
+
+              {/* Impact preview */}
+              <div className="flex items-start gap-2.5 rounded-xl border border-binti/25 bg-white p-3.5">
+                <HeartHandshake className="mt-0.5 size-4.5 shrink-0 text-mpesa" aria-hidden="true" />
+                <p className="text-[13px] leading-relaxed text-binti-ink">
+                  <strong>Your impact:</strong> {effAmount >= 100 ? impactText : "choose an amount to see the impact"}
+                  {frequency === "monthly" && effAmount >= 100 && (
+                    <span className="text-binti-pinkdeep"> · KES {effAmount.toLocaleString()} × 12 months</span>
+                  )}
+                </p>
+              </div>
+
+              {/* M-Pesa */}
+              <div className="rounded-2xl border-2 border-mpesa/50 bg-white p-4">
+                <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
+                  <Smartphone className="size-4.5 text-mpesa" aria-hidden="true" /> M-Pesa Paybill
+                </p>
+                <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl bg-binti-cream px-3.5 py-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Paybill</p>
+                    <p className="font-display text-xl font-extrabold text-binti">{ORG.paybill}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Account</p>
+                    <p className="font-display text-[15px] font-bold text-binti-ink">{ORG.paybillAccount}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copy(ORG.paybill)}
+                    className="rounded-full border-mpesa/50 font-bold text-mpesa hover:bg-mpesa hover:text-white"
+                  >
+                    <Copy className="size-3.5" aria-hidden="true" /> {copied ? "Copied" : "Copy"}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Bank */}
+              <div className="rounded-2xl border border-binti/30 bg-white p-4">
+                <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
+                  <Landmark className="size-4.5 text-binti" aria-hidden="true" /> Bank Transfer
+                </p>
+                <div className="mt-2.5 flex items-center justify-between rounded-xl bg-binti-cream px-3.5 py-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Bank · Account</p>
+                    <p className="font-display text-[14px] font-bold text-binti-ink">{ORG.bank}</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => copy("1234567890")} className="rounded-full border-binti/50 font-bold text-binti hover:bg-binti hover:text-white">
+                    <Copy className="size-3.5" aria-hidden="true" /> Copy
+                  </Button>
+                </div>
+              </div>
+
+              <Button
+                onClick={startDonation}
+                className="h-12 w-full rounded-full bg-mpesa text-[15px] font-bold text-white hover:bg-green-600"
+              >
+                <HeartHandshake className="size-5" aria-hidden="true" /> Give KES {effAmount.toLocaleString()}
+                {frequency === "monthly" ? " / month via M-Pesa" : " via M-Pesa"}
+              </Button>
+              <DataNote>
+                Prefer USD or a partnership gift? Email {ORG.email}. Receipt auto · audit logged · no cash.
+              </DataNote>
+            </motion.div>
+          )}
+
+          {step === "processing" && (
+            <motion.div
+              key="processing"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22 }}
+              className="px-6 py-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <Loader2 className="size-12 animate-spin text-mpesa" aria-hidden="true" />
+                <p className="mt-4 font-display text-lg font-extrabold text-binti-ink">
+                  Giving KES {effAmount.toLocaleString()}{frequency === "monthly" ? " / month" : ""}…
+                </p>
+              </div>
+              <ol className="mx-auto mt-6 max-w-xs space-y-3" role="list">
+                {STEPS.map((s, i) => {
+                  const state = i < stepIdx ? "done" : i === stepIdx ? "active" : "todo";
+                  return (
+                    <li key={s} className="flex items-center gap-3">
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-extrabold",
+                          state === "done" && "border-mpesa bg-mpesa text-white",
+                          state === "active" && "binti-pulse border-mpesa bg-white text-mpesa",
+                          state === "todo" && "border-binti-sand bg-white text-binti-slate/50"
+                        )}
+                      >
+                        {state === "done" ? "✓" : i + 1}
+                      </span>
+                      <span className={cn("text-[13.5px]", state === "todo" ? "text-binti-slate/60" : "font-semibold text-binti-ink")}>
+                        {s}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p className="mx-auto mt-6 max-w-xs text-center text-[11.5px] leading-snug text-binti-slate/70">
+                Demo simulation. In production this runs on the Safaricom Daraja API (keys via .env.local, never
+                hardcoded).
+              </p>
+            </motion.div>
+          )}
+
+          {step === "receipt" && (
+            <motion.div
+              key="receipt"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="px-6 py-8 text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 16 }}
+              >
+                <CheckCircle2 className="mx-auto size-16 text-mpesa" aria-hidden="true" />
+              </motion.div>
+              <h3 className="mt-4 font-display text-xl font-extrabold text-binti-ink">Donation received ✓</h3>
+              <p className="mt-1 text-[13.5px] text-binti-slate">
+                KES {effAmount.toLocaleString()}{frequency === "monthly" ? " / month" : ""} · M-Pesa {ORG.paybill}
+              </p>
+              <div className="mx-auto mt-5 max-w-xs rounded-2xl border border-binti-sand bg-white p-4 text-left">
+                <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-binti-slate">
+                  <ReceiptText className="size-4 text-binti" aria-hidden="true" /> Receipt
+                </p>
+                <p className="mt-1.5 font-mono text-[14px] font-bold text-binti">{receiptNo}</p>
+                <p className="mt-2 text-[12px] leading-relaxed text-binti-slate">
+                  Auto-receipt sent · audit logged · funds move to programme delivery (62% per FY24/25 aggregate).
+                </p>
               </div>
               <Button
+                onClick={() => {
+                  reset();
+                  onOpenChange(false);
+                }}
                 variant="outline"
-                size="sm"
-                onClick={() => copy(ORG.paybill)}
-                className="rounded-full border-mpesa/50 font-bold text-mpesa hover:bg-mpesa hover:text-white"
+                className="mt-5 h-11 rounded-full border-binti/40 px-6 font-bold text-binti hover:bg-binti hover:text-white"
               >
-                <Copy className="size-3.5" aria-hidden="true" /> {copied ? "Copied" : "Copy"}
+                Close
               </Button>
-            </div>
-          </div>
-
-          {/* Bank */}
-          <div className="rounded-2xl border border-binti/30 bg-white p-4">
-            <p className="flex items-center gap-2 font-display text-[14px] font-bold text-binti-ink">
-              <Landmark className="size-4.5 text-binti" aria-hidden="true" /> Bank Transfer
-            </p>
-            <div className="mt-2.5 flex items-center justify-between rounded-xl bg-binti-cream px-3.5 py-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-binti-slate">Bank · Account</p>
-                <p className="font-display text-[14px] font-bold text-binti-ink">{ORG.bank}</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => copy("1234567890")} className="rounded-full border-binti/50 font-bold text-binti hover:bg-binti hover:text-white">
-                <Copy className="size-3.5" aria-hidden="true" /> Copy
-              </Button>
-            </div>
-          </div>
-
-          <Button
-            onClick={() =>
-              toast({
-                title: "Donation success ✓",
-                description: "Receipt sent · Audit logged · No cash. Asante sana!",
-              })
-            }
-            className="h-12 w-full rounded-full bg-mpesa text-[15px] font-bold text-white hover:bg-green-600"
-          >
-            <HeartHandshake className="size-5" aria-hidden="true" /> Donate {amount.toLocaleString()} KES via M-Pesa
-          </Button>
-          <DataNote>
-            Prefer USD or a partnership gift? Email {ORG.email}. Receipt auto · audit logged · no cash.
-          </DataNote>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </DialogContent>
     </Dialog>
   );

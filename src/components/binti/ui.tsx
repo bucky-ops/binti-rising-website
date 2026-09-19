@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { Risk } from "@/lib/binti/data";
@@ -259,5 +261,61 @@ export function DataNote({ children, className }: { children: ReactNode; classNa
       </svg>
       <span>{children}</span>
     </p>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* SparkLine — mini area chart for KPI cards (aggregate trend only)    */
+/* ------------------------------------------------------------------ */
+export function SparkLine({ data, color = "#4f46e5" }: { data: number[]; color?: string }) {
+  const points = data.map((v, i) => ({ i, v }));
+  const gid = `spark-${color.replace("#", "")}`;
+  return (
+    <div className="mt-2 h-10 w-full" aria-hidden="true">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={points} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.35} />
+              <stop offset="100%" stopColor={color} stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="v"
+            stroke={color}
+            strokeWidth={2}
+            fill={`url(#${gid})`}
+            isAnimationActive
+            animationDuration={900}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* SectionReveal — subtle whileInView reveal for section blocks        */
+/* ------------------------------------------------------------------ */
+export function SectionReveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 }

@@ -35,8 +35,20 @@ model Complaint {
   category     String // safeguarding | fraud | data | other
   message      String // free text, user is told NOT to include their own name
   hasVoiceNote Boolean  @default(false)
+  voiceNote    String? // base64 audio (webm), size-capped server-side, NEVER rendered publicly
   status       String   @default("received") // received | reviewing | actioned | closed
   createdAt    DateTime @default(now())
+}
+
+// Donor/community newsletter opt-in (Get Involved). DPA 2019: explicit consent
+// checkbox is mandatory; email is stored only for sending the newsletter and
+// is never displayed anywhere.
+model Newsletter {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  consentDpa Boolean // must be true — enforced server-side
+  source     String   @default("footer-form")
+  createdAt  DateTime @default(now())
 }
 
 // Aggregated monthly KPI snapshots feeding the Live Impact Dashboard.

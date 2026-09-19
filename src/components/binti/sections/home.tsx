@@ -7,6 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import {
   Heart,
   Users,
   ShieldCheck,
@@ -15,10 +23,14 @@ import {
   ArrowRight,
   Eye,
   Sparkles,
+  Mail,
+  Send,
+  CheckCircle2,
+  Quote as QuoteIcon,
 } from "lucide-react";
 import type { SectionId } from "@/lib/binti/data";
-import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE } from "@/lib/binti/data";
-import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote } from "../ui";
+import { IMPACT_STRIP, WHAT_WE_DO, JTW, PARTNERS, HERO_QUOTE, STORIES, FAQS } from "@/lib/binti/data";
+import { CountUp, NairobiPhoto, SectionHeading, RiskBadge, BintiMark, DataNote, SectionReveal } from "../ui";
 import { cn } from "@/lib/utils";
 
 const ICONS = { Heart, Users, ShieldCheck, BarChart3 } as const;
@@ -111,8 +123,8 @@ function ImpactStrip() {
   return (
     <section aria-label="Impact at a glance" className="w-full bg-binti">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 md:grid-cols-4 md:px-6 md:py-10">
-        {IMPACT_STRIP.map((s) => (
-          <div key={s.label} className="text-center">
+        {IMPACT_STRIP.map((s, i) => (
+          <div key={s.label} className={cn("binti-stat text-center", i > 0 && "md:pl-6")}>
             <p className="font-display text-4xl font-extrabold text-white md:text-5xl">
               <CountUp end={s.value} suffix={s.suffix} />
             </p>
@@ -123,6 +135,201 @@ function ImpactStrip() {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* STORIES OF RISE — masked testimonials w/ Nairobi photos (DPA 2019)  */
+/* ------------------------------------------------------------------ */
+function StoriesOfRise() {
+  return (
+    <section aria-label="Stories of Rise" className="bg-gradient-to-b from-binti-cream to-white py-14">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <SectionReveal>
+          <SectionHeading
+            align="center"
+            eyebrow="Stories of Rise"
+            title={
+              <>
+                She carried the stone. <span className="font-hand text-4xl font-bold text-binti-pink">Then she set it down.</span>
+              </>
+            }
+            sub="Real journeys from the circles — names masked per Kenya DPA 2019, shared with each storyteller's consent."
+          />
+        </SectionReveal>
+        <div className="mt-9 grid gap-5 md:grid-cols-3">
+          {STORIES.map((s, i) => (
+            <SectionReveal key={s.initials} delay={i * 0.08}>
+              <Card className="binti-card-glow h-full overflow-hidden rounded-2xl border-binti-sand bg-white pt-0">
+                <div className="relative h-44">
+                  <NairobiPhoto src={s.photo} alt={`Binti Rising circle session photo — ${s.area}`} sizes="(max-width: 768px) 100vw, 380px" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" aria-hidden="true" />
+                  <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-binti shadow-sm">
+                    {s.tag}
+                  </span>
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2.5">
+                    <span className="font-hand text-2xl font-bold text-white">{s.initials}</span>
+                    <span className="text-[11.5px] font-semibold text-white/85">
+                      {s.age} · {s.area}
+                    </span>
+                  </div>
+                </div>
+                <CardContent className="p-5">
+                  <QuoteIcon className="size-5 text-binti-pink/60" aria-hidden="true" />
+                  <p className="mt-2 text-[14px] leading-relaxed text-binti-ink">
+                    “{s.quote}”
+                  </p>
+                  <p className="mt-3 font-display text-[11.5px] font-extrabold uppercase tracking-widest text-binti">
+                    {s.session}
+                  </p>
+                </CardContent>
+              </Card>
+            </SectionReveal>
+          ))}
+        </div>
+        <SectionReveal delay={0.15}>
+          <p className="mx-auto mt-6 max-w-xl text-center text-[12px] leading-relaxed text-binti-slate/80">
+            Consent is renewed every cohort; any storyteller can withdraw her story at any time via the
+            Safeguarding Lead — no questions asked (DPA 2019, right to erasure).
+          </p>
+        </SectionReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* DONOR FAQ — accordion, donor-grade answers                          */
+/* ------------------------------------------------------------------ */
+function DonorFaq() {
+  return (
+    <section aria-label="Donor FAQ" className="bg-white py-14">
+      <div className="mx-auto max-w-4xl px-4 md:px-6">
+        <SectionReveal>
+          <SectionHeading
+            align="center"
+            eyebrow="Donor FAQ"
+            title={
+              <>
+                Questions donors <span className="font-hand text-4xl font-bold text-binti-pink">actually ask</span>
+              </>
+            }
+          />
+        </SectionReveal>
+        <SectionReveal delay={0.1} className="mt-8">
+          <Accordion type="single" collapsible className="space-y-3">
+            {FAQS.map((f, i) => (
+              <AccordionItem
+                key={f.q}
+                value={`faq-${i}`}
+                className="rounded-2xl border border-binti-sand bg-binti-cream/50 px-5 last:border-b"
+              >
+                <AccordionTrigger className="py-4 text-left font-display text-[15px] font-bold text-binti-ink hover:no-underline">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="pb-5 text-[13.5px] leading-relaxed text-binti-slate">
+                  {f.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </SectionReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* NEWSLETTER — monthly impact digest (DPA 2019 consent mandatory)     */
+/* ------------------------------------------------------------------ */
+function NewsletterSignup() {
+  const [email, setEmail] = useState("");
+  const [dpa, setDpa] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const subscribe = async () => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+      toast({ title: "Check your email", description: "That address doesn't look complete.", variant: "destructive" });
+      return;
+    }
+    if (!dpa) {
+      toast({ title: "Consent needed", description: "Please tick the DPA 2019 consent — the law requires it.", variant: "destructive" });
+      return;
+    }
+    setSending(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), consentDpa: dpa, source: "home-section" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      setDone(true);
+      toast({ title: "Karibu aboard! 💌", description: "Monthly impact digest — one email a month, no spam, ever." });
+    } catch (e) {
+      toast({
+        title: "Could not subscribe",
+        description: e instanceof Error ? e.message : "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <section aria-label="Newsletter signup" className="mx-auto max-w-7xl px-4 py-12 md:px-6">
+      <SectionReveal>
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-binti via-binti-deep to-binti-pinkdeep px-6 py-10 md:px-12">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-binti-pink/30 blur-3xl" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-20 -left-10 size-64 rounded-full bg-binti-cyan/20 blur-3xl" />
+          <div className="relative mx-auto max-w-2xl text-center">
+            <Mail className="mx-auto size-10 text-binti-amber" aria-hidden="true" />
+            <h2 className="mt-3 font-display text-2xl font-extrabold text-white md:text-3xl">
+              One email a month. <span className="font-hand text-3xl font-bold text-binti-amber">Real numbers only.</span>
+            </h2>
+            <p className="mt-2 text-[14px] leading-relaxed text-white/80">
+              The Binti Digest: cohort outcomes, referral closures and finance lines — aggregated, audited, honest.
+            </p>
+            {done ? (
+              <div className="mx-auto mt-6 flex max-w-md items-center justify-center gap-2.5 rounded-2xl border border-green-300 bg-green-50 px-5 py-4" role="status">
+                <CheckCircle2 className="size-5 shrink-0 text-green-600" aria-hidden="true" />
+                <p className="text-[13.5px] font-semibold text-green-800">You're subscribed. First digest arrives on the 1st.</p>
+              </div>
+            ) : (
+              <div className="mx-auto mt-6 max-w-md">
+                <div className="flex flex-col gap-2.5 sm:flex-row">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.org"
+                    aria-label="Email address for the Binti Digest"
+                    className="h-12 flex-1 rounded-full border-white/20 bg-white/95 pl-5"
+                  />
+                  <Button
+                    onClick={subscribe}
+                    disabled={sending}
+                    className="h-12 rounded-full bg-binti-amber px-6 font-display text-[14px] font-extrabold text-binti-ink hover:bg-amber-400"
+                  >
+                    {sending ? "Subscribing…" : (<>Subscribe <Send className="size-4" aria-hidden="true" /></>)}
+                  </Button>
+                </div>
+                <label className="mt-3 flex cursor-pointer items-start justify-center gap-2 text-left text-[12px] leading-relaxed text-white/75">
+                  <input type="checkbox" checked={dpa} onChange={(e) => setDpa(e.target.checked)} className="mt-0.5 size-4 accent-binti-amber" />
+                  <span>
+                    I consent to Binti Rising storing my email for the monthly digest only (Kenya DPA 2019). Unsubscribe
+                    anytime with one click.
+                  </span>
+                </label>
+              </div>
+            )}
+          </div>
+        </div>
+      </SectionReveal>
     </section>
   );
 }
@@ -487,8 +694,11 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: SectionId) => void
       <ImpactStrip />
       <WhatWeDo />
       <JtwTeaser onNavigate={onNavigate} />
+      <StoriesOfRise />
       <PartnersMarquee />
       <Quote />
+      <DonorFaq />
+      <NewsletterSignup />
       <BrandBook />
     </>
   );

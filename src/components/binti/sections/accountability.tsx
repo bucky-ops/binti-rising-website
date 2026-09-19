@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,14 +28,111 @@ import { cn } from "@/lib/utils";
 const SEG_ICONS = { Landmark, UserRound, Calculator, ShieldCheck } as const;
 
 /* ------------------------------------------------------------------ */
+/* VOICE NOTE — MediaRecorder → base64 → complaint API (DPA 2019)      */
+/* Audio is stored ONLY for the Safeguarding Lead; never rendered on   */
+/* any public surface. 60 s cap. Graceful fallback to the sealed box.  */
+/* ------------------------------------------------------------------ */
+const MAX_VOICE_MS = 60_000;
+
+interface VoiceRecorderState {
+  supported: boolean;
+  recording: boolean;
+  denied: boolean;
+  seconds: number;
+  audioData: string | null; // base64 data URL
+  audioUrl: string | null; // object URL for preview
+}
+
+function useVoiceRecorder(): [
+  VoiceRecorderState,
+  { start: () => Promise<void>; stop: () => void; clear: () => void },
+] {
+  const [state, setState] = useState<VoiceRecorderState>({
+    supported: true,
+    recording: false,
+    denied: false,
+    seconds: 0,
+    audioData: null,
+    audioUrl: null,
+  });
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timers + mic stream if unmounted mid-recording
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (autoStopRef.current) clearTimeout(autoStopRef.current);
+      try {
+        recorderRef.current?.stream.getTracks().forEach((t) => t.stop());
+      } catch {
+        /* stream already stopped */
+      }
+    };
+  }, []);
+
+  const start = async () => {
+    // Support is checked at click time (client only) — avoids SSR state mismatch
+    if (typeof navigator === "undefined" || !navigator.mediaDevices || typeof MediaRecorder === "undefined") {
+      setState((s) => ({ ...s, denied: true }));
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      chunksRef.current = [];
+      const rec = new MediaRecorder(stream);
+      rec.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      rec.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setState((s) => ({ ...s, recording: false, audioUrl: url, audioData: String(reader.result) }));
+        };
+        reader.readAsDataURL(blob);
+      };
+      rec.start();
+      recorderRef.current = rec;
+      setState((s) => ({ ...s, recording: true, denied: false, seconds: 0, audioData: null, audioUrl: null }));
+      timerRef.current = setInterval(() => setState((s) => ({ ...s, seconds: s.seconds + 1 })), 1000);
+      autoStopRef.current = setTimeout(() => {
+        if (recorderRef.current && recorderRef.current.state === "recording") recorderRef.current.stop();
+        if (timerRef.current) clearInterval(timerRef.current);
+      }, MAX_VOICE_MS);
+    } catch {
+      // Permission denied or device error → fall back to sealed-box flow
+      setState((s) => ({ ...s, denied: true, recording: false }));
+    }
+  };
+
+  const stop = () => {
+    if (recorderRef.current && recorderRef.current.state === "recording") recorderRef.current.stop();
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (autoStopRef.current) clearTimeout(autoStopRef.current);
+  };
+
+  const clear = () => {
+    setState((s) => ({ ...s, audioData: null, audioUrl: null, seconds: 0 }));
+  };
+
+  return [state, { start, stop, clear }];
+}
+
+/* ------------------------------------------------------------------ */
 /* ACCOUNTABILITY — donor audit on first glance                        */
 /* ------------------------------------------------------------------ */
 export function AccountabilitySection() {
   const [category, setCategory] = useState<string>("safeguarding");
   const [message, setMessage] = useState("");
-  const [hasVoice, setHasVoice] = useState(false);
+  const [hasVoice, setHasVoice] = useState(false); // sealed-box fallback checkbox
   const [sending, setSending] = useState(false);
   const [ref, setRef] = useState<string | null>(null);
+  const [voice, voiceCtl] = useVoiceRecorder();
 
   const submitComplaint = async () => {
     if (message.trim().length < 10) {
@@ -51,13 +148,19 @@ export function AccountabilitySection() {
       const res = await fetch("/api/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category, message: message.trim(), hasVoiceNote: hasVoice }),
+        body: JSON.stringify({
+          category,
+          message: message.trim(),
+          hasVoiceNote: hasVoice || !!voice.audioData,
+          voiceNote: voice.audioData ?? undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
       setRef(data.reference);
       setMessage("");
       setHasVoice(false);
+      voiceCtl.clear();
       toast({
         title: "✕ Safety concern flagged — FO notified",
         description: `Anonymous reference: ${data.reference}. No retaliation. Safeguarding Lead independent.`,
@@ -256,6 +359,68 @@ export function AccountabilitySection() {
                 />
                 <p className="text-right text-[11px] text-binti-slate/70">{message.length}/2000</p>
               </div>
+              {/* Voice note: in-browser recorder → Safeguarding Lead only */}
+              <div
+                className={cn(
+                  "rounded-xl border p-3.5",
+                  voice.recording ? "binti-recording border-red-300 bg-red-50" : "border-binti/25 bg-binti-cream/60"
+                )}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Mic className={cn("size-4", voice.recording ? "text-red-600" : "text-binti")} aria-hidden="true" />
+                  <p className="flex-1 text-[13px] font-semibold text-binti-ink">
+                    {voice.recording
+                      ? `Recording… ${voice.seconds}s / 60s — speak freely, stay anonymous`
+                      : voice.audioData
+                        ? "Voice note attached ✓ (Safeguarding Lead only)"
+                        : "Voice note — or record it right here (60s max)"}
+                  </p>
+                  {voice.recording ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={voiceCtl.stop}
+                      className="h-9 rounded-full border-red-400 font-bold text-red-600 hover:bg-red-600 hover:text-white"
+                    >
+                      Stop
+                    </Button>
+                  ) : voice.audioData ? (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={voiceCtl.clear}
+                      className="h-9 rounded-full font-bold text-binti-slate hover:text-red-600"
+                    >
+                      Delete
+                    </Button>
+                  ) : (
+                    !voice.denied &&
+                    voice.supported && (
+                      <Button
+                        size="sm"
+                        onClick={voiceCtl.start}
+                        className="h-9 rounded-full bg-binti font-bold text-white hover:bg-binti-deep"
+                      >
+                        Record
+                      </Button>
+                    )
+                  )}
+                </div>
+                {voice.audioUrl && (
+                  <audio controls src={voice.audioUrl} className="mt-2.5 h-9 w-full" aria-label="Preview of your anonymous voice note" />
+                )}
+                {voice.denied && (
+                  <p className="mt-2 text-[12px] leading-snug text-binti-slate">
+                    Microphone unavailable — tick the box below instead and drop your voice note in the sealed box at
+                    the Laini Saba centre.
+                  </p>
+                )}
+                {!voice.recording && !voice.audioData && !voice.denied && voice.supported && (
+                  <p className="mt-1.5 text-[11.5px] leading-snug text-binti-slate/80">
+                    The recording is encrypted at rest and heard only by the independent Safeguarding Lead (DPA 2019).
+                  </p>
+                )}
+              </div>
               <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-binti/25 bg-binti-cream/60 p-3">
                 <input
                   type="checkbox"
@@ -268,6 +433,11 @@ export function AccountabilitySection() {
                   I have a voice note to drop at the sealed box (Laini Saba centre)
                 </span>
               </label>
+              {hasVoice && (
+                <p className="-mt-1.5 rounded-lg bg-binti-cream px-3 py-2 text-[12px] text-binti-slate">
+                  ✓ Noted — drop your sealed voice note at Laini Saba and quote your reference.
+                </p>
+              )}
               <Button
                 onClick={submitComplaint}
                 disabled={sending}
