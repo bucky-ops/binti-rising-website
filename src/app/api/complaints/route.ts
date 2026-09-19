@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
  * POST /api/complaints - Anonymous Complaints Box (Accountability)
@@ -36,9 +37,18 @@ export async function POST(req: Request) {
     const count = await db.complaint.count();
     const reference = `BRI-2026-${String(count + 1).padStart(4, "0")}`;
 
-    await db.complaint.create({
-      data: { reference, category, message, hasVoiceNote, voiceNote },
-    });
+    const record = { reference, category, message, hasVoiceNote, voiceNote };
+
+    // 1) Supabase (production path, RLS-protected, service-role write only)
+    if (supabaseConfigured) {
+      const ok = await sbInsert("complaints", { id: crypto.randomUUID(), ...record });
+      if (ok) {
+        return NextResponse.json({ ok: true, reference, status: "received" });
+      }
+    }
+
+    // 2) Fallback: local Prisma store (never lose a safeguarding report)
+    await db.complaint.create({ data: record });
 
     return NextResponse.json({ ok: true, reference, status: "received" });
   } catch (e) {

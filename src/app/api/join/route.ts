@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
  * POST /api/join - Join Circle form (For Youth)
@@ -9,6 +10,8 @@ import { db } from "@/lib/db";
  *  - Phone optional, only stored when consentDpa is true; never rendered.
  *  - Production target: Supabase table `join_requests` with RLS
  *    (service-role write only) - env-configured, no hardcoded keys.
+ *  - Supabase write is attempted first when configured; the local Prisma
+ *    store is the automatic fallback so no signup is ever lost.
  */
 export async function POST(req: Request) {
   try {
@@ -41,16 +44,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Guardian consent is required for ages 15-17" }, { status: 400 });
     }
 
-    const saved = await db.joinRequest.create({
-      data: {
-        displayName,
-        age,
-        area,
-        phone: consentDpa ? phone : null,
-        consentDpa,
-        guardianConsent: age < 18 ? guardianConsent : false,
-      },
-    });
+    const record = {
+      displayName,
+      age,
+      area,
+      phone: consentDpa ? phone : null,
+      consentDpa,
+      guardianConsent: age < 18 ? guardianConsent : false,
+    };
+
+    // 1) Supabase (production path, RLS-protected)
+    if (supabaseConfigured) {
+      const id = crypto.randomUUID();
+      const ok = await sbInsert("join_requests", { id, ...record });
+      if (ok) {
+        return NextResponse.json({
+          ok: true,
+          id,
+          message:
+            "Karibu Binti! Circle starts Monday 2pm Laini Saba. Sema na Me chatbot on WhatsApp +254758919709",
+        });
+      }
+    }
+
+    // 2) Fallback: local Prisma store
+    const saved = await db.joinRequest.create({ data: record });
 
     return NextResponse.json({
       ok: true,

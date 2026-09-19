@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
  * POST /api/newsletter - donor & community newsletter opt-in.
@@ -28,9 +29,23 @@ export async function POST(req: Request) {
       );
     }
 
+    const record = { email, consentDpa, source };
+
+    // 1) Supabase (production path, upsert on unique email)
+    if (supabaseConfigured) {
+      const ok = await sbInsert("newsletter_subscribers", {
+        id: crypto.randomUUID(),
+        ...record,
+      });
+      if (ok) {
+        return NextResponse.json({ ok: true, message: "Subscribed. Karibu!" });
+      }
+    }
+
+    // 2) Fallback: local Prisma store
     await db.newsletter.upsert({
       where: { email },
-      create: { email, consentDpa, source },
+      create: record,
       update: { consentDpa, source },
     });
 

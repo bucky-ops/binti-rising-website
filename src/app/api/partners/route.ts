@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sbInsert, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
  * POST /api/partners - Partner Inquiry form (Get Involved → For Partners)
@@ -69,19 +70,34 @@ export async function POST(req: Request) {
       );
     }
 
-    const saved = await db.partnerInquiry.create({
-      data: {
-        reference: makeReference(),
-        orgName,
-        contactName,
-        role,
-        email,
-        orgType,
-        interests: interests.join(","),
-        message,
-        consentDpa,
-      },
-    });
+    const reference = makeReference();
+    const record = {
+      reference,
+      orgName,
+      contactName,
+      role,
+      email,
+      orgType,
+      interests: interests.join(","),
+      message,
+      consentDpa,
+    };
+
+    // 1) Supabase (production path, RLS-protected)
+    if (supabaseConfigured) {
+      const ok = await sbInsert("partner_inquiries", { id: crypto.randomUUID(), ...record });
+      if (ok) {
+        return NextResponse.json({
+          ok: true,
+          reference,
+          message:
+            "Asante! Our partnerships lead replies within 3 working days. MOU template attached on this page - sign and bring it to Kibera.",
+        });
+      }
+    }
+
+    // 2) Fallback: local Prisma store
+    const saved = await db.partnerInquiry.create({ data: record });
 
     return NextResponse.json({
       ok: true,
