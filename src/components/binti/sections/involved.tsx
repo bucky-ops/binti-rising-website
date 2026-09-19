@@ -28,6 +28,8 @@ import {
   Loader2,
   Target,
   Users,
+  Search,
+  ScanSearch,
 } from "lucide-react";
 import { SectionHeading, DataNote, NairobiPhoto } from "./../ui";
 import { AREA_OPTIONS, DONATE_TIERS, DONATE_IMPACT, CALC_UNIT_COSTS, CURRENCIES, toKes, fromKes, ORG, FACILITATORS, FACILITATOR_NOTE } from "@/lib/binti/data";
@@ -757,7 +759,7 @@ export function DonateModal({ open, onOpenChange }: { open: boolean; onOpenChang
               </Button>
               <DataNote>
                 Giving from abroad? Pick USD / EUR / GBP above - M-Pesa charges the KES equivalent at indicative
-                rates. Partnership gifts: {ORG.email}. Receipt auto · audit logged · no cash.
+                rates. Partnership gifts welcome on the same Paybill. Receipt auto · audit logged · no cash.
               </DataNote>
             </motion.div>
           )}
@@ -874,6 +876,98 @@ const PARTNER_INTERESTS = [
   { value: "technical", label: "Technical help" },
   { value: "volunteering", label: "Skilled volunteering" },
 ] as const;
+
+/* ------------------------------------------------------------------ */
+/* PARTNER REF LOOKUP - check an inquiry status by reference code.     */
+/* Privacy: the API returns ONLY status + received month (no PII).     */
+/* ------------------------------------------------------------------ */
+function PartnerRefLookup() {
+  const [ref, setRef] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<null | { found: boolean; status?: string; receivedAt?: string }>(null);
+
+  const check = async () => {
+    const value = ref.trim().toUpperCase();
+    if (!/^PTN-2026-\d{6}$/.test(value)) {
+      setResult({ found: false });
+      toast({ title: "Check the format", description: "References look like PTN-2026-123456.", variant: "destructive" });
+      return;
+    }
+    setBusy(true);
+    setResult(null);
+    try {
+      const res = await fetch(`/api/partners?ref=${encodeURIComponent(value)}`);
+      const data = await res.json();
+      if (res.ok && data.found) {
+        setResult({ found: true, status: data.status, receivedAt: data.receivedAt });
+      } else {
+        setResult({ found: false });
+      }
+    } catch {
+      toast({ title: "Lookup failed", description: "Network hiccup. Try again in a moment.", variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Card className="rounded-3xl border-binti-sand bg-binti-card p-6">
+      <h4 className="flex items-center gap-2 font-display text-[15px] font-extrabold text-binti-ink">
+        <ScanSearch className="size-4.5 text-binti dark:text-indigo-300" aria-hidden="true" /> Track your inquiry
+      </h4>
+      <p className="mt-1.5 text-[12.5px] leading-relaxed text-binti-slate">
+        Enter the reference we gave you (e.g. PTN-2026-123456) to see where your inquiry sits. Only the status is shown,
+        never your details (Kenya DPA 2019).
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <Input
+          value={ref}
+          onChange={(e) => setRef(e.target.value.toUpperCase())}
+          placeholder="PTN-2026-XXXXXX"
+          aria-label="Partnership inquiry reference"
+          className="h-11 flex-1 rounded-full border-binti/30 bg-binti-cream/60 px-4 font-mono text-[13px] tracking-wide"
+          maxLength={15}
+          onKeyDown={(e) => e.key === "Enter" && check()}
+        />
+        <Button
+          onClick={check}
+          disabled={busy}
+          className="h-11 rounded-full bg-binti px-5 font-bold hover:bg-binti-deep"
+        >
+          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Search className="size-4" aria-hidden="true" />}
+          Check status
+        </Button>
+      </div>
+      {result && (
+        <div
+          role="status"
+          className={cn(
+            "mt-3 flex items-start gap-2.5 rounded-xl border p-3.5",
+            result.found ? "border-green-300 bg-green-50" : "border-amber-300 bg-amber-50"
+          )}
+        >
+          <CheckCircle2
+            className={cn(
+              "mt-0.5 size-4.5 shrink-0",
+              result.found ? "text-green-600 dark:text-green-400" : "text-amber-600"
+            )}
+            aria-hidden="true"
+          />
+          {result.found ? (
+            <p className="text-[13px] leading-relaxed text-green-800">
+              <strong className="font-display">{ref.trim().toUpperCase()}</strong> · received {result.receivedAt}. Status: {" "}
+              <strong>{result.status}</strong>.
+            </p>
+          ) : (
+            <p className="text-[13px] leading-relaxed text-amber-800">
+              No inquiry found for <strong className="font-display">{ref.trim().toUpperCase()}</strong>. Double-check the
+              code, or WhatsApp {ORG.whatsapp} and we will find it.
+            </p>
+          )}
+        </div>
+      )}
+    </Card>
+  );}
 
 function PartnerInquiryForm() {
   const [orgName, setOrgName] = useState("");
@@ -1343,7 +1437,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                 </div>
                 <DataNote className="mt-5">
                   Partnerships are institutional - this form never collects beneficiary data. Existing partner? Reach the
-                  partnerships lead directly: {ORG.email} · WhatsApp {ORG.whatsapp}.
+                  partnerships lead directly on WhatsApp {ORG.whatsapp}.
                 </DataNote>
               </Card>
               <Card className="rounded-3xl border-binti-sand bg-gradient-to-br from-binti-cyan/10 to-binti-pink/10 p-6">
@@ -1364,6 +1458,7 @@ export function InvolvedSection({ onDonate }: { onDonate: () => void }) {
                   ))}
                 </ol>
               </Card>
+              <PartnerRefLookup />
             </div>
 
             {/* Right: inquiry form */}

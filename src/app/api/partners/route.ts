@@ -113,3 +113,63 @@ export async function POST(req: Request) {
     );
   }
 }
+
+/**
+ * GET /api/partners?ref=PTN-2026-XXXXXX - reference status lookup.
+ * PRIVACY (Kenya DPA 2019): returns ONLY the reference, a coarse status and
+ * the received month. Never the org name, contact, email or message - so a
+ * stolen/known reference leaks nothing useful. No PII in the response.
+ */
+const STATUS_LABELS: Record<string, string> = {
+  new: "Received - with the partnerships team",
+  in_review: "In review",
+  replied: "Replied - check your inbox",
+  closed: "Closed - thank you",
+};
+
+export async function GET(req: Request) {
+  try {
+    const ref = (new URL(req.url).searchParams.get("ref") ?? "").trim().toUpperCase();
+    if (!/^PTN-2026-\d{6}$/.test(ref)) {
+      return NextResponse.json(
+        { ok: false, found: false, error: "Reference format is PTN-2026-XXXXXX (6 digits)." },
+        { status: 400 }
+      );
+    }
+
+    // 1) Supabase first (when configured)
+    if (supabaseConfigured) {
+      const rows = await sbSelect<{ reference: string; status: string; createdAt: string }>(
+        "partner_inquiries",
+        `?select=reference,status,createdAt&reference=eq.${encodeURIComponent(ref)}&limit=1`
+      );
+      if (rows && rows.length > 0) {
+        const d = new Date(rows[0].createdAt);
+        return NextResponse.json({
+          ok: true,
+          found: true,
+          reference: ref,
+          status: STATUS_LABELS[rows[0].status] ?? STATUS_LABELS.new,
+          receivedAt: d.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
+        });
+      }
+      return NextResponse.json({ ok: true, found: false, reference: ref }, { status: 404 });
+    }
+
+    // 2) Fallback: local Prisma store
+    const row = await db.partnerInquiry.findUnique({ where: { reference: ref } });
+    if (!row) {
+      return NextResponse.json({ ok: true, found: false, reference: ref }, { status: 404 });
+    }
+    return NextResponse.json({
+      ok: true,
+      found: true,
+      reference: ref,
+      status: STATUS_LABELS[row.status] ?? STATUS_LABELS.new,
+      receivedAt: row.createdAt.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
+    });
+  } catch (e) {
+    console.error("[partners:lookup] error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ ok: false, found: false, error: "Lookup failed. Try again." }, { status: 500 });
+  }
+}

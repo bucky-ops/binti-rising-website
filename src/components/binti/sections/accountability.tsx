@@ -168,7 +168,7 @@ export function AccountabilitySection() {
     } catch {
       toast({
         title: "Could not submit",
-        description: `Please try again, or report via WhatsApp ${ORG.whatsapp} / shortcode ${ORG.shortcode}.`,
+        description: `Please try again, or report via WhatsApp ${ORG.whatsapp}.`,
         variant: "destructive",
       });
     } finally {
@@ -326,8 +326,7 @@ export function AccountabilitySection() {
           </h3>
           <p className="mt-2 text-[13px] leading-relaxed text-binti-slate">
             <strong>No retaliation.</strong> Safeguarding Lead independent. Report via this box, WhatsApp{" "}
-            <a href={ORG.whatsappLink} target="_blank" rel="noreferrer" className="font-bold text-binti dark:text-indigo-300 hover:underline">{ORG.whatsapp}</a>, shortcode{" "}
-            <strong>{ORG.shortcode}</strong>, or the sealed box at the Laini Saba centre.
+            <a href={ORG.whatsappLink} target="_blank" rel="noreferrer" className="font-bold text-binti dark:text-indigo-300 hover:underline">{ORG.whatsapp}</a>, or the sealed box at the Laini Saba centre.
             <br />
             <span className="mt-1 inline-block text-[12px] text-binti-slate/80">
               Please do NOT include your own name or anyone's full name - keep it anonymous, DPA 2019.

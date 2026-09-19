@@ -241,6 +241,30 @@ export const INDICATORS = [
 
 export const DATA_QUALITY = 94;
 
+// ---------- SSK CURRENT CYCLE (Apr-Jun 2026) - masked aggregates ----------
+// Source: SSK All-Cohorts master workbook (aggregates only, Kenya DPA 2019).
+// Facilitator pair labels are ANONYMISED ("Pair 01".."Pair 12", sorted by
+// achievement). Only counts and percentages are published - never names.
+export const SSK_CYCLE = {
+  label: "SSK Cycle",
+  window: "Apr-Jun 2026",
+  registrations: 962,
+  preTests: 952,
+  submissions: 4334,
+  postTests: 796,
+  pairs: 12,
+  targetPerPair: 440,
+  onTrackThreshold: 75,
+  gender: { female: 527, male: 433, other: 2 }, // share of 962 registrations
+  age15to17: { count: 487, pct: 50.6 },
+  cohorts: [
+    { name: "Cohort 1 · Jun 7-13", total: 1117 },
+    { name: "Cohort 2 · Jun 14-20", total: 1295 },
+    { name: "Other", total: 11 },
+  ],
+  pairAchievement: [94.8, 93, 90.7, 85.2, 82.5, 82, 78.6, 76.6, 74.3, 72.5, 70.9, 64.5],
+} as const;
+
 // ---------- ACCOUNTABILITY ----------
 export const FINANCE_FY2425 = [
   { line: "Programme Delivery (circles, materials)", pct: 62, kes: "KES 3.72M", note: "24 facilitators in 12 pairs, 28 circles" },

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { KPIS, AREAS, DATA_QUALITY, DASH_LAST_SYNC } from "@/lib/binti/data";
+import { KPIS, AREAS, DATA_QUALITY, DASH_LAST_SYNC, SSK_CYCLE } from "@/lib/binti/data";
 import { sbSelect, supabaseConfigured } from "@/lib/binti/supabase";
 
 /**
@@ -17,6 +17,7 @@ interface KpiRow {
     lastSync: string;
     kpis: typeof KPIS;
     areas: typeof AREAS;
+    cycle?: typeof SSK_CYCLE;
   };
   synced_at?: string;
 }
@@ -37,6 +38,7 @@ export async function GET() {
           lastSync: payload.lastSync ?? DASH_LAST_SYNC,
           kpis: payload.kpis ?? KPIS,
           areas: payload.areas ?? AREAS,
+          cycle: payload.cycle ?? SSK_CYCLE,
         });
       }
     }
@@ -48,6 +50,7 @@ export async function GET() {
       lastSync: DASH_LAST_SYNC,
       kpis: KPIS,
       areas: AREAS,
+      cycle: SSK_CYCLE,
     });
   } catch {
     return NextResponse.json({ ok: false, error: "kpis unavailable" }, { status: 500 });

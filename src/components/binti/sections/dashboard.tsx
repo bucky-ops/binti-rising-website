@@ -54,6 +54,7 @@ import {
   AREA_RISK,
   WELLBEING_BY_AREA,
   WELLBEING_FY2425_BY_AREA,
+  SSK_CYCLE,
   type AreaName,
 } from "@/lib/binti/data";
 import { cn } from "@/lib/utils";
@@ -81,6 +82,146 @@ const KPI_SPARK_COLORS: Record<string, string> = {
   "Referral Closure": "#06b6d4",
   Alumni: "#f59e0b",
 };
+
+/* ------------------------------------------------------------------ */
+/* SSK CURRENT CYCLE PANEL - real masked aggregates from the SSK      */
+/* master workbook (Apr-Jun 2026). Pair labels anonymised; counts and */
+/* percentages only (Kenya DPA 2019).                                 */
+/* ------------------------------------------------------------------ */
+function SskCyclePanel() {
+  const c = SSK_CYCLE;
+  const total = c.registrations;
+  const segments = [
+    { key: "Female", value: c.gender.female, pct: (c.gender.female / total) * 100, cls: "bg-binti-pink" },
+    { key: "Male", value: c.gender.male, pct: (c.gender.male / total) * 100, cls: "bg-binti" },
+    { key: "Other", value: c.gender.other, pct: (c.gender.other / total) * 100, cls: "bg-binti-cyan" },
+  ];
+  const onTrack = c.pairAchievement.filter((p) => p >= c.onTrackThreshold).length;
+  const stats = [
+    { label: "Registrations", value: c.registrations, sub: "initials-only forms" },
+    { label: "Form submissions", value: c.submissions, sub: "all form types, all time" },
+    { label: "Post-tests", value: c.postTests, sub: `${Math.round((c.postTests / c.preTests) * 100)}% of pre-tests` },
+    { label: "Active pairs", value: c.pairs, sub: "24 facilitators · 2 per pair" },
+  ];
+  return (
+    <section
+      aria-label="Current SSK cycle aggregates"
+      className="binti-gradient-border mt-6 overflow-hidden rounded-3xl bg-binti-card"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-binti-sand bg-gradient-to-r from-binti/10 via-binti-pink/10 to-binti-cyan/10 px-5 py-4">
+        <h3 className="font-display text-[16px] font-extrabold text-binti-ink">
+          Current cycle · {c.label} <span className="text-binti dark:text-indigo-300">{c.window}</span>
+        </h3>
+        <Badge variant="outline" className="gap-1 rounded-full border-binti/40 bg-binti-card/80 px-3 py-1 text-[11px] font-bold text-binti dark:text-indigo-300">
+          <Database className="size-3" aria-hidden="true" /> Source: masked SSK master
+        </Badge>
+      </div>
+
+      <div className="p-5">
+        {/* Cycle stats */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div key={s.label} className="rounded-2xl border border-binti-sand bg-binti-cream/60 p-4">
+              <p className="font-display text-[11px] font-bold uppercase tracking-widest text-binti-slate">{s.label}</p>
+              <p className="mt-1 font-display text-3xl font-extrabold tabular-nums text-binti-ink">
+                {s.value.toLocaleString("en-GB")}
+              </p>
+              <p className="mt-0.5 text-[11.5px] text-binti-slate/80">{s.sub}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Gender split bar - backs the all-genders commitment with data */}
+        <div className="mt-5 rounded-2xl border border-binti-sand bg-binti-cream/60 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-display text-[12px] font-bold uppercase tracking-widest text-binti-slate">
+              Who registered · gender split
+            </p>
+            <span className="rounded-full bg-binti-pink/10 px-2.5 py-0.5 text-[11px] font-extrabold text-binti-pinkdeep dark:text-pink-300">
+              45% young men · JTW is for all genders
+            </span>
+          </div>
+          <div
+            className="mt-2.5 flex h-4 w-full overflow-hidden rounded-full"
+            role="img"
+            aria-label={`Gender split of registrations: female ${segments[0].pct.toFixed(1)} percent, male ${segments[1].pct.toFixed(1)} percent, other ${segments[2].pct.toFixed(1)} percent`}
+          >
+            {segments.map((s) => (
+              <span
+                key={s.key}
+                className={cn("h-full transition-[width] duration-700 ease-out", s.cls)}
+                style={{ width: `${s.pct}%` }}
+              />
+            ))}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-binti-slate">
+            {segments.map((s) => (
+              <span key={s.key} className="inline-flex items-center gap-1.5 tabular-nums">
+                <span className={cn("inline-block size-2.5 rounded-full", s.cls)} aria-hidden="true" />
+                {s.key}: {s.value.toLocaleString("en-GB")} ({s.pct.toFixed(1)}%)
+              </span>
+            ))}
+            <span className="inline-flex items-center gap-1.5 tabular-nums">
+              <span className="inline-block size-2.5 rounded-full bg-binti-amber" aria-hidden="true" />
+              Aged 15-17: {c.age15to17.count.toLocaleString("en-GB")} ({c.age15to17.pct}%)
+            </span>
+          </div>
+        </div>
+
+        {/* Pair achievement strip - anonymised Pair 01..12, target 440 */}
+        <div className="mt-5 rounded-2xl border border-binti-sand bg-binti-cream/60 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-display text-[12px] font-bold uppercase tracking-widest text-binti-slate">
+              Facilitator pairs · form submissions vs 440 target
+            </p>
+            <span className="text-[11.5px] font-bold text-binti-slate tabular-nums">
+              {onTrack} of {c.pairs} on track (≥{c.onTrackThreshold}%)
+            </span>
+          </div>
+          <ol className="mt-3 grid gap-x-6 gap-y-2.5 sm:grid-cols-2" role="list" aria-label="Pair achievement, anonymised">
+            {c.pairAchievement.map((pct, i) => {
+              const label = `Pair ${String(i + 1).padStart(2, "0")}`;
+              const behind = pct < c.onTrackThreshold;
+              return (
+                <li key={label} className="flex items-center gap-3">
+                  <span className="w-14 shrink-0 font-display text-[11px] font-extrabold text-binti-slate">{label}</span>
+                  <span
+                    className="relative h-3.5 flex-1 overflow-hidden rounded-full bg-binti-sand"
+                    role="img"
+                    aria-label={`${label}: ${pct}% of the 440 form target`}
+                  >
+                    <span
+                      className={cn(
+                        "block h-full rounded-full transition-[width] duration-700 ease-out",
+                        behind ? "bg-amber-400" : "bg-gradient-to-r from-binti to-binti-pink"
+                      )}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </span>
+                  <span
+                    className={cn(
+                      "w-12 shrink-0 text-right font-display text-[11.5px] font-extrabold tabular-nums",
+                      behind ? "text-amber-600 dark:text-amber-300" : "text-binti dark:text-indigo-300"
+                    )}
+                  >
+                    {pct.toFixed(1)}%
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="mt-2.5 text-[11px] leading-relaxed text-binti-slate/70">
+            Pair labels anonymised for privacy (Kenya DPA 2019); named pairing is kept in the encrypted master only.
+          </p>
+        </div>
+
+        {/* Cohorts footnote */}
+        <p className="mt-4 text-[12px] leading-relaxed text-binti-slate tabular-nums">
+          Cohorts: {c.cohorts.map((k) => `${k.name} · ${k.total.toLocaleString("en-GB")} submissions`).join(" · ")}
+        </p>
+      </div>
+    </section>
+  );}
 
 /* ------------------------------------------------------------------ */
 /* LIVE IMPACT DASHBOARD - aggregated KPIs from Supabase (env), no PII */
@@ -301,6 +442,9 @@ export function DashboardSection() {
           );
         })}
       </div>
+
+      {/* SSK CURRENT CYCLE - real masked aggregates from the SSK workbook */}
+      <SskCyclePanel />
 
       {/* CHARTS ROW */}
       <div className="mt-6 grid gap-5 lg:grid-cols-3">

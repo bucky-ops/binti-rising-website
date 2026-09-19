@@ -278,7 +278,7 @@ export function WorkSection({ onNavigate }: { onNavigate: (s: SectionId) => void
 
                 <DataNote className="mt-4">
                   Session content follows the JTW Guide logic. LVCT Health referral, Nairobi County health, Shujaaz Inc
-                  content. USAID compliance checklist included. Safety concern? WhatsApp {ORG.whatsapp} · Shortcode {ORG.shortcode} ·
+                  content. USAID compliance checklist included. Safety concern? WhatsApp {ORG.whatsapp} ·
                   Hotline {ORG.hotline}.
                 </DataNote>
               </CardContent>

@@ -103,7 +103,26 @@ insert into public.kpi_aggregates (payload) values (
       { "name": "Kibera", "circles": 12, "youth": 612, "sessions": 96, "attendance": 93 },
       { "name": "Mathare", "circles": 9, "youth": 394, "sessions": 72, "attendance": 90 },
       { "name": "Kawangware", "circles": 7, "youth": 242, "sessions": 58, "attendance": 89 }
-    ]
+    ],
+    "cycle": {
+      "label": "SSK Cycle",
+      "window": "Apr-Jun 2026",
+      "registrations": 962,
+      "preTests": 952,
+      "submissions": 4334,
+      "postTests": 796,
+      "pairs": 12,
+      "targetPerPair": 440,
+      "onTrackThreshold": 75,
+      "gender": { "female": 527, "male": 433, "other": 2 },
+      "age15to17": { "count": 487, "pct": 50.6 },
+      "cohorts": [
+        { "name": "Cohort 1 · Jun 7-13", "total": 1117 },
+        { "name": "Cohort 2 · Jun 14-20", "total": 1295 },
+        { "name": "Other", "total": 11 }
+      ],
+      "pairAchievement": [94.8, 93, 90.7, 85.2, 82.5, 82, 78.6, 76.6, 74.3, 72.5, 70.9, 64.5]
+    }
   }'::jsonb
 );
 
