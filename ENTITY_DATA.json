@@ -1,0 +1,483 @@
+{
+  "ORG": {
+    "legalName": "BINTI Rising Initiative",
+    "displayName": "BINTI Rising",
+    "alternateName": [
+      "BINTI",
+      "Binti Rising",
+      "Binti Rising Initiative",
+      "Binti Rising Initiative Kenya"
+    ],
+    "url": "https://bintirising.org",
+    "logo": "/binti-logo.jpg",
+    "logoAlt": "BINTI Rising Initiative logo",
+    "description": "BINTI Rising Initiative is a registered community-based organisation (CBO) in Nairobi, Kenya, empowering young women aged 15-25 through four program pillars: sexual and reproductive health and rights (SRHR), mental health and wellbeing, financial freedom and literacy, and women's leadership.",
+    "slogan": "From silence, she rises.",
+    "foundingDate": "2024",
+    "nonprofitStatus": "Registered Community-Based Organisation (CBO), Kenya",
+    "registrationNumber": null,
+    "address": {
+      "street": null,
+      "locality": "Nairobi",
+      "region": "Nairobi County",
+      "postalCode": null,
+      "country": "KE"
+    },
+    "geo": {
+      "lat": -1.2921,
+      "lng": 36.8219
+    },
+    "phone": null,
+    "email": "info@bintirising.org",
+    "contactPoint": [
+      {
+        "contactType": "donations",
+        "email": "info@bintirising.org",
+        "telephone": null,
+        "areaServed": "KE",
+        "availableLanguage": [
+          "en",
+          "sw"
+        ]
+      },
+      {
+        "contactType": "support",
+        "email": "info@bintirising.org",
+        "telephone": null,
+        "areaServed": "KE",
+        "availableLanguage": [
+          "en",
+          "sw"
+        ]
+      },
+      {
+        "contactType": "media",
+        "email": "info@bintirising.org",
+        "telephone": null,
+        "areaServed": "KE",
+        "availableLanguage": [
+          "en"
+        ]
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/bintirising",
+      "https://www.facebook.com/bintirising",
+      "https://twitter.com/bintirising"
+    ],
+    "founder": {
+      "name": "Esther Gitaranga",
+      "jobTitle": "Founder & Executive Director",
+      "publish": false,
+      "image": null,
+      "sameAs": []
+    },
+    "boardRoles": [
+      {
+        "title": "Board Chairperson",
+        "responsibility": "Strategic governance, oversight and guidance for organisational growth and impact."
+      },
+      {
+        "title": "Board Secretary",
+        "responsibility": "Compliance, governance standards and documentation across all board activities."
+      }
+    ],
+    "staffRoles": [
+      {
+        "title": "Founder & Executive Director",
+        "responsibility": "Vision and overall leadership of BINTI's mission across Nairobi communities."
+      },
+      {
+        "title": "Programs Manager",
+        "responsibility": "Oversees all four program pillars, ensuring quality delivery and alignment with community needs."
+      },
+      {
+        "title": "Monitoring & Evaluation Lead",
+        "responsibility": "Evidence-based programming through rigorous data collection and impact measurement."
+      },
+      {
+        "title": "Finance & Admin Lead",
+        "responsibility": "Financial systems, compliance and administrative operations with transparency."
+      }
+    ],
+    "languages": [
+      "en",
+      "sw"
+    ],
+    "currencies": [
+      "KES"
+    ],
+    "sdgs": [
+      3,
+      4,
+      5,
+      8,
+      10,
+      16
+    ],
+    "knowsAbout": [
+      "sexual and reproductive health and rights",
+      "SRHR education Kenya",
+      "adolescent mental health",
+      "financial literacy for women",
+      "gender-based violence prevention",
+      "women's leadership",
+      "menstrual health",
+      "community-based organisation management"
+    ],
+    "knowsLanguage": [
+      "en",
+      "sw"
+    ],
+    "areaServedCity": "Nairobi",
+    "helplines": [
+      {
+        "name": "GBV Toll-Free Line (Ministry of Public Service, Gender)",
+        "phone": "1195",
+        "description": "National toll-free line for reporting gender-based violence in Kenya.",
+        "verifyPending": true
+      },
+      {
+        "name": "Childline Kenya",
+        "phone": "116",
+        "description": "National toll-free child helpline (call or WhatsApp).",
+        "verifyPending": true
+      },
+      {
+        "name": "Kenya Red Cross",
+        "phone": "1199",
+        "description": "National toll-free emergency and psychosocial support line.",
+        "verifyPending": true
+      }
+    ]
+  },
+  "PENDING_HUMAN_INPUT": [
+    {
+      "field": "registrationNumber",
+      "why": "CBO registration number is required for NGO schema `identifier`, the transparency page and directory citations.",
+      "owner": "Operations (scan of certificate)"
+    },
+    {
+      "field": "address.street / postalCode",
+      "why": "Full postal address required for NAP-perfect citations (Google Business Profile, directories).",
+      "owner": "Operations"
+    },
+    {
+      "field": "telephone",
+      "why": "A monitored phone/WhatsApp Business number must be confirmed before publishing; previous number was a placeholder.",
+      "owner": "Founder"
+    },
+    {
+      "field": "founder & leadership names",
+      "why": "Public press identifies Esther Gitaranga as Founder & Executive Director, but names/bios must be confirmed in writing (and consent given) before publication and Person markup.",
+      "owner": "Founder"
+    },
+    {
+      "field": "donation.paybill / bankAccount",
+      "why": "Previous Paybill 123456 and KCB details were placeholders and have been removed pending verified details.",
+      "owner": "Finance"
+    },
+    {
+      "field": "video.url",
+      "why": "The SRHR guide video previously embedded a placeholder YouTube ID. Provide the real URL to enable VideoObject markup.",
+      "owner": "Communications"
+    },
+    {
+      "field": "sameAs (TikTok/LinkedIn/YouTube)",
+      "why": "Exact profile URLs needed to complete the sameAs entity graph.",
+      "owner": "Communications"
+    },
+    {
+      "field": "googleSiteVerification / bingSiteVerification",
+      "why": "Search Console + Bing Webmaster verification meta tokens.",
+      "owner": "Founder (OFFSITE_CHECKLIST.md steps 1-2)"
+    },
+    {
+      "field": "impactMetrics baseline/endline figures",
+      "why": "KPI figures shown on the homepage are programme targets; verified baseline/endline figures must come from M&E before publication as results.",
+      "owner": "M&E Lead"
+    }
+  ],
+  "programs": [
+    {
+      "slug": "srhr",
+      "name": "Sexual & Reproductive Health Rights",
+      "shortName": "SRHR",
+      "serviceType": "SRHR education for young women",
+      "seoTitle": "SRHR Program in Nairobi for Young Women",
+      "summary": "Comprehensive education on sexual and reproductive health, body autonomy, consent, family planning, and access to health services. Empowering young women with knowledge to make informed decisions about their bodies and health.",
+      "sessions": [
+        {
+          "title": "Understanding Your Body",
+          "desc": "Anatomy, puberty changes, menstrual health, and hygiene management for young women."
+        },
+        {
+          "title": "Consent & Boundaries",
+          "desc": "Understanding personal boundaries, recognizing consent, and saying no with confidence."
+        },
+        {
+          "title": "Family Planning Methods",
+          "desc": "Overview of modern contraceptive methods, effectiveness, and accessing reproductive health services."
+        },
+        {
+          "title": "STIs & HIV Prevention",
+          "desc": "Comprehensive education on sexually transmitted infections, prevention strategies, and testing."
+        },
+        {
+          "title": "Pregnancy & Maternal Health",
+          "desc": "Antenatal care, nutrition during pregnancy, and safe delivery practices in Nairobi."
+        },
+        {
+          "title": "Gender-Based Violence Awareness",
+          "desc": "Recognizing GBV, understanding legal protections, and knowing where to get help."
+        },
+        {
+          "title": "Body Image & Self-Esteem",
+          "desc": "Building positive body image, resisting harmful beauty standards, and self-acceptance."
+        },
+        {
+          "title": "Accessing Health Services",
+          "desc": "Navigating Nairobi's health facilities, understanding patient rights, and health insurance options."
+        }
+      ],
+      "outcomes": [
+        "Programme target: increase SRHR knowledge from a 40% baseline to 80%",
+        "Programme target: improved utilisation of reproductive health services",
+        "Programme target: enhanced ability to recognise and report GBV",
+        "Programme target: better menstrual health management practices",
+        "Programme target: increased confidence in accessing health facilities"
+      ],
+      "sdgs": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "mental-health",
+      "name": "Mental Health & Wellbeing",
+      "shortName": "Mental Health",
+      "serviceType": "Adolescent mental health support",
+      "seoTitle": "Mental Health Support Program in Nairobi",
+      "summary": "Building mental resilience through stress management, emotional regulation, self-care practices, and creating safe spaces for young women to discuss their mental health challenges without stigma.",
+      "sessions": [
+        {
+          "title": "Understanding Mental Health",
+          "desc": "What mental health means, common conditions, and breaking stigma in our communities."
+        },
+        {
+          "title": "Stress Management",
+          "desc": "Identifying stress triggers, practical coping techniques, and relaxation exercises."
+        },
+        {
+          "title": "Emotional Regulation",
+          "desc": "Recognizing emotions, healthy expression techniques, and building emotional intelligence."
+        },
+        {
+          "title": "Self-Care Practices",
+          "desc": "Creating daily self-care routines, mindfulness, and prioritizing mental wellbeing."
+        },
+        {
+          "title": "Building Support Systems",
+          "desc": "Identifying trusted people, building healthy relationships, and knowing when to seek professional help."
+        },
+        {
+          "title": "Resilience & Goal Setting",
+          "desc": "Bouncing back from adversity, personal visioning, and setting achievable life goals."
+        }
+      ],
+      "outcomes": [
+        "Programme target: improved mental wellbeing scores from a 30% baseline to 70%",
+        "Programme target: reduced stigma around mental health discussions",
+        "Programme target: established personal self-care routines",
+        "Programme target: stronger peer support networks",
+        "Programme target: increased willingness to seek professional help"
+      ],
+      "sdgs": [
+        3,
+        5
+      ]
+    },
+    {
+      "slug": "financial-freedom",
+      "name": "Financial Freedom & Literacy",
+      "shortName": "Financial Freedom",
+      "serviceType": "Financial literacy training for young women",
+      "seoTitle": "Financial Literacy Program in Nairobi",
+      "summary": "Equipping young women with practical financial skills including budgeting, saving, entrepreneurship, and income generation. Building pathways to economic independence and breaking cycles of poverty.",
+      "sessions": [
+        {
+          "title": "Financial Literacy Basics",
+          "desc": "Understanding money, income vs. expenses, and why financial knowledge matters for women."
+        },
+        {
+          "title": "Budgeting & Money Management",
+          "desc": "Creating personal budgets, tracking spending, and making smart financial decisions."
+        },
+        {
+          "title": "Saving Strategies",
+          "desc": "Different saving methods, joining chamas (savings groups), building an emergency fund."
+        },
+        {
+          "title": "Entrepreneurship Basics",
+          "desc": "Identifying business opportunities in Nairobi, writing a simple business plan, and starting small."
+        },
+        {
+          "title": "Understanding Credit & Loans",
+          "desc": "How loans work, responsible borrowing, avoiding debt traps, and building credit history."
+        },
+        {
+          "title": "Income Generation & Networking",
+          "desc": "Multiple income streams, leveraging networks in Nairobi, and digital financial tools like M-Pesa."
+        }
+      ],
+      "outcomes": [
+        "Programme target: regular saving habits rising from a 20% baseline to 65%",
+        "Programme target: participants start income-generating activities",
+        "Programme target: improved financial decision-making skills",
+        "Programme target: formation of peer savings groups (chamas)",
+        "Programme target: greater economic independence and confidence"
+      ],
+      "sdgs": [
+        5,
+        8
+      ]
+    },
+    {
+      "slug": "leadership",
+      "name": "Women Empowerment & Leadership",
+      "shortName": "Leadership",
+      "serviceType": "Leadership and empowerment training",
+      "seoTitle": "Women's Leadership Program in Nairobi",
+      "summary": "Developing leadership skills, self-advocacy, community engagement, and confidence building. Preparing young women to take on leadership roles in their communities and beyond.",
+      "sessions": [
+        {
+          "title": "Self-Advocacy & Communication",
+          "desc": "Speaking up confidently, assertive communication, and expressing needs effectively."
+        },
+        {
+          "title": "Women's Rights & Legal Framework",
+          "desc": "Understanding constitutional rights, gender equality laws, and legal protections for women in Kenya."
+        },
+        {
+          "title": "Leadership Skills Development",
+          "desc": "Different leadership styles, team building, decision-making, and conflict resolution."
+        },
+        {
+          "title": "Community Engagement & Civic Participation",
+          "desc": "Getting involved in community development, understanding local governance, and civic duties."
+        },
+        {
+          "title": "Gender Norms & Equality",
+          "desc": "Challenging harmful stereotypes, promoting gender equality, and creating inclusive spaces."
+        },
+        {
+          "title": "Mentorship & Paying It Forward",
+          "desc": "Becoming a mentor, sharing knowledge, and creating lasting impact in Nairobi communities."
+        }
+      ],
+      "outcomes": [
+        "Programme target: leadership competency scores rising from a 25% baseline to 70%",
+        "Programme target: increased participation in community decision-making",
+        "Programme target: stronger self-advocacy and communication skills",
+        "Programme target: formation of peer mentorship networks",
+        "Programme target: greater awareness of women's legal rights"
+      ],
+      "sdgs": [
+        5,
+        10,
+        16
+      ]
+    }
+  ],
+  "communities": [
+    {
+      "slug": "kayole",
+      "name": "Kayole",
+      "subCounty": "Embakasi East",
+      "description": "A densely settled residential estate in Embakasi East, home to many young families and a vibrant youth population within reach of Nairobi's industrial job market.",
+      "lat": -1.2617,
+      "lng": 36.9166
+    },
+    {
+      "slug": "mawanga",
+      "name": "Mawanga",
+      "subCounty": "Embakasi",
+      "description": "A growing settlement area in the Embakasi side of Nairobi where residents balance informal-sector livelihoods with limited access to youth services.",
+      "lat": -1.3167,
+      "lng": 36.9
+    },
+    {
+      "slug": "dandora",
+      "name": "Dandora",
+      "subCounty": "Embakasi North",
+      "description": "Known countrywide for its solid-waste dumpsite, Dandora is a resilient community where environmental health burdens fall heaviest on women and girls.",
+      "lat": -1.2622,
+      "lng": 36.9033
+    },
+    {
+      "slug": "kasarani",
+      "name": "Kasarani",
+      "subCounty": "Kasarani",
+      "description": "A fast-growing sub-county along Thika Road mixing planned estates with informal settlements, with a large population of school-leavers and young mothers.",
+      "lat": -1.2236,
+      "lng": 36.8919
+    },
+    {
+      "slug": "embakasi",
+      "name": "Embakasi",
+      "subCounty": "Embakasi South",
+      "description": "A major residential and industrial area east of the CBD, where many young women work in informal trade and manufacturing around the Outer Ring corridor.",
+      "lat": -1.3167,
+      "lng": 36.8833
+    },
+    {
+      "slug": "mathare",
+      "name": "Mathare",
+      "subCounty": "Mathare",
+      "description": "One of Nairobi's largest informal settlements, where access to sexual and reproductive health information and psychosocial support remains limited for adolescent girls.",
+      "lat": -1.2606,
+      "lng": 36.8711
+    },
+    {
+      "slug": "kariobangi",
+      "name": "Kariobangi",
+      "subCounty": "Embakasi North",
+      "description": "A mixed estate and informal settlement area neighbouring Dandora, with active women's groups and a strong culture of table banking.",
+      "lat": -1.2586,
+      "lng": 36.8956
+    },
+    {
+      "slug": "kibera",
+      "name": "Kibera",
+      "subCounty": "Kibra",
+      "description": "Africa's largest urban informal settlement, where young women lead many of the community's own responses to health, education and economic challenges.",
+      "lat": -1.3133,
+      "lng": 36.7894
+    },
+    {
+      "slug": "mukuru",
+      "name": "Mukuru kwa Njenga",
+      "subCounty": "Starehe",
+      "description": "Part of the Mukuru informal settlement belt along the Nairobi--Mombasa road corridor, with an active process of resident-led planning and upgrading.",
+      "lat": -1.3078,
+      "lng": 36.8569
+    },
+    {
+      "slug": "korogocho",
+      "name": "Korogocho",
+      "subCounty": "Ruaraka",
+      "description": "A high-density settlement next to the Dandora dumpsite, where community organisations play a central role in girls' safety and education.",
+      "lat": -1.2419,
+      "lng": 36.8925
+    },
+    {
+      "slug": "umoja",
+      "name": "Umoja",
+      "subCounty": "Embakasi West",
+      "description": "A bustling middle-density estate whose name means unity, with numerous self-help groups and a strong base of young women entrepreneurs.",
+      "lat": -1.2833,
+      "lng": 36.9
+    }
+  ]
+}

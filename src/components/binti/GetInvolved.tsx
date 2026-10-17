@@ -188,8 +188,8 @@ export default function GetInvolved() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Donate Tab - R1 COMPLIANCE: placeholder Paybill "123456" and
-              unverified KCB details removed. Donations route through email
+          {/* Donate Tab - R1 COMPLIANCE: unverified placeholder Paybill and
+              KCB details removed. Donations route through email
               until finance confirms official Paybill/account numbers. */}
           <TabsContent value="donate">
             <div className="grid lg:grid-cols-2 gap-8">
