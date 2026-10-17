@@ -1,49 +1,24 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { SITE_URL, siteUrlFor } from "@/lib/site-url";
+import { ALL_ROUTES } from "@/lib/seo/all-routes";
+import { routesForSitemap } from "@/lib/seo/routes";
 
+/**
+ * Sitemap generated from the typed route registry (spec 1.4).
+ * lastModified comes from src/lib/seo/lastmod.json (git-sourced via
+ * scripts/sync-lastmod.mjs) - NEVER new Date(), which resets on every deploy
+ * and destroys the freshness signal.
+ *
+ * When the URL count grows past 50, split per-section sitemaps behind a
+ * /sitemap.xml index (spec 1.4 splitting rule).
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://bintirising.org";
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/#about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#programs`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#leadership`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/#impact`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#stories`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/#get-involved`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-  ];
+  const urls = routesForSitemap(ALL_ROUTES);
+
+  return urls.map((entry) => ({
+    url: entry.url === "/" ? SITE_URL : siteUrlFor(entry.url),
+    lastModified: entry.lastModified,
+    changeFrequency: entry.changeFrequency,
+    priority: entry.priority,
+  }));
 }

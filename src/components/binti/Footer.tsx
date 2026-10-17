@@ -1,30 +1,37 @@
-'use client';
-
 import Image from 'next/image';
-import { MapPin, Mail, Phone, Instagram, Facebook, Twitter, Heart } from 'lucide-react';
+import Link from 'next/link';
+import { MapPin, Mail, Instagram, Facebook, Twitter, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ORG } from '@/lib/data/organization';
+import { PROGRAMS } from '@/lib/data/programs';
 
+/**
+ * Site-wide footer - server component. All org details come from
+ * src/lib/data/organization.ts (R7). No phone number is shown until a real
+ * one is confirmed (PENDING_HUMAN_INPUT).
+ */
 const quickLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Programs', href: '#programs' },
-  { label: 'Leadership', href: '#leadership' },
-  { label: 'Our Impact', href: '#impact' },
-  { label: 'Stories', href: '#stories' },
-  { label: 'Get Involved', href: '#get-involved' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Our Programs', href: '/programs' },
+  { label: 'Communities', href: '/communities' },
+  { label: 'Our Team', href: '/about/team' },
+  { label: 'Governance', href: '/about/governance' },
+  { label: 'Stories', href: '/stories' },
+  { label: 'Learn', href: '/learn' },
+  { label: 'Resources', href: '/resources' },
+  { label: 'FAQs', href: '/faqs' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const socials = [
+  { label: 'Instagram', href: 'https://www.instagram.com/bintirising' },
+  { label: 'Facebook', href: 'https://www.facebook.com/bintirising' },
+  { label: 'Twitter / X', href: 'https://twitter.com/bintirising' },
 ];
 
 export default function Footer() {
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <footer className="bg-binti-navy text-white">
+    <footer className="bg-binti-navy text-white mt-auto">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           {/* Column 1: Organization Info */}
@@ -32,7 +39,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/binti-logo-white.jpg"
-                alt="BINTI Rising Initiative"
+                alt="BINTI Rising Initiative logo"
                 width={48}
                 height={48}
                 className="rounded-full"
@@ -47,84 +54,97 @@ export default function Footer() {
               health, financial literacy, and women&apos;s leadership in Nairobi, Kenya.
             </p>
 
-            {/* Donate Button */}
             <Button
               asChild
               className="w-full bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full shadow-lg shadow-binti-pink/25 transition-all hover:shadow-binti-pink/40 mb-6"
             >
-              <a href="#get-involved" onClick={(e) => handleNavClick(e, '#get-involved')}>
+              <Link href="/get-involved/donate">
                 <Heart className="w-4 h-4 mr-2" />
                 Make a Donation
-              </a>
+              </Link>
             </Button>
 
             <div className="flex gap-3">
-              {[
-                { icon: Instagram, label: 'Instagram' },
-                { icon: Facebook, label: 'Facebook' },
-                { icon: Twitter, label: 'Twitter' },
-              ].map((social) => (
-                <button
+              {socials.map((social) => (
+                <a
                   key={social.label}
-                  aria-label={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${ORG.legalName} on ${social.label}`}
                   className="w-9 h-9 rounded-full bg-white/10 hover:bg-binti-pink flex items-center justify-center transition-colors"
                 >
-                  <social.icon className="w-4 h-4" />
-                </button>
+                  {social.label === 'Instagram' ? (
+                    <Instagram className="w-4 h-4" />
+                  ) : social.label === 'Facebook' ? (
+                    <Facebook className="w-4 h-4" />
+                  ) : (
+                    <Twitter className="w-4 h-4" />
+                  )}
+                </a>
               ))}
             </div>
           </div>
 
           {/* Column 2: Quick Links */}
-          <div>
-            <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
+          <nav aria-label="Quick links">
+            <h2 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
               Quick Links
-            </h4>
+            </h2>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
                     className="text-sm text-white/60 hover:text-binti-pink transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Column 3: Programs */}
-          <div>
-            <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
+          <nav aria-label="Program links">
+            <h2 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
               Programs
-            </h4>
+            </h2>
             <ul className="space-y-2.5">
-              {[
-                'SRHR Education',
-                'Mental Health & Wellbeing',
-                'Financial Freedom',
-                'Women Empowerment',
-              ].map((program) => (
-                <li key={program}>
-                  <a
-                    href="#programs"
-                    onClick={(e) => handleNavClick(e, '#programs')}
+              {PROGRAMS.map((program) => (
+                <li key={program.slug}>
+                  <Link
+                    href={`/programs/${program.slug}`}
                     className="text-sm text-white/60 hover:text-binti-pink transition-colors"
                   >
-                    {program}
-                  </a>
+                    {program.name}
+                  </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/get-involved/volunteer"
+                  className="text-sm text-white/60 hover:text-binti-pink transition-colors"
+                >
+                  Volunteer With Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/get-involved/partner"
+                  className="text-sm text-white/60 hover:text-binti-pink transition-colors"
+                >
+                  Partner With Us
+                </Link>
+              </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Column 4: Contact */}
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
+            <h2 className="font-bold text-sm uppercase tracking-wider mb-4 text-binti-gold">
               Contact
-            </h4>
+            </h2>
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-binti-pink shrink-0 mt-0.5" />
@@ -134,11 +154,9 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-binti-pink shrink-0" />
-                <span className="text-sm text-white/60">info@bintirising.org</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-binti-pink shrink-0" />
-                <span className="text-sm text-white/60">+254 700 000 000</span>
+                <a href={`mailto:${ORG.email}`} className="text-sm text-white/60 hover:text-binti-pink transition-colors">
+                  {ORG.email}
+                </a>
               </li>
             </ul>
 
@@ -156,7 +174,7 @@ export default function Footer() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-white/40">
-              &copy; {new Date().getFullYear()} BINTI Rising Initiative. All rights reserved.
+              &copy; {new Date().getFullYear()} {ORG.legalName}. All rights reserved.
             </p>
             <p className="text-sm text-white/40 flex items-center gap-1">
               Made with <Heart className="w-3 h-3 text-binti-pink fill-binti-pink" /> for young women in Nairobi

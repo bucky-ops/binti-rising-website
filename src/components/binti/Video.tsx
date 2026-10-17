@@ -1,27 +1,19 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Play } from 'lucide-react';
+import { Play, VideoOff } from 'lucide-react';
+import PendingNotice from '@/components/binti/PendingNotice';
 
+/**
+ * SRHR video section. The previous version embedded a placeholder YouTube ID
+ * with invented view-count/duration/rating stats (R1 violation) - both have
+ * been removed. VideoObject JSON-LD is emitted only after a real video URL
+ * is provided (PENDING_HUMAN_INPUT: video.url).
+ */
 export default function Video() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="video" ref={sectionRef} className="py-20 md:py-28 bg-binti-warm-gray/30">
+    <section id="video" className="py-20 md:py-28 bg-binti-warm-gray/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className={`text-center max-w-2xl mx-auto mb-12 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-block text-sm font-bold uppercase tracking-widest text-binti-pink mb-3">
             Educational Content
           </span>
@@ -30,76 +22,47 @@ export default function Video() {
             <span className="text-gradient">SRHR</span>
           </h2>
           <p className="mt-4 text-binti-navy/70 text-lg leading-relaxed">
-            Watch our comprehensive guide on Sexual and Reproductive Health and Rights to understand key concepts and empowerment strategies.
+            Our video guide on sexual and reproductive health is being published
+            here soon. In the meantime, start with our written guides.
           </p>
         </div>
 
-        {/* Video Container */}
-        <div className={`max-w-4xl mx-auto ${isVisible ? 'animate-fade-in-up delay-200' : 'opacity-0'}`}>
-          <div className="relative group rounded-2xl overflow-hidden shadow-2xl">
-            {/* Background gradient */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-binti-pink via-binti-purple to-binti-teal opacity-75 rounded-2xl blur group-hover:opacity-100 transition duration-500" />
-            
-            {/* Video Frame */}
-            <div className="relative bg-white rounded-2xl overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-binti-warm-gray/50 to-binti-warm-gray/80 flex items-center justify-center relative">
-                {/* Play Button */}
-                <a
-                  href="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative group/play"
-                >
-                  <div className="absolute inset-0 bg-black/20 group-hover/play:bg-black/40 transition-all duration-300 rounded-2xl" />
-                  <div className="flex items-center justify-center h-full">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-binti-pink/20 rounded-full blur-lg group-hover/play:bg-binti-pink/40 transition-all duration-300" />
-                      <Button
-                        size="lg"
-                        className="relative bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                      >
-                        <Play className="w-8 h-8 fill-white" />
-                      </Button>
-                    </div>
-                  </div>
-                </a>
-
-                {/* Video Title Overlay */}
-                <div className="absolute inset-0 flex items-end">
-                  <div className="w-full p-6 bg-gradient-to-t from-black/60 to-transparent">
-                    <h3 className="text-white font-bold text-lg">Understanding SRHR: Empowerment Through Education</h3>
-                    <p className="text-white/70 text-sm mt-1">A comprehensive guide for young women</p>
-                  </div>
+        <div className="max-w-4xl mx-auto">
+          <div className="relative rounded-2xl overflow-hidden shadow-xl">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-binti-pink via-binti-purple to-binti-teal opacity-60 rounded-2xl blur" aria-hidden />
+            <div className="relative bg-white rounded-2xl">
+              <div className="aspect-video bg-gradient-to-br from-binti-warm-gray/50 to-binti-warm-gray/80 flex flex-col items-center justify-center gap-3 p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-binti-pink/10 flex items-center justify-center" aria-hidden>
+                  <VideoOff className="h-7 w-7 text-binti-pink" />
                 </div>
+                <h3 className="text-binti-navy font-bold text-lg">
+                  Understanding SRHR: video guide coming soon
+                </h3>
+                <p className="text-binti-navy/60 text-sm max-w-md">
+                  We are finalising production and publication rights. Want to
+                  be notified? Email info@bintirising.org.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* CTA Below Video */}
-          <div className="mt-8 text-center">
-            <p className="text-binti-navy/70 mb-4 text-sm">
-              Want to join our programs? Learn more about our SRHR initiatives.
-            </p>
-            <a href="#get-involved" className="inline-block">
-              <Button className="bg-binti-pink hover:bg-binti-pink/90 text-white">
-                Get Involved Today
+          <div className="mt-6 flex flex-col items-center gap-4">
+            <PendingNotice compact />
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button asChild className="bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full">
+                <Link href="/learn/srhr-rights-in-kenya-for-young-women">
+                  Read: Your SRHR rights in Kenya
+                </Link>
               </Button>
-            </a>
-          </div>
-        </div>
-
-        {/* Video Stats */}
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-          {[
-            { label: 'Views', value: '2.5K+' },
-            { label: 'Duration', value: '12 mins' },
-            { label: 'Rating', value: '4.8/5' },
-          ].map((stat) => (
-            <div key={stat.label} className={`text-center p-4 rounded-xl bg-white shadow-sm border border-binti-warm-gray ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <div className="text-2xl font-bold text-binti-pink">{stat.value}</div>
-              <div className="text-sm text-binti-navy/60 mt-1">{stat.label}</div>
+              <Button
+                asChild
+                variant="outline"
+                className="border-binti-pink text-binti-pink hover:bg-binti-pink/5 rounded-full"
+              >
+                <Link href="/programs/srhr">See the SRHR program</Link>
+              </Button>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>

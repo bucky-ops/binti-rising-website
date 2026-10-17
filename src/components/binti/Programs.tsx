@@ -266,10 +266,10 @@ export default function Programs() {
 
         {/* Total Sessions Highlight */}
         <div className={`mt-16 text-center ${isVisible ? 'animate-fade-in-up delay-600' : 'opacity-0'}`}>
-          <div className="inline-flex items-center gap-4 bg-white rounded-full px-8 py-4 shadow-lg border border-binti-warm-gray">
+          <div className="inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-white rounded-3xl sm:rounded-full px-6 sm:px-8 py-4 shadow-lg border border-binti-warm-gray max-w-full">
             <span className="text-binti-navy/70 font-medium">Total Program Sessions:</span>
             <span className="text-2xl font-extrabold text-gradient">26 Sessions</span>
-            <span className="text-binti-navy/40">|</span>
+            <span className="text-binti-navy/40 hidden sm:inline">|</span>
             <span className="text-binti-navy/70 font-medium">Duration:</span>
             <span className="text-2xl font-extrabold text-binti-pink">6 Months</span>
           </div>
