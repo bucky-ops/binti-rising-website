@@ -188,60 +188,86 @@ export default function GetInvolved() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Donate Tab */}
+          {/* Donate Tab - R1 COMPLIANCE: placeholder Paybill "123456" and
+              unverified KCB details removed. Donations route through email
+              until finance confirms official Paybill/account numbers. */}
           <TabsContent value="donate">
             <div className="grid lg:grid-cols-2 gap-8">
-              {/* M-Pesa */}
+              {/* Contact-to-give */}
               <div className="bg-white rounded-2xl p-6 sm:p-8 border border-binti-warm-gray shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
                     <Smartphone className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-binti-navy text-lg">M-Pesa (Lipa na M-Pesa)</h3>
+                    <h3 className="font-bold text-binti-navy text-lg">Give via M-Pesa or bank transfer</h3>
                     <p className="text-sm text-binti-navy/60">Every KES counts</p>
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <div className="p-4 bg-binti-warm-gray/50 rounded-xl">
-                    <div className="text-sm text-binti-navy/60 mb-1">Paybill Number</div>
-                    <div className="text-2xl font-extrabold text-binti-navy">123456</div>
-                  </div>
-                  <div className="p-4 bg-binti-warm-gray/50 rounded-xl">
-                    <div className="text-sm text-binti-navy/60 mb-1">Account Number</div>
-                    <div className="text-xl font-bold text-binti-pink">BINTI</div>
-                  </div>
+                  <p className="text-sm text-binti-navy/70 leading-relaxed">
+                    Email{" "}
+                    <a
+                      href="mailto:info@bintirising.org?subject=I%20want%20to%20donate"
+                      className="text-binti-pink font-semibold hover:underline"
+                    >
+                      info@bintirising.org
+                    </a>{" "}
+                    (or use the contact form) and we will send you our official
+                    M-Pesa Paybill or bank details, plus a receipt for your
+                    records.
+                  </p>
                   <div className="p-3 bg-binti-pink/5 rounded-xl border border-binti-pink/10">
                     <p className="text-xs text-binti-navy/70 leading-relaxed">
-                      Go to M-Pesa &gt; Lipa na M-Pesa &gt; Paybill &gt; Enter 123456 &gt; Account: BINTI &gt; Enter Amount &gt; Confirm
+                      We deliberately do not display payment details on this page
+                      until our official Paybill and account numbers are
+                      re-verified, so that every shilling reaches BINTI Rising
+                      safely.
                     </p>
                   </div>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="w-full bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full shadow-lg shadow-binti-pink/25"
+                  >
+                    <a href="mailto:info@bintirising.org?subject=I%20want%20to%20donate">
+                      Contact us to give
+                    </a>
+                  </Button>
                 </div>
               </div>
 
-              {/* Bank Transfer */}
+              {/* What your gift funds */}
               <div className="bg-white rounded-2xl p-6 sm:p-8 border border-binti-warm-gray shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-binti-teal/10 flex items-center justify-center">
                     <Building2 className="w-6 h-6 text-binti-teal" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-binti-navy text-lg">Bank Transfer</h3>
-                    <p className="text-sm text-binti-navy/60">Direct bank deposit</p>
+                    <h3 className="font-bold text-binti-navy text-lg">Where your gift goes</h3>
+                    <p className="text-sm text-binti-navy/60">Transparent, program-funded</p>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="p-4 bg-binti-warm-gray/50 rounded-xl">
-                    <div className="text-sm text-binti-navy/60 mb-1">Bank</div>
-                    <div className="text-lg font-bold text-binti-navy">Kenya Commercial Bank (KCB)</div>
+                    <div className="text-sm text-binti-navy/60 mb-1">100% program-funded</div>
+                    <p className="text-sm text-binti-navy/70 leading-relaxed">
+                      Donations fund session materials, facilitator transport,
+                      venue support and participant materials across our four
+                      pillars. Our full funding breakdown is published on the
+                      governance page as annual reviews are released.
+                    </p>
                   </div>
                   <div className="p-4 bg-binti-warm-gray/50 rounded-xl">
-                    <div className="text-sm text-binti-navy/60 mb-1">Account Name</div>
-                    <div className="text-lg font-bold text-binti-navy">BINTI Rising Initiative</div>
-                  </div>
-                  <div className="p-4 bg-binti-warm-gray/50 rounded-xl">
-                    <div className="text-sm text-binti-navy/60 mb-1">Branch</div>
-                    <div className="text-lg font-bold text-binti-navy">Nairobi Main</div>
+                    <div className="text-sm text-binti-navy/60 mb-1">Accountability</div>
+                    <p className="text-sm text-binti-navy/70 leading-relaxed">
+                      BINTI Rising Initiative is a registered community-based
+                      organisation in Nairobi, Kenya. See{" "}
+                      <a href="/about/governance" className="text-binti-pink font-semibold hover:underline">
+                        governance &amp; transparency
+                      </a>
+                      .
+                    </p>
                   </div>
                 </div>
               </div>
@@ -268,10 +294,13 @@ export default function GetInvolved() {
               </div>
               <div className="text-center mt-6">
                 <Button
+                  asChild
                   size="lg"
                   className="bg-binti-pink hover:bg-binti-pink/90 text-white rounded-full px-10 shadow-lg shadow-binti-pink/25 transition-all hover:shadow-binti-pink/40"
                 >
-                  Donate Now - Change a Life
+                  <a href="mailto:info@bintirising.org?subject=I%20want%20to%20donate">
+                    Donate Now - Change a Life
+                  </a>
                 </Button>
               </div>
             </div>

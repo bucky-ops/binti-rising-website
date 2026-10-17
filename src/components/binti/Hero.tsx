@@ -38,17 +38,18 @@ export default function Hero() {
               <span className="text-sm font-medium text-binti-pink">Registered CBO in Nairobi, Kenya</span>
             </div>
 
+            {/* H1 carries search intent (spec 5.2); the brand lockup lives in
+                the navbar logo. */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-binti-navy leading-tight">
-              BINTI{' '}
-              <span className="text-gradient">RISING</span>
-              <br />
+              Empowering Young Women in Nairobi Through{' '}
+              <span className="text-gradient">SRHR, Mental Health, Financial Literacy</span>{' '}
               <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-binti-navy/90">
-                Initiative
+                &amp; Leadership
               </span>
             </h1>
 
             <p className="mt-4 text-xl sm:text-2xl font-medium text-binti-purple">
-              Empowering Young Women to Rise
+              BINTI Rising Initiative &middot; From silence, she rises.
             </p>
 
             <p className="mt-6 text-base sm:text-lg text-binti-navy/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Linkedin } from 'lucide-react';
+import Link from 'next/link';
+import { Info } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface Leader {
@@ -81,7 +82,7 @@ export default function Leadership() {
     <section id="leadership" ref={sectionRef} className="py-20 md:py-28 bg-binti-warm-gray/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className={`text-center max-w-2xl mx-auto mb-16 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+        <div className={`text-center max-w-2xl mx-auto mb-10 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
           <span className="inline-block text-sm font-bold uppercase tracking-widest text-binti-pink mb-3">
             Our Team
           </span>
@@ -92,6 +93,12 @@ export default function Leadership() {
           <p className="mt-4 text-binti-navy/70 text-base sm:text-lg">
             A dedicated team of professionals and volunteers committed to empowering young women
             across Nairobi, Kenya.
+          </p>
+          <p className="mt-4 inline-flex items-center gap-2 text-xs text-binti-navy/50 bg-white rounded-full px-4 py-2 border border-binti-warm-gray">
+            <Info className="h-3.5 w-3.5" aria-hidden />
+            Team member names and profiles are published on{' '}
+            <Link href="/about/team" className="font-semibold text-binti-pink hover:underline">our team page</Link>
+            {' '}as each person confirms publication.
           </p>
         </div>
 
@@ -115,12 +122,6 @@ export default function Leadership() {
                   <h3 className="font-bold text-binti-navy text-base truncate">{leader.name}</h3>
                   <p className="text-xs text-binti-navy/60 font-medium">{leader.title}</p>
                 </div>
-                <button
-                  aria-label={`${leader.name} LinkedIn profile`}
-                  className="w-8 h-8 rounded-full bg-binti-warm-gray flex items-center justify-center text-binti-navy/40 hover:bg-binti-pink/10 hover:text-binti-pink transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </button>
               </div>
               <p className="text-sm text-binti-navy/60 leading-relaxed">{leader.bio}</p>
             </div>
