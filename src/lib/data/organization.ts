@@ -17,7 +17,7 @@
  *  - Confirmed founder/leadership names (public reporting identifies
  *    Esther Gitaranga as Founder & Executive Director, but the organisation
  *    must confirm in writing before names are published/marked up)
- *  - Real M-Pesa Paybill / bank details (placeholders "123456"/KCB removed)
+ *  - Real M-Pesa Paybill / bank details (placeholder numbers removed)
  *  - Real YouTube URL for the SRHR guide video
  *  - TikTok / LinkedIn / YouTube profile URLs
  *  - GSC / Bing verification tokens
@@ -88,7 +88,7 @@ export const PENDING_HUMAN_INPUT: { field: string; why: string; owner: string }[
   },
   {
     field: "donation.paybill / bankAccount",
-    why: "Previous Paybill 123456 and KCB details were placeholders and have been removed pending verified details.",
+    why: "The previously displayed Paybill and bank details were unverified placeholders and have been removed pending finance-confirmed details.",
     owner: "Finance",
   },
   {

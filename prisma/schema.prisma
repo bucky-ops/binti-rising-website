@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -27,6 +21,157 @@ model Post {
   content   String?
   published Boolean  @default(false)
   authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Content engine models (spec Phase 6.1) ──────────────────────────────
+// The public site renders statically from src/lib/data/* (Vercel-safe).
+// These models are the CMS-grade content store: entities are seeded from
+// ORG/registry files and used by editorial tooling, the IndexNow deploy
+// hook, and (later) server-rendered dynamic content with revalidate=3600.
+
+model Person {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  jobTitle    String
+  bio         String?
+  image       String?
+  publish     Boolean  @default(false) // R1: publish only after written consent
+  sameAsJson  String? // JSON array of profile URLs
+  role        String   @default("staff") // staff | board | founder
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Program {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  serviceType String
+  summary     String
+  sessionsJson String  // JSON array of {title, desc}
+  outcomesJson String  // JSON array of target strings
+  sdgs        String   // JSON array of ints
+  status      String   @default("published") // draft | published
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  subCounty   String
+  description String
+  lat         Float?
+  lng         Float?
+  status      String   @default("published")
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Story {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  attribution String // anonymised attribution
+  ward        String
+  pillar      String
+  pillarSlug  String
+  quote       String
+  anonymised  Boolean  @default(true)
+  consentId   String?
+  status      String   @default("published")
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  startAt     DateTime
+  endAt       DateTime?
+  venue       String?
+  ward        String?
+  status      String   @default("draft") // events publish only when confirmed
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String   @unique
+  answer    String
+  sortOrder Int      @default(0)
+  status    String   @default("published")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Resource {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  fileUrl     String? // published only when a real file exists
+  gated       Boolean  @default(true)
+  status      String   @default("draft")
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g. "logo", "hero", "og-default"
+  url       String
+  alt       String
+  kind      String   @default("image") // image | video
+  provider  String? // youtube | vimeo | local
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model ConsentRecord {
+  id          String   @id @default(cuid())
+  subjectRef  String // person or story slug
+  subjectType String // story | photo | video | name | testimonial
+  consentGiven Boolean @default(false)
+  method      String // written | verbal | electronic
+  recordedBy  String
+  recordedAt  DateTime @default(now())
+  expiresAt   DateTime?
+  notes       String?
+}
+
+model ImpactMetric {
+  id          String   @id @default(cuid())
+  indicator   String // e.g. "SRHR knowledge"
+  pillar      String
+  baseline    Float?
+  endline     Float?
+  target      Float
+  unit        String   @default("percent")
+  sampleSize  Int?
+  measuredAt  DateTime?
+  verified    Boolean  @default(false) // R1: figures publish only when verified
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+/// Tracks URLs submitted to IndexNow so deploys only ping diffs (spec 8.1).
+model IndexPing {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  status    String // submitted | failed
+  responseCode Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
